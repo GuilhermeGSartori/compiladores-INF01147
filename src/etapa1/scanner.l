@@ -1,6 +1,7 @@
 %{
-    #include<stdio.h>
-    #include "tokens.h"
+  #include<stdio.h>
+  #include "tokens.h"
+  int lineno = 1;
 %}
 
 %option noyywrap
@@ -10,7 +11,6 @@
 
 carac_espec [-!*/%+<>{}()=,;]
 digito [0-9]
-
 
 %%
 
@@ -33,7 +33,7 @@ return { return TK_PR_RETURN; }
 "->" { return TK_OC_MAP; }
 
 {digito}+ { return TK_LIT_INT; }
-
+{digito}*.{digito}+ { return TK_LIT_FLOAT; }
 "true" { return TK_LIT_TRUE; }
 "false" { return TK_LIT_FALSE; }
 
@@ -41,3 +41,6 @@ return { return TK_PR_RETURN; }
 
 %%
 
+int get_line_number() {
+  printf("%d", lineno);
+}
