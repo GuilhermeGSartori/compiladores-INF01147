@@ -30,21 +30,21 @@ return 		{ return TK_PR_RETURN; }
 "|"  		{ return TK_OC_OR; }
 "->" 		{ return TK_OC_MAP; }
 
-{digito}+ 	{ return TK_LIT_INT; }
+{digito}+ 			{ return TK_LIT_INT; }
 {digito}*.{digito}+ { return TK_LIT_FLOAT; }
-"true" 		{ return TK_LIT_TRUE; }
-"false" 	{ return TK_LIT_FALSE; }
-({letra}|_)+ 	{ return TK_IDENTIFICADOR; }
-{carac_espec}   { return yytext[0]; }
+"true" 				{ return TK_LIT_TRUE; }
+"false" 			{ return TK_LIT_FALSE; }
+({letra}|_)+ 		{ return TK_IDENTIFICADOR; }
+{carac_espec}   	{ return yytext[0]; }
 
 [ \t\r\n]       { }
-"//.*"          { }
+"//".*          { }
 
-<INITIAL>"/*"   { BEGIN(ML_COMMENT); }
-<ML_COMMENT>"*/" { BEGIN(INITIAL); }
-<ML_COMMENT>[.\n]+ { }
+<INITIAL>"/*"   	{ BEGIN(ML_COMMENT); }
+<ML_COMMENT>"*/" 	{ BEGIN(INITIAL); }
+<ML_COMMENT>[.\n]+ 	{ }
 
-.               { return TK_ERRO; }
+.               	{ return TK_ERRO; }
 
 %%
 
