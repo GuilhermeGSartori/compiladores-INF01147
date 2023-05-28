@@ -11,6 +11,7 @@
 
 carac_espec [-!*/%+<>{}()=,;]
 digito [0-9]
+letra [a-z]
 
 %%
 
@@ -31,6 +32,8 @@ return { return TK_PR_RETURN; }
 "&"  { return TK_OC_AND; }
 "|"  { return TK_OC_OR; }
 "->" { return TK_OC_MAP; }
+
+[[a-z]|[_]]+ { return TK_IDENTIFICADOR; }
 
 {digito}+ { return TK_LIT_INT; }
 {digito}*.{digito}+ { return TK_LIT_FLOAT; }
