@@ -1,5 +1,4 @@
 %{
-  #include<stdio.h>
   #include "tokens.h"
 %}
 
@@ -31,7 +30,7 @@ return 		{ return TK_PR_RETURN; }
 "->" 		{ return TK_OC_MAP; }
 
 {digito}+ 	{ return TK_LIT_INT; }
-{digito}*.{digito}+ { return TK_LIT_FLOAT; }
+{digito}*"."{digito}+ { return TK_LIT_FLOAT; }
 "true" 		{ return TK_LIT_TRUE; }
 "false" 	{ return TK_LIT_FALSE; }
 ({letra}|_)+ 	{ return TK_IDENTIFICADOR; }
@@ -50,6 +49,5 @@ return 		{ return TK_PR_RETURN; }
 %%
 
 int get_line_number() {
-  //printf("%d", lineno);
   return yylineno;
 }

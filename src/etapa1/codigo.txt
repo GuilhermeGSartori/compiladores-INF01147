@@ -1,0 +1,6 @@
+int variavel = 1;
+float flutuante = 3.3;
+flutuante > 1;
+flutuante != variavel;
+float multi = variavel * flutuante;
+a2
