@@ -2,9 +2,12 @@ int variavel = 1;
 float flutuante = 3.3;
 flutuante > 1;
 flutuante != variavel;
+/* comentarios devem
+ser ignorados
+sempre*/
 _ = 0;
 _var = _;
 var_ = _var;
-v_ar = var_;
+v_ar = var_; // comentario de codigo
 float multi = variavel * flutuante;
 a2
