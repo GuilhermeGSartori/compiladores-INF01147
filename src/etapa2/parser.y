@@ -1,5 +1,6 @@
 %{
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+#include <stdio.h>
 
 int yylex(void);
 void yyerror (char const *s);
@@ -67,7 +68,7 @@ param: tipo TK_IDENTIFICADOR ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
 
-corpo: '{a}' /*temporario*/
+corpo: 'a' /*temporario*/
 /* corpo: bloco_comandos ;
 bloco_comandos: '{' comandos '}' ;
 comandos: linhas | ;
@@ -85,3 +86,7 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
 
 %%
+
+void yyerror (char const *s) {
+    printf("error\n");
+}
