@@ -1,7 +1,10 @@
 int exemplo;
+bool exemplo, _exemplo;
 
 fun () -> int a 
 
-//foo (int input, bool input2) -> bool a
+foo (int input) -> bool a
 
-//faa (int input, bool input2) -> bool output a
+foo (int input, bool _input) -> bool a
+
+//faa (int input, bool _input) -> bool output a
