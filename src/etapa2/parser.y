@@ -1,4 +1,6 @@
 %{
+// Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+
 int yylex(void);
 void yyerror (char const *s);
 %}
@@ -26,53 +28,59 @@ void yyerror (char const *s);
 
 %%
 
-/*Um programa na linguagem é composto por dois
-elementos, todos opcionais: um conjunto de de-
-clarações de variáveis globais e um conjunto de
-funções. Esses elementos podem estar intercala-
-dos e em qualquer ordem.*/
+
+/*1 - Um programa na linguagem é composto por dois elementos, todos opcionais: um conjunto de declarações de variáveis globais e um 
+conjunto de funções. Esses elementos podem estar intercalados e em qualquer ordem.*/
 
 programa: lista | ;
 lista: lista elemento | elemento ;
 elemento: funcao | declaracao_variavel_global ;
 
-/*Cada função é definida por um cabeçalho e um corpo, sendo que esta definição não é terminada
+
+
+/*2 - Cada função é definida por um cabeçalho e um corpo, sendo que esta definição não é terminada
 por ponto-e-vírgula.*/
 
 funcao: cabecalho corpo ;
 
-/*O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
+
+
+/*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
+
 cabecalho: TK_IDENTIFICADOR lista_params TK_OC_MAP tipo ;
 
-/*A lista de parâmetros é dada entre parênteses e é composta
-por zero ou mais parâmetros de entrada, separados por vírgula.*/
-lista_params: '(' lista_provisoria_de_params  ')' ;
 
+
+/*4 - A lista de parâmetros é dada entre parênteses e é composta por zero ou mais parâmetros de entrada, separados por vírgula.*/
+
+lista_params: '(' lista_provisoria_de_params  ')' ;
 lista_provisoria_de_params: um_ou_mais_param | ;
 um_ou_mais_param: um_ou_mais_param ',' param | param ;
 
-/*Cada parâmetro é definido pelo seu tipo e nome.*/
+
+
+/*5 - Cada parâmetro é definido pelo seu tipo e nome.*/
+
 param: tipo TK_IDENTIFICADOR ;
 
-/*O corpo da função é um bloco de comandos.*/
-corpo: bloco_comandos ;
 
+
+/*6 - O corpo da função é um bloco de comandos.*/
+
+corpo: '{a}' /*temporario*/
+/* corpo: bloco_comandos ;
 bloco_comandos: '{' comandos '}' ;
-
 comandos: linhas | ;
-
 linhas: linhas ';' linha ;
+linha: 'a' */ 
 
-linha: 
 
-/*As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um
-nome de variável (identificador) separadas por vírgula. O tipo pode ser int, float e bool.
-As declarações de variáveis são terminadas por ponto-e-vírgula.*/
+
+/*7 - As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um nome de variável (identificador) 
+separadas por vírgula. O tipo pode ser int, float e bool. As declarações de variáveis são terminadas por ponto-e-vírgula.*/
 
 declaracao_variavel_global: tipo lista_var ';' ;
-
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
-
 lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
 

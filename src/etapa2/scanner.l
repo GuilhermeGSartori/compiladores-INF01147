@@ -1,6 +1,6 @@
 %{
   // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
-  #include "tokens.h"
+  #include "parser.tab.h"
 %}
 
 %option noyywrap
