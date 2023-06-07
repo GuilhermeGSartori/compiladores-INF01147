@@ -48,14 +48,13 @@ funcao: cabecalho corpo ;
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
-cabecalho: TK_IDENTIFICADOR lista_params TK_OC_MAP tipo ;
+cabecalho: TK_IDENTIFICADOR '(' lista_params ')' TK_OC_MAP tipo ;
 
 
 
 /*4 - A lista de parâmetros é dada entre parênteses e é composta por zero ou mais parâmetros de entrada, separados por vírgula.*/
 
-lista_params: '(' lista_provisoria_de_params  ')' ;
-lista_provisoria_de_params: um_ou_mais_param | ;
+lista_params: um_ou_mais_param | ;
 um_ou_mais_param: um_ou_mais_param ',' param | param ;
 
 
@@ -68,7 +67,7 @@ param: tipo TK_IDENTIFICADOR ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
 
-corpo: 'a' /*temporario*/
+corpo: TK_IDENTIFICADOR ; /*temporario*/
 /* corpo: bloco_comandos ;
 bloco_comandos: '{' comandos '}' ;
 comandos: linhas | ;
