@@ -1,9 +1,10 @@
 %{
-// Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
-#include <stdio.h>
+	// Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+	#include <stdio.h>
 
-int yylex(void);
-void yyerror (char const *s);
+	int yylex(void);
+	int yyerror (char const *s);
+	extern int get_line_number();
 %}
 
 %token TK_PR_INT
@@ -67,7 +68,7 @@ param: tipo TK_IDENTIFICADOR ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
 
-corpo: TK_IDENTIFICADOR ; /*temporario*/
+corpo: corpo expr | expr ; /*temporario*/
 /* corpo: bloco_comandos ;
 bloco_comandos: '{' comandos '}' ;
 comandos: linhas | ;
@@ -83,9 +84,43 @@ declaracao_variavel_global: tipo lista_var ';' ;
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
+/*Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados por vírgula. Um argumento pode ser uma expressão.*/
+func_call: TK_IDENTIFICADOR '(' args_func_call ')' ;
+
+args_func_call: args_func_call ',' expr | expr ;
+
+/*Expressões tem operandos e operadores. Os operandos podem ser(a)identificadores,(b)literaise (c)chamada de função. As expressões podem ser formadas recursivamente 
+pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
+
+expr: TK_LIT_INT 
+	| TK_LIT_FLOAT 
+	| TK_LIT_TRUE 
+	| TK_LIT_FALSE 
+	| TK_IDENTIFICADOR
+	| func_call
+	| '-' expr
+	| '!' expr
+	| expr '*' expr
+	| expr '/' expr
+	| expr '%' expr
+	| expr '+' expr
+	| expr '-' expr
+	| expr '<' expr
+	| expr '>' expr
+	| expr TK_OC_LE expr
+	| expr TK_OC_GE expr
+	| expr TK_OC_EQ expr
+	| expr TK_OC_NE expr
+	| expr TK_OC_AND expr
+	| expr TK_OC_OR expr
+	| '(' expr ')' 
+	;
+
+
 
 %%
 
-void yyerror (char const *s) {
-    printf("error\n");
+int yyerror (char const *s) {
+    printf("Erro sintatico na linha %d.\n", get_line_number());	//imprimir mensagem como feito em aula
+	return 1;
 }
