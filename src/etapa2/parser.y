@@ -4,7 +4,9 @@
 
 int yylex(void);
 void yyerror (char const *s);
+extern int get_line_number();
 %}
+%define parse.error detailed
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -149,5 +151,5 @@ expressao: TK_IDENTIFICADOR ;
 %%
 
 void yyerror (char const *s) {
-    printf("error\n");
+    printf("Erro sintatico na linha %d.\n%s\n", get_line_number(), s);
 }
