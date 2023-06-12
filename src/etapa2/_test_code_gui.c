@@ -1,10 +1,42 @@
 int exemplo;
 bool exemplo, _exemplo;
 
-fun () -> int a 
+main () -> int {
+    int a;
+    int a, b, c; 
+    int b;
+    int _a <= 1;
+    float d <= 10.1;
+    {};
+    if(a) {};
+    if(a) {
+        int e;
+    };
+    
+    {
+    };
 
-foo (int input) -> bool a
+    {
+        float w;
+    };
 
-foo (int input, bool _input) -> bool a
+    if(b) {};
+    else {
+        int f;
+    };
 
-//faa (int input, bool _input) -> bool output a
+    z = y;
+
+    while(a) {
+        int x <= 1;
+	float z, y <= 2.0, l;
+	z = y;
+	foo(z, y, x, 1, 2, p, 3, true, 0.3);
+	//z = foo(1, 2, 3)  // pode uma chamada ser uma expressao usada na atribuicao?
+    };
+
+    // testes de expressao
+
+    return a;
+
+};
