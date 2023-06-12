@@ -11,6 +11,8 @@ false | false
 3
 parametro_ / exem_plo
 
-funcao() % funcao(5, 8+1)
+//funcao() % funcao(5, 8+1)
+
+//funcao() % funcao(5, 8+1)
 
 

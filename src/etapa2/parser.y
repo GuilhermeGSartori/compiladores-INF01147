@@ -3,7 +3,7 @@
 	#include <stdio.h>
 
 	int yylex(void);
-	int yyerror (char const *s);
+	void yyerror (char const *s);
 	extern int get_line_number();
 %}
 
@@ -120,7 +120,6 @@ expr: TK_LIT_INT
 
 %%
 
-int yyerror (char const *s) {
+void yyerror (char const *s) {
     printf("Erro sintatico na linha %d.\n", get_line_number());	//imprimir mensagem como feito em aula
-	return 1;
 }
