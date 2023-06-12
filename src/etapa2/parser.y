@@ -67,15 +67,17 @@ param: tipo TK_IDENTIFICADOR ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
 
-corpo: cmd_block ';' ; /*tirar essa duvida com professor!!*/
+/*corpo: cmd_block ; /*tirar essa duvida com professor!!*/
 
 
-
+/*6 - O corpo da função é um bloco de comandos.*/
 /*7 - Um bloco de comandos é definido entre chaves, e consiste em uma sequência, possivelmente vazia, de comandos 
 simples cada um terminado por ponto-e-vírgula. Um bloco de comandos é considerado como um comando único simples, recursivamente, 
 e pode ser utilizado em qualquer construção que aceite um comando simples.*/
 
-cmd_block: '{' cmd_simples '}' | '{' '}' ; 
+/* retomar esse
+corpo: '{' cmd_simples ';' '}' ';' | '{' '}' ';' ;*/
+corpo: '{' cmd_simples '}' ';' | '{' '}' ';' ; 
 
 /*cmd_simples: cmd_block | cmd_line;
 cmd_line: cmd_line ';' | cmd_block | var_local | atrib | flow_ctrl | return | fun_call*/
@@ -85,9 +87,24 @@ cmd_line: cmd_line ';' | cmd_block | var_local | atrib | flow_ctrl | return | fu
 /*8 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
 operação de retorno, um bloco de comandos, e chamadas de função.*/
 
-cmd_simples: cmd_line | cmd_block ';'
-cmd_line: cmd_line ';' | var_local | atrib | flow_ctrl | return | fun_call
+/*cmd_simples: cmd_line ';' | cmd_block ';' ;*/
+/*cmd_simples: cmd_simples ';'  | corpo | var_local | atrib | flow_ctrl | return | fun_call ;*/
 
+/*retomar esse*/
+/*cmd_simples: cmd_simples ';' cmd_list | cmd_list ;
+/*cmd_list: corpo | var_local | atrib | flow_ctrl | return | fun_call ;
+cmd_list: internal_block | var_local | atrib | if else | while | return | fun_call ; */
+
+cmd_simples: cmd_simples cmd_list | cmd_list ;
+/*cmd_list: corpo | var_local | atrib | flow_ctrl | return | fun_call ;*/
+cmd_list: internal_block ';' | var_local ';' | atrib ';' | if ';' else | while ';' | return ';' | fun_call ';' ;
+
+
+
+
+/*cmd_list: internal_block | var_local | atrib | if_state | while | return | fun_call ;
+if_state: cmd_simples ';' if ';' else ;*/
+/* se nao tiver else, se tiver um atrib depois do if... atirb nao eh vazio...*/
 
 /*9 - Declaração de Variável Local: Consiste no tipo da variável seguido de uma lista composta de pelo menos um nome 
 de variável (identificador) separadas por vírgula. Os tipos podem ser aqueles descritos na seção sobre variáveis globais. 
@@ -103,7 +120,7 @@ init: TK_IDENTIFICADOR TK_OC_LE literais ;
 /*10 - Comando de Atribuição: O comando de atribuição consiste em um identificador seguido pelo caractere de igualdade seguido 
 por uma expressão*/
 
-atrib: TK_IDENTIFICADOR TK_OC_EQ expressao  | TK_IDENTIFICADOR TK_OC_EQ literais ;
+atrib: TK_IDENTIFICADOR '=' expressao ;
 
 
 
@@ -111,13 +128,13 @@ atrib: TK_IDENTIFICADOR TK_OC_EQ expressao  | TK_IDENTIFICADOR TK_OC_EQ literais
 por vírgula. Um argumento pode ser uma expressão.*/
 
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' ;
-lista_args: lista_args ',' | literais | expressao ;
-
+lista_args: lista_args ',' args | args ;
+args: literais | expressao
 
 
 /*12 - Comando de Retorno: Trata-se do token return seguido de uma expressão. */
 
-return: TK_PR_RETURN expressao
+return: TK_PR_RETURN expressao ;
 
 
 
@@ -126,11 +143,20 @@ fluxo. A condicional consiste no token if seguido de uma expressão entre parên
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
 
-flow_ctrl: condicional | iterativa ;
-condicional: if_head corpo | if_head cmd_block TK_PR_ELSE corpo ;
+/*flow_ctrl: condicional | iterativa ;
+condicional: if_head cmd_block | if_head cmd_block TK_PR_ELSE cmd_block ;*/
+
+/*if: if_head cmd_block else | if_head cmd_block ;*/
+if: if_head internal_block ; 
 if_head: TK_PR_IF '(' expressao ')' ;
-iterativa: TK_PR_WHILE '(' expressao ')' corpo ;
+
+else: TK_PR_ELSE internal_block ';' | ; /*o problema eh o ; pelo visto...*/
+
+/*else: ';' TK_PR_ELSE cmd_block ;/*por algum motivo, isso nao pode ser vazio... pq?*/
+
+while: TK_PR_WHILE '(' expressao ')' internal_block ;
 /* ponto virgula no bloco ou chamada de flow ctrl? ou ambos?
+
 
 
 /*14 - As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um nome de variável (identificador) 
@@ -145,6 +171,9 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ;
+/*retomar esse
+internal_block: '{' cmd_simples ';' '}' | '{' '}' ;*/
+internal_block: '{' cmd_simples '}' | '{' '}' ;
 /* temp */ 
 expressao: TK_IDENTIFICADOR ;
 
