@@ -6,6 +6,7 @@
 	void yyerror (char const *s);
 	extern int get_line_number();
 %}
+%define parse.error detailed
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -121,5 +122,5 @@ expr: TK_LIT_INT
 %%
 
 void yyerror (char const *s) {
-    printf("Erro sintatico na linha %d.\n", get_line_number());	//imprimir mensagem como feito em aula
+    printf("Erro sintatico na linha %d.\n%s\n", get_line_number(), s);
 }
