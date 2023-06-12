@@ -147,6 +147,33 @@ literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ;
 /* temp */ 
 expressao: TK_IDENTIFICADOR ;
 
+/*Expressões tem operandos e operadores. Os operandos podem ser(a)identificadores,(b)literaise (c)chamada de função. As expressões podem ser formadas recursivamente 
+pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
+
+expr: TK_LIT_INT 
+	| TK_LIT_FLOAT 
+	| TK_LIT_TRUE 
+	| TK_LIT_FALSE 
+	| TK_IDENTIFICADOR
+	| func_call
+	| '-' expr
+	| '!' expr
+	| expr '*' expr
+	| expr '/' expr
+	| expr '%' expr
+	| expr '+' expr
+	| expr '-' expr
+	| expr '<' expr
+	| expr '>' expr
+	| expr TK_OC_LE expr
+	| expr TK_OC_GE expr
+	| expr TK_OC_EQ expr
+	| expr TK_OC_NE expr
+	| expr TK_OC_AND expr
+	| expr TK_OC_OR expr
+	| '(' expr ')' 
+	;
+
 
 %%
 
