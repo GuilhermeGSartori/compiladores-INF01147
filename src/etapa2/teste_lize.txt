@@ -1,0 +1,59 @@
+//int var_, bool variavel;
+
+main(int var, bool variable, float exemplo) -> float
+{};
+
+int var_, variavel, exemplo;
+
+main() -> bool
+{};
+
+bool v_ar;
+
+main(int var, bool variable, float exemplo) -> int
+{
+	int rep <= 3, exemplo <= true;
+	float var, variable;
+	bool let <= 2, rest;
+	
+	variable = 1+2 > 5/6;
+	exemplo = main(1>2);
+	funcao(param, 1+true, false);
+	
+	return false;
+	return true;
+	return 1+1;
+	return 0;
+	return __;
+	return main(bigo, exemplo, (1*9));
+	return 9.8;
+	return 1+4 / 2 > 5*8;
+	
+	if(jota > eme)
+	{} ;
+	else{};
+	
+	while (true){};
+	
+};
+
+float variable;
+
+
+
+
+/*1 + 1
+3.3 + 4
+true & false
+true | true
+false | false
+1 & 4
+3 - 5
+- (9 * 0)
+!(true | false)
+3
+parametro_ / exem_plo
+
+//funcao() % funcao(5, 8+1)
+
+//funcao() % funcao(5, 8+1)*/
