@@ -32,7 +32,8 @@ main () -> int {
 	float z, y <= 2.0, l;
 	z = y;
 	foo(z, y, x, 1, 2, p, 3, true, 0.3);
-	//z = foo(1, 2, 3)  // pode uma chamada ser uma expressao usada na atribuicao?
+	z = foo(1, 2, 3);  // pode uma chamada ser uma expressao usada na atribuicao?
+        z = foo();
     };
 
     // testes de expressao

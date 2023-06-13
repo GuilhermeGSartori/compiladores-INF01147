@@ -6,7 +6,7 @@ int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
 %}
-%define parse.error detailed
+%define parse.error verbose
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -109,7 +109,7 @@ por vírgula. Um argumento pode ser uma expressão.*/
 
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' ;
 lista_args: lista_args ',' args | args ;
-args: expressao ;
+args: expressao |  ;
 
 
 
