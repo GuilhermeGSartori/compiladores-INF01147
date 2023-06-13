@@ -166,29 +166,14 @@ operadoresPrecedencia6: TK_OC_AND ;
 
 operadoresPrecedencia7: TK_OC_OR ;
 
-expr: TK_LIT_INT 
-	| TK_LIT_FLOAT 
-	| TK_LIT_TRUE 
-	| TK_LIT_FALSE 
-	| TK_IDENTIFICADOR
-	| func_call
-	| '-' expr
-	| '!' expr
-	| expr '*' expr
-	| expr '/' expr
-	| expr '%' expr
-	| expr '+' expr
-	| expr '-' expr
-	| expr '<' expr
-	| expr '>' expr
-	| expr TK_OC_LE expr
-	| expr TK_OC_GE expr
-	| expr TK_OC_EQ expr
-	| expr TK_OC_NE expr
-	| expr TK_OC_AND expr
-	| expr TK_OC_OR expr
-	| '(' expr ')' 
-	;
+expressao: expr1 | expressao operadoresPrecedencia7 expr1 ;
+expr1: expr2 | expr1 operadoresPrecedencia6 expr2 ;
+expr2: expr3 | expr2 operadoresPrecedencia5 expr3 ;
+expr3: expr4 | expr3 operadoresPrecedencia4 expr4 ; 
+expr4: expr5 | expr4 operadoresPrecedencia3 expr5 ;
+expr5: expr6 | expr5 operadoresPrecedencia2 expr6 ;
+expr6: expr7 | operadoresUnarios expr7 ;
+expr7: operandos | '(' expressao ')' ; 
 
 
 %%
