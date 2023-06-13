@@ -3,7 +3,7 @@ bool exemplo, _exemplo;
 
 main () -> int {
     int a;
-    int a, b, c; 
+    int a, b, c;
     int b;
     int _a <= 1;
     float d <= 10.1;
