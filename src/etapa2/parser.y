@@ -109,7 +109,8 @@ por vírgula. Um argumento pode ser uma expressão.*/
 
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' ;
 lista_args: lista_args ',' args | args ;
-args: literais | expressao
+args: expressao ;
+
 
 
 /*11 - Comando de Retorno: Trata-se do token return seguido de uma expressão. */
@@ -144,8 +145,9 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ;
-/* temp */ 
-expressao: TK_IDENTIFICADOR ;
+
+
+
 
 /*14 - Expressões tem operandos e operadores. Os operandos podem ser(a)identificadores,(b)literaise (c)chamada de função. As expressões podem ser formadas recursivamente 
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
