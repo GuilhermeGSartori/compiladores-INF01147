@@ -20,7 +20,7 @@ main () -> int {
         float w;
     };
 
-    if(b) {};
+    if(b) {}
     else {
         int f;
     };
@@ -40,4 +40,4 @@ main () -> int {
 
     return a;
 
-};
+}

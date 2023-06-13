@@ -74,15 +74,15 @@ param: tipo TK_IDENTIFICADOR ;
 simples cada um terminado por ponto-e-vírgula. Um bloco de comandos é considerado como um comando único simples, recursivamente, 
 e pode ser utilizado em qualquer construção que aceite um comando simples.*/
 
-corpo: '{' cmd_simples '}' ';' | '{' '}' ';' ; 
-internal_block: '{' cmd_simples '}' | '{' '}' ;
+corpo: cmd_block ;
+cmd_block: '{' cmd_simples '}' | '{' '}' ;
 
 
 /*7 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
 operação de retorno, um bloco de comandos, e chamadas de função.*/
 
 cmd_simples: cmd_simples cmd_list | cmd_list ;
-cmd_list: internal_block ';' | var_local ';' | atrib ';' | if ';' else | while ';' | return ';' | fun_call ';' ;
+cmd_list: cmd_block ';' | var_local ';' | atrib ';' | if else | while ';' | return ';' | fun_call ';' ;
 
 
 
@@ -108,8 +108,9 @@ atrib: TK_IDENTIFICADOR '=' expressao ;
 por vírgula. Um argumento pode ser uma expressão.*/
 
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' ;
-lista_args: lista_args ',' args | args ;
-args: expressao |  ;
+lista_args: um_ou_mais_args | ;
+um_ou_mais_args: um_ou_mais_args ',' args | args ;
+args: expressao ;
 
 
 
@@ -124,12 +125,12 @@ fluxo. A condicional consiste no token if seguido de uma expressão entre parên
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
 
-if: if_head internal_block ; 
+if: if_head cmd_block ; 
 if_head: TK_PR_IF '(' expressao ')' ;
 
-else: TK_PR_ELSE internal_block ';' | ; /*o problema eh o ; pelo visto...*/
+else: TK_PR_ELSE cmd_block ';' | ';' ; /*o problema eh o ; pelo visto...*/
 
-while: TK_PR_WHILE '(' expressao ')' internal_block ;
+while: TK_PR_WHILE '(' expressao ')' cmd_block ;
 
 
 
