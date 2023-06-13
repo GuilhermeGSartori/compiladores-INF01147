@@ -128,7 +128,7 @@ uma construção de repetição que é o token while seguida de uma expressão e
 if: if_head cmd_block ; 
 if_head: TK_PR_IF '(' expressao ')' ;
 
-else: TK_PR_ELSE cmd_block ';' | ';' ; /*o problema eh o ; pelo visto...*/
+else: TK_PR_ELSE cmd_block ';' | ';' ;
 
 while: TK_PR_WHILE '(' expressao ')' cmd_block ;
 
