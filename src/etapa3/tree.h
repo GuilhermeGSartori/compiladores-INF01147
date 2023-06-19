@@ -3,11 +3,12 @@
 struct Node {
     /* endereço de memória do nó */
     char* label;
-    Node** sons; /* 1 Node vai apontar para vários outros nodes (como se fosse um array)
+    Node* sons; /* 1 Node vai apontar para vários outros nodes (como se fosse um array)
 		        ou fazer uma lista de adjnacencia? */  	
 };
 
-int createNode();
+Node createTerinalNode();
+Node createMidNode();
 int removeNode();
 int updateTree();
 void printTree();

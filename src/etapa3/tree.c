@@ -1,26 +1,29 @@
-Node createTerminalNode() { /* arvore criada de baixo para cima, como? */
+Node createTerminalNode(terminal_tk, id_fun_name) { /* arvore criada de baixo para cima, como? */
     if(isEmpty(arvore)) {
         // create tree
     }
     else {
-        Node new_node = allocateTerminalNode(terminal);
+        Node new_node;
+	switch(terminal_tk) {
+	    case TK_IDENTIFICADOR:
+                new_node.addres = &new_node;
+		new_node.label = id_fun_name;
+		new_node.sons = NULL;
+		break;
+	    // ...
+	}
     }
 
     return new_node;
 } /* terminais cria nodo so e retorna ele */
 
 
-Node allocateTerminalNode(int terminal) {
-    Node allocated_node;
-    switch(terminal) {
-        //case TK_: allocated_node.mem = *allocated_node; alocated_node.label = TK_;
-	// ...
+Node createMidNode(Node* sons, sons_qtd) {
+    Nodo new_node;
+    new_node.sons = (Node*)malloc(sons_qtd * sizeof(Node));
+    for(int i = 0; i < sons_qtd; i++) {
+        new_node.sons[i] = sons[i];
     }
-
-    return allocated_node;
-}
-
-Node createMidNode(Node* sons) {
     // cria nodo
     // usa sons e o tamanho do sons para criar e alocar filhos para o Nodo
     // Tu aloca um elemento na lista de nodos (tipo vector) [x]
