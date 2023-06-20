@@ -29,12 +29,14 @@ return 		{ return TK_PR_RETURN; }
 "&"  		{ return TK_OC_AND; }
 "|"  		{ return TK_OC_OR; }
 "->" 		{ return TK_OC_MAP; }
+ 
+ /* Terminais (literal e identificador) que vão efetivamente para a árvore são "empacotados" em LexType */ 
+{digito}+ 	{ yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_INT; }
+{digito}*"."{digito}+ { yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_FLOAT; }
+"true" 		{ yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_TRUE; }
+"false" 	{ yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_FALSE; }
+({letra}|_)+ 	{ yylval.valor_lexico = createLexType(yylineno, identificador, strdup(yytext)); return TK_IDENTIFICADOR; }
 
-{digito}+ 	{ return TK_LIT_INT; }
-{digito}*"."{digito}+ { return TK_LIT_FLOAT; }
-"true" 		{ return TK_LIT_TRUE; }
-"false" 	{ return TK_LIT_FALSE; }
-({letra}|_)+ 	{ return TK_IDENTIFICADOR; }
 {carac_espec}   { return yytext[0]; }
 
 [ \t\r\n]       { }

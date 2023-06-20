@@ -22,12 +22,20 @@ extern int get_line_number();
 %token TK_OC_AND
 %token TK_OC_OR
 %token TK_OC_MAP
-%token TK_IDENTIFICADOR
-%token TK_LIT_INT
-%token TK_LIT_FLOAT
-%token TK_LIT_FALSE
-%token TK_LIT_TRUE
+%token<valor_lexico> TK_IDENTIFICADOR
+%token<valor_lexico> TK_LIT_INT
+%token<valor_lexico> TK_LIT_FLOAT
+%token<valor_lexico> TK_LIT_FALSE
+%token<valor_lexico> TK_LIT_TRUE
 %token TK_ERRO
+
+/* TK_IDENTIFICADOR já é atômico, literais não */
+%type<valor_lexico> literais
+
+%union {
+    LexType *valor_lexico;
+    Node* node;
+}
 
 %%
 
@@ -145,7 +153,14 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 /*Uso Geral*/
 
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
-literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ;
+
+/* Faz o token subir para ser convertido em nó com lex no operador*/
+literais: TK_LIT_INT { $$ = $1; } ;
+literais: TK_LIT_FLOAT { $$ = $1; } ;
+literais: TK_LIT_TRUE { $$ = $1; } ;
+literais: TK_LIT_FALSE { $$ = $1; } ;
+	
+/*literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ; */
 
 
 
@@ -153,7 +168,11 @@ literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ;
 /*14 - Expressões tem operandos e operadores. Os operandos podem ser(a)identificadores,(b)literaise (c)chamada de função. As expressões podem ser formadas recursivamente 
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
-operandos: literais | TK_IDENTIFICADOR | fun_call ;
+/* preciso programar o nodeWithLexType, mas o q é o parametro? char? acho que sim, yylval/LexType ou uma string? */
+/* operandos: literais | TK_IDENTIFICADOR | fun_call ; */ 
+operandos: TK_IDENTIFICADOR { $$ = nodeWithLexType($1); } ;
+operandos: literais { $$ = nodeWithLexType($1); } ;
+operandos: fun_call { $$ = NULL; } ;
 
 operadoresUnarios: '-' | '!' ;
 
@@ -176,7 +195,9 @@ expr3: expr4 | expr3 operadoresPrecedencia4 expr4 ;
 expr4: expr5 | expr4 operadoresPrecedencia3 expr5 ;
 expr5: expr6 | expr5 operadoresPrecedencia2 expr6 ;
 expr6: expr7 | operadoresUnarios expr7 ;
-expr7: operandos | '(' expressao ')' ; 
+expr7: operandos { $$ = $1; } ;
+expr7: '(' expressao ')' { $$ = $2; } ;
+/*expr7: operandos | '(' expressao ')' ; */
 
 
 %%
