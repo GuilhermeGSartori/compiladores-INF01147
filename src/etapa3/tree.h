@@ -1,25 +1,30 @@
-/* Árvore eh ponteiro para primeiro filho (main) */
+#include "lextype.h"
 
-enum tk_type{literal, identificador};
+/*enum data_type {
+    AST_LIT_INT,
+    AST_LIT_FLOAT,
+    AST_LIT_BOOL,
+    AST_IDENTIFICADOR,
+    AST_IF,
+    AST_ELSE,
+    AST_WHILE,
+    AST_RETURN,
+    AST_LESSEQ,
+    AST_GREATEQ,
+    AST_EQ,
+    AST_NOTEQ,
+    AST_AND,
+    AST_OR,
+    AST_MAP
+}*/
 
-struct LexType {
-    int line;
-    enum tk_type token;
-    char* value;
-}
+typedef struct astNode {
+    char* label;
+    LexType* lexical_value;
+    Node** sons; // Dynamic array(first *) made of pointers to other nodes (second *)
+} Node;
 
-struct Node {
-    /* endereço de memória do nó */
-//    char* label;
-//    Node* sons; /* 1 Node vai apontar para vários outros nodes (como se fosse um array)
-//		        ou fazer uma lista de adjnacencia? */  	
-    int dummy;
-};
-
-LexType createLexType(int line, enum tk_type token, char* value);
-
-// Node createTerinalNode();
-// Node createMidNode();
-// int removeNode();
-// int updateTree();
-// void printTree();
+Node* createTerminalNode(LexType* lex_value);
+Node* createNode(char* label);
+void addSon(Node* father, Node* son);
+void exportTree();

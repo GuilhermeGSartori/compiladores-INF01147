@@ -1,36 +1,55 @@
+#include <stdio.h>
 #include "tree.h"
 
-LexType* createLexType(int line, enum tk_type token, char* value) {
-    LexType* new_lex_type;
-    
-    new_lex_type = (LexType*)malloc(LexType);
-    
-    *new_lex_type.line = line;
-    *new_lex_type.token = token;
-    strcpy(*new_lex_type.value, value);
+/* De cara ja vai existir um nodo raiz criado, vamos criando nodos e colando eles, arvore existe,
+ * construimos uma de cima pra baixo e vamos colando */
 
-    return new_lex_type;
+Node* createTerminalNode(LexType* lex_value) { 
+    
+    Node* new_node;
+    new_node = (Node*) calloc(1, sizeof(Node));
+
+    strcpy(new_node->label, lex_value->value);
+    new_node->lexical_value = lex_value;
+    new_node->sons = NULL;
+    
+    return new_node;
 }
 
+Node* createNode(char* value) {
 
-//Node createTerminalNode(terminal_tk, id_fun_name) { /* arvore criada de baixo para cima, como? */
-/*    if(isEmpty(arvore)) {
-        // create tree
-    }
-    else {
-        Node new_node;
-	switch(terminal_tk) {
-	    case TK_IDENTIFICADOR:
-                new_node.addres = &new_node;
-		new_node.label = id_fun_name;
-		new_node.sons = NULL;
-		break;
-	    // ...
-	}
-    }
+    Node* new_node;
+    new_node = (Node*) calloc(1, sizeof(Node));
+
+    strcpy(new_node->label, value);
+    new_node->lexical_value = NULL;
+    new_node->sons = NULL;
 
     return new_node;
-}*/ /* terminais cria nodo so e retorna ele */
+}
+
+void addSon(Node* father, Node* son) {
+    
+    Node** temporary;
+    // pegar numero de filhos do pai
+    temporary = (Node*) calloc(n_sons+1, sizeof(Node));
+    for(int i = 0; i < n_sons+1 < i++) {
+	if(i < n_sons)
+            temporary[i] = father->sons[i];
+        else
+	    temporary[i] = son;
+    }
+
+    free(father->sons);
+
+    father->sons = (Node*) calloc(n_sons+1, sizeof(Node));
+    father->sons = temporary;
+
+}
+
+void exportTree() {
+    printf("Working on it...\n");
+}
 
 
 /*Node createMidNode(Node* sons, sons_qtd) {
