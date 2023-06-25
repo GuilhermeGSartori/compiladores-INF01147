@@ -21,6 +21,7 @@
 typedef struct astNode {
     char* label;
     LexType* lexical_value;
+    int n_sons = 0;
     Node** sons; // Dynamic array(first *) made of pointers to other nodes (second *)
 } Node;
 

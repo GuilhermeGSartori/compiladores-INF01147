@@ -30,21 +30,31 @@ Node* createNode(char* value) {
 
 void addSon(Node* father, Node* son) {
     
-    Node** temporary;
+    if(father->n_sons == 0) 
+        father->sons = calloc(1, sizeof(*Node));
+    else {
+        // Next line will free the father->sons space and realocate the information to temporary
+        // Node** temporary = realloc(father->sons, father->n_sons * sizeof(*Node));
+        // como free funciona?
+	father->sons = realloc(father->sons, (father->n_sons+1) * sizeof(*Node));
+    }
+    father->sons[n_sons+1] = son;
+	//Node** temporary;
     // pegar numero de filhos do pai
-    temporary = (Node*) calloc(n_sons+1, sizeof(Node));
-    for(int i = 0; i < n_sons+1 < i++) {
+    //temporary = calloc(n_sons+1, sizeof(*Node));
+    /*for(int i = 0; i < n_sons+1 < i++) {
 	if(i < n_sons)
             temporary[i] = father->sons[i];
         else
 	    temporary[i] = son;
     }
-
     free(father->sons);
 
-    father->sons = (Node*) calloc(n_sons+1, sizeof(Node));
-    father->sons = temporary;
-
+    father->sons = calloc(n_sons+1, sizeof(*Node));
+    for(int i = 0; i < n_sons+1 < i++) 
+        father->sons[i] = temporary[i];
+    free(temporary);*/
+    father->n_sons++;
 }
 
 void exportTree() {
