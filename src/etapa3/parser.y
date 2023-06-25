@@ -32,6 +32,21 @@ extern int get_line_number();
 /* TK_IDENTIFICADOR já é atômico, literais não */
 %type<valor_lexico> literais
 %type<node> operandos
+%type<node> operadoresUnarios
+%type<node> operadoresPrecedencia2
+%type<node> operadoresPrecedencia3
+%type<node> operadoresPrecedencia4
+%type<node> operadoresPrecedencia5
+%type<node> operadoresPrecedencia6
+%type<node> operadoresPrecedencia7
+%type<node> expr7
+%type<node> expr6
+%type<node> expr5
+%type<node> expr4
+%type<node> expr3
+%type<node> expr2
+%type<node> expr1
+%type<node> expressao
 
 %union {
     LexType *valor_lexico;
@@ -181,30 +196,61 @@ operandos: TK_IDENTIFICADOR { $$ = createTerminalNode($1); } ;
 operandos: literais { $$ = createTerminalNode($1); } ;
 operandos: fun_call { $$ = NULL; } ;
 
-operadoresUnarios: '-' | '!' ;
+/* operadoresUnarios: '-' | '!' ; */
+/* Operadores Unarios definidos como nodo*, logo, $$ deve receber um nodo* */
+operadoresUnarios: '-' { $$ = createNode("-"); } ;
+operadoresUnarios: '!' { $$ = createNode("!"); } ;
 
-operadoresPrecedencia2: '*' | '/' | '%' ;
+/* operadoresPrecedencia2: '*' | '/' | '%' ; */
+operadoresPrecedencia2: '*' { $$ = createNode("*"); } ;
+operadoresPrecedencia2: '/' { $$ = createNode("/"); } ;
+operadoresPrecedencia2: '%' { $$ = createNode('%'); } ;
 
-operadoresPrecedencia3: '+' | '-' ;
+/* operadoresPrecedencia3: '+' | '-' ; */
+operadoresPrecedencia3: '+' { $$ = createNode("+"); } ;
+operadoresPrecedencia3: '-' { $$ = createNode("-"); } ;
 
-operadoresPrecedencia4: '<' | '>' | TK_OC_LE | TK_OC_GE ;
+/*operadoresPrecedencia4: '<' | '>' | TK_OC_LE | TK_OC_GE ;*/
+operadoresPrecedencia4: '<' { $$ = createNode("<"); } ;
+operadoresPrecedencia4: '>' { $$ = createNode(">"); } ;
+operadoresPrecedencia4: TK_OC_LE { $$ = createNode("<="); } ;
+operadoresPrecedencia4: TK_OC_GE { $$ = createNode(">="); } ;
 
-operadoresPrecedencia5: TK_OC_EQ | TK_OC_NE ;
+/*operadoresPrecedencia5: TK_OC_EQ | TK_OC_NE ;*/
+operadoresPrecedencia5: TK_OC_EQ { $$ = createNode("=="); } ;
+operadoresPrecedencia5: TK_OC_NE { $$ = createNode("!="); } ;
 
-operadoresPrecedencia6: TK_OC_AND ;
+operadoresPrecedencia6: TK_OC_AND { $$ = createNode("&"); } ;
 
-operadoresPrecedencia7: TK_OC_OR ;
+operadoresPrecedencia7: TK_OC_OR { $$ = createNode("!"); };
 
-expressao: expr1 | expressao operadoresPrecedencia7 expr1 ;
+/*expressao: expr1 | expressao operadoresPrecedencia7 expr1 ;
 expr1: expr2 | expr1 operadoresPrecedencia6 expr2 ;
 expr2: expr3 | expr2 operadoresPrecedencia5 expr3 ;
 expr3: expr4 | expr3 operadoresPrecedencia4 expr4 ; 
 expr4: expr5 | expr4 operadoresPrecedencia3 expr5 ;
 expr5: expr6 | expr5 operadoresPrecedencia2 expr6 ;
 expr6: expr7 | operadoresUnarios expr7 ;
+expr7: operandos | '(' expressao ')' ; */
+
+expressao: expr1 { $$ = $1; } ;
+expressao: expressao operadoresPrecedencia7 expr1 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+expr1: expr2 { $$ = $1; } ;
+expr1: expr1 operadoresPrecedencia6 expr2 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+expr2: expr3 { $$ = $1; } ;
+expr2: expr2 operadoresPrecedencia5 expr3 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+expr3: expr4 { $$ = $1; } ;
+expr3: expr3 operadoresPrecedencia4 expr4 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+expr4: expr5 { $$ = $1; } ;
+expr4: expr4 operadoresPrecedencia3 expr5 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+expr5: expr6 { $$ = $1; } ;
+expr5: expr5 operadoresPecedencia2 expr6 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+/* Operador unario ($1) tem que ser um nodo* (é), $$ recebe $1, logo $$ (expr6) deve ser nodo* também,
+   mesma coisa com $2 (expr7) */
+expr6: expr7 { $$ = $1; } ;
+expr6: operadoresUnarios exprt7 { addSon($1, $2); $$ = $1; } ;
 expr7: operandos { $$ = $1; } ;
 expr7: '(' expressao ')' { $$ = $2; } ;
-/*expr7: operandos | '(' expressao ')' ; */
 
 
 %%
