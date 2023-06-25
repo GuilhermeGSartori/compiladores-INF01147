@@ -22,7 +22,7 @@ extern int get_line_number();
 %token TK_OC_AND
 %token TK_OC_OR
 %token TK_OC_MAP
-%token<valor_lexico> TK_IDENTIFICADOR
+%token<valor_lexico> TK_IDENTIFICADOR /*acho que isso ta errado... Nao deveria ser o tipo de yylval assume para esse TK? char*? */
 %token<valor_lexico> TK_LIT_INT
 %token<valor_lexico> TK_LIT_FLOAT
 %token<valor_lexico> TK_LIT_FALSE
@@ -31,6 +31,7 @@ extern int get_line_number();
 
 /* TK_IDENTIFICADOR já é atômico, literais não */
 %type<valor_lexico> literais
+%type<node> operandos
 
 %union {
     LexType *valor_lexico;
@@ -155,10 +156,12 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
 /* Faz o token subir para ser convertido em nó com lex no operador*/
-literais: TK_LIT_INT { $$ = $1; } ;
-literais: TK_LIT_FLOAT { $$ = $1; } ;
-literais: TK_LIT_TRUE { $$ = $1; } ;
-literais: TK_LIT_FALSE { $$ = $1; } ;
+/* $1, é do tipo valor_lexico pois "%token<valor_lexico> TK_LIT_INT" -> valor associado a token pelo yylval, literais 
+  ($$) é definido por "%type<valor_lexico> literais" */
+literais: TK_LIT_INT { $$ = createLexType(get_line_number(), LEX_LIT_INT, $1); } ;
+literais: TK_LIT_FLOAT { $$ = createLexType(get_line_number(), LEX_LIT_FLOAT, $1); } ;
+literais: TK_LIT_TRUE { $$ = createLexType(get_line_number(), LEX_LIT_BOOL, $1); } ;
+literais: TK_LIT_FALSE { $$ = createLexType(get_line_number(), LEX_LIT_BOOL, $1); } ;
 	
 /*literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ; */
 
@@ -169,9 +172,12 @@ literais: TK_LIT_FALSE { $$ = $1; } ;
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
 /* preciso programar o nodeWithLexType, mas o q é o parametro? char? acho que sim, yylval/LexType ou uma string? */
-/* operandos: literais | TK_IDENTIFICADOR | fun_call ; */ 
-operandos: TK_IDENTIFICADOR { $$ = nodeWithLexType($1); } ;
-operandos: literais { $$ = nodeWithLexType($1); } ;
+/* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
+/* $1 é valor associado ao TK_IDENTIFICADOR */ 
+operandos: TK_IDENTIFICADOR { $$ = createTerminalNode(createLexType(get_line_number(), LEX_ID, $1)); } ;
+/* $1 é valor associado ao literais, que é um dado do tipo valor_lexico que foi criado anteriormente */
+/* E createTerminalNode recebe um LexType */
+operandos: literais { $$ = createTerminalNode($1); } ;
 operandos: fun_call { $$ = NULL; } ;
 
 operadoresUnarios: '-' | '!' ;

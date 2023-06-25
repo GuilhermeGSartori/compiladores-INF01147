@@ -2,7 +2,7 @@ enum lex_type {
     LEX_LIT_INT, 
     LEX_LIT_FLOAT, 
     LEX_LIT_BOOL, 
-    LEX_IDENTIFICADOR
+    LEX_ID
 };
 
 typedef struct LexType {
