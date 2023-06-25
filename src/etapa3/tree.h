@@ -5,7 +5,7 @@ typedef struct astNode {
     char label[20];
     LexType* lexical_value;
     int n_sons;
-    struct Node** sons; // Dynamic array(first *) made of pointers to other nodes (second *)
+    struct astNode** sons; // Dynamic array(first *) made of pointers to other nodes (second *)
 } Node;
 
 Node* createTerminalNode(LexType* lex_value);

@@ -34,9 +34,9 @@ Node* createNode(char* value) {
 
 void addSon(Node* father, Node* son) {
  
-    printf("Num of kids: %d\n", father->n_sons);	
+    printf("Num of kids: %d\n", father->n_sons);
     if(father->n_sons == 0) 
-        father->sons = (Node*) calloc(1, sizeof(Node*)); // isso ver, dando warning
+        father->sons = malloc(sizeof(struct astNode)); // isso ver, dando warning
     else 
 	father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(Node*));
 
