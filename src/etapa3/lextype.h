@@ -7,7 +7,6 @@ enum lex_type {
 
 typedef struct LexType {
     int line;
-    //enum lex_type type;
     enum lex_type type;
     char* value;
 } LexType;
