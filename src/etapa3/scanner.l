@@ -1,6 +1,7 @@
 %{
   // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
   #include "parser.tab.h"
+  #include "tree.h"
 %}
 
 %option noyywrap
@@ -35,7 +36,7 @@ return 		{ return TK_PR_RETURN; }
 {digito}*"."{digito}+ { yylval.valor_lexico = createLexType(yylineno, LEX_LIT_FLOAT, strdup(yytext)); return TK_LIT_FLOAT; }
 "true" 		{ yylval.valor_lexico = createLexType(yylineno, LEX_LIT_BOOL, strdup(yytext)); return TK_LIT_TRUE; }
 "false" 	{ yylval.valor_lexico = createLexType(yylineno, LEX_LIT_BOOL, strdup(yytext)); return TK_LIT_FALSE; }
-({letra}|_)+ 	{ yylval.valor_lexico = createLexType(yylineno, LED_ID, strdup(yytext)); return TK_IDENTIFICADOR; }
+({letra}|_)+ 	{ yylval.valor_lexico = createLexType(yylineno, LEX_ID, strdup(yytext)); return TK_IDENTIFICADOR; }
 
 {carac_espec}   { return yytext[0]; }
 

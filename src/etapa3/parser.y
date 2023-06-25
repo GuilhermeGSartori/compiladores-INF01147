@@ -2,6 +2,7 @@
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
 // To Do: Testar estruturas, parser.y, exportar, gerar arvore
 #include <stdio.h>
+#include "tree.h"
 
 int yylex(void);
 void yyerror (char const *s);
@@ -52,8 +53,8 @@ extern int get_line_number();
 %type<node> return
 
 %union {
-    LexType *valor_lexico;
-    Node* node;
+    struct LexType* valor_lexico;
+    struct Node* node;
 }
 
 %%
@@ -127,7 +128,7 @@ init: TK_IDENTIFICADOR TK_OC_LE literais ;
 /*9 - Comando de Atribuição: O comando de atribuição consiste em um identificador seguido pelo caractere de igualdade seguido 
 por uma expressão*/
 
-atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode('='); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
+atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
 
 
 
@@ -231,9 +232,9 @@ expr3: expr3 operadoresPrecedencia4 expr4 {addSon($2, $1); addSon($2, $3); $$ = 
 expr4: expr5 { $$ = $1; } ;
 expr4: expr4 operadoresPrecedencia3 expr5 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
 expr5: expr6 { $$ = $1; } ;
-expr5: expr5 operadoresPecedencia2 expr6 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
+expr5: expr5 operadoresPrecedencia2 expr6 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
 expr6: expr7 { $$ = $1; } ;
-expr6: operadoresUnarios exprt7 { addSon($1, $2); $$ = $1; } ;
+expr6: operadoresUnarios expr7 { addSon($1, $2); $$ = $1; } ;
 expr7: operandos { $$ = $1; } ;
 expr7: '(' expressao ')' { $$ = $2; } ;
 
