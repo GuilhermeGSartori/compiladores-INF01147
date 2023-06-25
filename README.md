@@ -8,4 +8,4 @@ Phase 1) It was developed a "token finder" using the FLEX tool to implement rege
 
 Phase 2) After parsing (lexical validation) it necessary to verify if the sintax is correct, if the tokens are set in expected sentences of the language, this was achieved by using the bison tool in this phase.
 
-Phase 3) After checking if the input code sintax is according with the defined grammatic, it is required to create a AST to store the hierarchy of the statements in the code.
+Phase 3) After checking if the input code syntax is in accordance with the defined grammatic, it is required to create a AST to store the hierarchy of the statements in the code.
