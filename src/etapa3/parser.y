@@ -1,5 +1,6 @@
 %{
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+// To Do: Testar estruturas, parser.y, exportar, gerar arvore
 #include <stdio.h>
 
 int yylex(void);
@@ -47,6 +48,8 @@ extern int get_line_number();
 %type<node> expr2
 %type<node> expr1
 %type<node> expressao
+%type<node> atrib
+%type<node> return
 
 %union {
     LexType *valor_lexico;
@@ -124,7 +127,7 @@ init: TK_IDENTIFICADOR TK_OC_LE literais ;
 /*9 - Comando de Atribuição: O comando de atribuição consiste em um identificador seguido pelo caractere de igualdade seguido 
 por uma expressão*/
 
-atrib: TK_IDENTIFICADOR '=' expressao ;
+atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode('='); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
 
 
 
@@ -140,7 +143,7 @@ args: expressao ;
 
 /*11 - Comando de Retorno: Trata-se do token return seguido de uma expressão. */
 
-return: TK_PR_RETURN expressao ;
+return: TK_PR_RETURN expressao {$$ = createNode("return"); addSon($$, $2); } ;
 
 
 
@@ -171,9 +174,6 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
 /* Faz o token subir para ser convertido em nó com lex no operador*/
-/* $1, é do tipo valor_lexico pois "%token<valor_lexico> TK_LIT_INT" -> valor associado a token pelo yylval, que
-  é definido como valor_lexico em scanner.l, ($$) é definido por "%type<valor_lexico> literais", ou seja, só estamos
-  passando adiante o valor_lexico */
 literais: TK_LIT_INT { $$ = $1; } ;
 literais: TK_LIT_FLOAT { $$ = $1; } ;
 literais: TK_LIT_TRUE { $$ = $1; } ;
@@ -187,17 +187,12 @@ literais: TK_LIT_FALSE { $$ = $1; } ;
 /*14 - Expressões tem operandos e operadores. Os operandos podem ser(a)identificadores,(b)literaise (c)chamada de função. As expressões podem ser formadas recursivamente 
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
-/* preciso programar o nodeWithLexType, mas o q é o parametro? char? acho que sim, yylval/LexType ou uma string? */
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
-/* $1 é valor associado ao TK_IDENTIFICADOR, que é valor_lexico, pois é definido no scanner.l */ 
 operandos: TK_IDENTIFICADOR { $$ = createTerminalNode($1); } ;
-/* $1 é valor associado ao literais, que é um dado do tipo valor_lexico que foi criado anteriormente */
-/* E createTerminalNode recebe um LexType */
 operandos: literais { $$ = createTerminalNode($1); } ;
 operandos: fun_call { $$ = NULL; } ;
 
 /* operadoresUnarios: '-' | '!' ; */
-/* Operadores Unarios definidos como nodo*, logo, $$ deve receber um nodo* */
 operadoresUnarios: '-' { $$ = createNode("-"); } ;
 operadoresUnarios: '!' { $$ = createNode("!"); } ;
 
@@ -224,14 +219,6 @@ operadoresPrecedencia6: TK_OC_AND { $$ = createNode("&"); } ;
 
 operadoresPrecedencia7: TK_OC_OR { $$ = createNode("!"); };
 
-/*expressao: expr1 | expressao operadoresPrecedencia7 expr1 ;
-expr1: expr2 | expr1 operadoresPrecedencia6 expr2 ;
-expr2: expr3 | expr2 operadoresPrecedencia5 expr3 ;
-expr3: expr4 | expr3 operadoresPrecedencia4 expr4 ; 
-expr4: expr5 | expr4 operadoresPrecedencia3 expr5 ;
-expr5: expr6 | expr5 operadoresPrecedencia2 expr6 ;
-expr6: expr7 | operadoresUnarios expr7 ;
-expr7: operandos | '(' expressao ')' ; */
 
 expressao: expr1 { $$ = $1; } ;
 expressao: expressao operadoresPrecedencia7 expr1 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
@@ -245,8 +232,6 @@ expr4: expr5 { $$ = $1; } ;
 expr4: expr4 operadoresPrecedencia3 expr5 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
 expr5: expr6 { $$ = $1; } ;
 expr5: expr5 operadoresPecedencia2 expr6 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-/* Operador unario ($1) tem que ser um nodo* (é), $$ recebe $1, logo $$ (expr6) deve ser nodo* também,
-   mesma coisa com $2 (expr7) */
 expr6: expr7 { $$ = $1; } ;
 expr6: operadoresUnarios exprt7 { addSon($1, $2); $$ = $1; } ;
 expr7: operandos { $$ = $1; } ;
