@@ -156,12 +156,13 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
 /* Faz o token subir para ser convertido em nó com lex no operador*/
-/* $1, é do tipo valor_lexico pois "%token<valor_lexico> TK_LIT_INT" -> valor associado a token pelo yylval, literais 
-  ($$) é definido por "%type<valor_lexico> literais" */
-literais: TK_LIT_INT { $$ = createLexType(get_line_number(), LEX_LIT_INT, $1); } ;
-literais: TK_LIT_FLOAT { $$ = createLexType(get_line_number(), LEX_LIT_FLOAT, $1); } ;
-literais: TK_LIT_TRUE { $$ = createLexType(get_line_number(), LEX_LIT_BOOL, $1); } ;
-literais: TK_LIT_FALSE { $$ = createLexType(get_line_number(), LEX_LIT_BOOL, $1); } ;
+/* $1, é do tipo valor_lexico pois "%token<valor_lexico> TK_LIT_INT" -> valor associado a token pelo yylval, que
+  é definido como valor_lexico em scanner.l, ($$) é definido por "%type<valor_lexico> literais", ou seja, só estamos
+  passando adiante o valor_lexico */
+literais: TK_LIT_INT { $$ = $1; } ;
+literais: TK_LIT_FLOAT { $$ = $1; } ;
+literais: TK_LIT_TRUE { $$ = $1; } ;
+literais: TK_LIT_FALSE { $$ = $1; } ;
 	
 /*literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ; */
 
@@ -173,8 +174,8 @@ pelo emprego de operadores. Elas também permitem o uso de parênteses para for�
 
 /* preciso programar o nodeWithLexType, mas o q é o parametro? char? acho que sim, yylval/LexType ou uma string? */
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
-/* $1 é valor associado ao TK_IDENTIFICADOR */ 
-operandos: TK_IDENTIFICADOR { $$ = createTerminalNode(createLexType(get_line_number(), LEX_ID, $1)); } ;
+/* $1 é valor associado ao TK_IDENTIFICADOR, que é valor_lexico, pois é definido no scanner.l */ 
+operandos: TK_IDENTIFICADOR { $$ = createTerminalNode($1); } ;
 /* $1 é valor associado ao literais, que é um dado do tipo valor_lexico que foi criado anteriormente */
 /* E createTerminalNode recebe um LexType */
 operandos: literais { $$ = createTerminalNode($1); } ;

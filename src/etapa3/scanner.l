@@ -31,11 +31,11 @@ return 		{ return TK_PR_RETURN; }
 "->" 		{ return TK_OC_MAP; }
  
  /* Terminais (literal e identificador) que vão efetivamente para a árvore são "empacotados" em LexType */ 
-{digito}+ 	{ yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_INT; }
-{digito}*"."{digito}+ { yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_FLOAT; }
-"true" 		{ yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_TRUE; }
-"false" 	{ yylval.valor_lexico = createLexType(yylineno, literal, strdup(yytext)); return TK_LIT_FALSE; }
-({letra}|_)+ 	{ yylval.valor_lexico = createLexType(yylineno, identificador, strdup(yytext)); return TK_IDENTIFICADOR; }
+{digito}+ 	{ yylval.valor_lexico = createLexType(yylineno, LEX_LIT_INT, strdup(yytext)); return TK_LIT_INT; }
+{digito}*"."{digito}+ { yylval.valor_lexico = createLexType(yylineno, LEX_LIT_FLOAT, strdup(yytext)); return TK_LIT_FLOAT; }
+"true" 		{ yylval.valor_lexico = createLexType(yylineno, LEX_LIT_BOOL, strdup(yytext)); return TK_LIT_TRUE; }
+"false" 	{ yylval.valor_lexico = createLexType(yylineno, LEX_LIT_BOOL, strdup(yytext)); return TK_LIT_FALSE; }
+({letra}|_)+ 	{ yylval.valor_lexico = createLexType(yylineno, LED_ID, strdup(yytext)); return TK_IDENTIFICADOR; }
 
 {carac_espec}   { return yytext[0]; }
 
