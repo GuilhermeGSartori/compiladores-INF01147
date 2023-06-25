@@ -38,7 +38,7 @@ void addSon(Node* father, Node* son) {
     if(father->n_sons == 0) 
         father->sons = malloc(sizeof(struct astNode)); // isso ver, dando warning
     else 
-	father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(Node*));
+	father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode));
 
     father->sons[(father->n_sons)+1] = son; // isso ver, dando warning
 
