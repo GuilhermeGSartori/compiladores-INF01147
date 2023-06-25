@@ -12,4 +12,4 @@ Node* createTerminalNode(LexType* lex_value);
 Node* createNode(char* label);
 void addSon(Node* father, Node* son);
 void exportTree();
-void printKids(Node* father);
+void printKids(Node* father, int height);

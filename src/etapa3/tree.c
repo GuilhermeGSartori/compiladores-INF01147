@@ -40,7 +40,8 @@ void addSon(Node* father, Node* son) {
     else 
 	father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode));
 
-    father->sons[(father->n_sons)+1] = son; // isso ver, dando warning
+    father->sons[father->n_sons] = son; // isso ver, dando warning
+    printf("Added son: %s\n", father->sons[father->n_sons]->label);
 
     father->n_sons++;
 }
@@ -49,6 +50,16 @@ void exportTree() {
     printf("Working on it...\n");
 }
 
-void printKids(Node* father) {
-    printf("Working on it... Recursive\n");
+void printKids(Node* father, int height) {
+ 
+    int n_kids = father->n_sons;
+    int i = 0;
+    printf("height: %d\n", height);
+    height++;
+    printf("current node: %s\n\n", father->label);
+    while(n_kids > 0) {
+        printKids(father->sons[i], height/*height++*/);
+	i++;
+	n_kids--;
+    }
 }
