@@ -119,9 +119,15 @@ de variável (identificador) separadas por vírgula. Os tipos podem ser aqueles 
 Uma variável local pode ser opcionalmente inicializada caso sua declaração seja seguida do operador composto TK_OC_LE e de um 
 literal.*/
 
-var_local: tipo lista_local_var ;
-lista_local_var: lista_local_var ',' TK_IDENTIFICADOR | lista_local_var ',' init | TK_IDENTIFICADOR | init ;
-init: TK_IDENTIFICADOR TK_OC_LE literais ;
+var_local: tipo lista_local_var			{ $$ = createNode("decl_var_local"); addSon($$, $1); addSon($$, $2); } ;
+
+lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); } 
+			   | lista_local_var ',' init 				{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, $3); }
+			   | TK_IDENTIFICADOR 						{ $$ = createTerminalNode($1); }
+			   | init 									{ $$ = $1; }
+			   ;
+
+init: TK_IDENTIFICADOR TK_OC_LE literais ;				{ $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, $3); }
 
 
 
@@ -135,16 +141,23 @@ atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createT
 /*10 - Chamada de Função: Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados 
 por vírgula. Um argumento pode ser uma expressão.*/
 
-fun_call: TK_IDENTIFICADOR '(' lista_args ')' ;
-lista_args: um_ou_mais_args | ;
-um_ou_mais_args: um_ou_mais_args ',' args | args ;
-args: expressao ;
+fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ $$ = createNode("fun_call"); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
+
+lista_args: um_ou_mais_args 	{ $$ = createNode("lista_args"); addSon($$, $1); }
+		  | 					{ $$ = 0; }
+		  ;
+
+um_ou_mais_args: um_ou_mais_args ',' args 	{ $$ = createNode("lista_args"); addSon($$, $1); addSon($$, $3); }
+			   | args 						{ $$ = $1; }
+			   ;
+
+args: expressao 				{ $$ = $1; } ;
 
 
 
 /*11 - Comando de Retorno: Trata-se do token return seguido de uma expressão. */
 
-return: TK_PR_RETURN expressao {$$ = createNode("return"); addSon($$, $2); } ;
+return: TK_PR_RETURN expressao  	{ $$ = createNode("return"); addSon($$, $2); } ;
 
 
 
@@ -158,27 +171,32 @@ if_head: TK_PR_IF '(' expressao ')' ;
 
 else: TK_PR_ELSE cmd_block ';' | ';' ;
 
-while: TK_PR_WHILE '(' expressao ')' cmd_block ;
+while: TK_PR_WHILE '(' expressao ')' cmd_block ; 
 
 
 
 /*13 - As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um nome de variável (identificador) 
 separadas por vírgula. O tipo pode ser int, float e bool. As declarações de variáveis são terminadas por ponto-e-vírgula.*/
 
-declaracao_variavel_global: tipo lista_var ';' ;
-lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
+declaracao_variavel_global: tipo lista_var ';'	{ $$ = createNode("decl_var_global"); addSon($$, $1); addSon($$, $2); } ;
 
+lista_var: lista_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); }
+		 | TK_IDENTIFICADOR 				{ $$ = createTerminalNode($1); }
+		 ;
 
 
 /*Uso Geral*/
 
-tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
+tipo: TK_PR_INT 	{ $$ = createNode("tipo_int"); }
+	| TK_PR_FLOAT 	{ $$ = createNode("tipo_float"); }
+	| TK_PR_BOOL 	{ $$ = createNode("tipo_bool"); }
+	;
 
 /* Faz o token subir para ser convertido em nó com lex no operador*/
-literais: TK_LIT_INT { $$ = $1; } ;
-literais: TK_LIT_FLOAT { $$ = $1; } ;
-literais: TK_LIT_TRUE { $$ = $1; } ;
-literais: TK_LIT_FALSE { $$ = $1; } ;
+literais: TK_LIT_INT 		{ $$ = $1; } ;
+literais: TK_LIT_FLOAT 		{ $$ = $1; } ;
+literais: TK_LIT_TRUE 		{ $$ = $1; } ;
+literais: TK_LIT_FALSE 		{ $$ = $1; } ;
 	
 /*literais: TK_LIT_INT | TK_LIT_FLOAT | TK_LIT_TRUE | TK_LIT_FALSE ; */
 
@@ -189,54 +207,54 @@ literais: TK_LIT_FALSE { $$ = $1; } ;
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
-operandos: TK_IDENTIFICADOR { $$ = createTerminalNode($1); } ;
-operandos: literais { $$ = createTerminalNode($1); } ;
-operandos: fun_call { $$ = NULL; } ;
+operandos: TK_IDENTIFICADOR 		{ $$ = createTerminalNode($1); } ;
+operandos: literais 				{ $$ = createTerminalNode($1); } ;
+operandos: fun_call  				{ $$ = NULL; } ;
 
 /* operadoresUnarios: '-' | '!' ; */
-operadoresUnarios: '-' { $$ = createNode("-"); } ;
-operadoresUnarios: '!' { $$ = createNode("!"); } ;
+operadoresUnarios: '-'  			{ $$ = createNode("-"); } ;
+operadoresUnarios: '!' 				{ $$ = createNode("!"); } ;
 
 /* operadoresPrecedencia2: '*' | '/' | '%' ; */
-operadoresPrecedencia2: '*' { $$ = createNode("*"); } ;
-operadoresPrecedencia2: '/' { $$ = createNode("/"); } ;
-operadoresPrecedencia2: '%' { $$ = createNode('%'); } ;
+operadoresPrecedencia2: '*' 		{ $$ = createNode("*"); } ;
+operadoresPrecedencia2: '/' 		{ $$ = createNode("/"); } ;
+operadoresPrecedencia2: '%' 		{ $$ = createNode('%'); } ;
 
 /* operadoresPrecedencia3: '+' | '-' ; */
-operadoresPrecedencia3: '+' { $$ = createNode("+"); } ;
-operadoresPrecedencia3: '-' { $$ = createNode("-"); } ;
+operadoresPrecedencia3: '+'  		{ $$ = createNode("+"); } ;
+operadoresPrecedencia3: '-'  		{ $$ = createNode("-"); } ;
 
 /*operadoresPrecedencia4: '<' | '>' | TK_OC_LE | TK_OC_GE ;*/
-operadoresPrecedencia4: '<' { $$ = createNode("<"); } ;
-operadoresPrecedencia4: '>' { $$ = createNode(">"); } ;
-operadoresPrecedencia4: TK_OC_LE { $$ = createNode("<="); } ;
-operadoresPrecedencia4: TK_OC_GE { $$ = createNode(">="); } ;
+operadoresPrecedencia4: '<'  		{ $$ = createNode("<"); } ;
+operadoresPrecedencia4: '>'  		{ $$ = createNode(">"); } ;
+operadoresPrecedencia4: TK_OC_LE 	{ $$ = createNode("<="); }; 
+operadoresPrecedencia4: TK_OC_GE 	{ $$ = createNode(">="); } ;
 
 /*operadoresPrecedencia5: TK_OC_EQ | TK_OC_NE ;*/
-operadoresPrecedencia5: TK_OC_EQ { $$ = createNode("=="); } ;
-operadoresPrecedencia5: TK_OC_NE { $$ = createNode("!="); } ;
+operadoresPrecedencia5: TK_OC_EQ 	{ $$ = createNode("=="); } ;
+operadoresPrecedencia5: TK_OC_NE 	{ $$ = createNode("!="); } ;
 
-operadoresPrecedencia6: TK_OC_AND { $$ = createNode("&"); } ;
+operadoresPrecedencia6: TK_OC_AND 	{ $$ = createNode("&"); } ;
 
-operadoresPrecedencia7: TK_OC_OR { $$ = createNode("!"); };
+operadoresPrecedencia7: TK_OC_OR 	{ $$ = createNode("|"); } ;
 
 
-expressao: expr1 { $$ = $1; } ;
-expressao: expressao operadoresPrecedencia7 expr1 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-expr1: expr2 { $$ = $1; } ;
-expr1: expr1 operadoresPrecedencia6 expr2 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-expr2: expr3 { $$ = $1; } ;
-expr2: expr2 operadoresPrecedencia5 expr3 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-expr3: expr4 { $$ = $1; } ;
-expr3: expr3 operadoresPrecedencia4 expr4 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-expr4: expr5 { $$ = $1; } ;
-expr4: expr4 operadoresPrecedencia3 expr5 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-expr5: expr6 { $$ = $1; } ;
-expr5: expr5 operadoresPrecedencia2 expr6 {addSon($2, $1); addSon($2, $3); $$ = $2;} ;
-expr6: expr7 { $$ = $1; } ;
-expr6: operadoresUnarios expr7 { addSon($1, $2); $$ = $1; } ;
-expr7: operandos { $$ = $1; } ;
-expr7: '(' expressao ')' { $$ = $2; } ;
+expressao: expr1 									{ $$ = $1; } ;
+expressao: expressao operadoresPrecedencia7 expr1 	{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr1: expr2 										{ $$ = $1; } ;
+expr1: expr1 operadoresPrecedencia6 expr2 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr2: expr3 										{ $$ = $1; } ;
+expr2: expr2 operadoresPrecedencia5 expr3 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr3: expr4 										{ $$ = $1; } ;
+expr3: expr3 operadoresPrecedencia4 expr4 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr4: expr5 										{ $$ = $1; } ;
+expr4: expr4 operadoresPrecedencia3 expr5 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr5: expr6 										{ $$ = $1; } ;
+expr5: expr5 operadoresPrecedencia2 expr6 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr6: expr7 										{ $$ = $1; } ;
+expr6: operadoresUnarios expr7 						{ addSon($1, $2); $$ = $1; } ;
+expr7: operandos 									{ $$ = $1; } ;
+expr7: '(' expressao ')'  							{ $$ = $2; } ;
 
 
 %%
