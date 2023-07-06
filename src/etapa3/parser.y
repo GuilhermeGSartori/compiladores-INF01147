@@ -109,8 +109,17 @@ cmd_block: '{' cmd_simples '}' | '{' '}' ;
 /*7 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
 operação de retorno, um bloco de comandos, e chamadas de função.*/
 
-cmd_simples: cmd_simples cmd_list | cmd_list ;
-cmd_list: cmd_block ';' | var_local ';' | atrib ';' | if else | while ';' | return ';' | fun_call ';' ;
+cmd_simples: cmd_simples cmd_list  { $$ = createNode("lista_cmd_simples"); addSon($$, $1); addSon($$, $2); } ; /*lista vai pra arvore? sera q filho do cmd nao eh outro cmd? mas dai qual seria o comando em si? outro filho? tipo, o comando seria uma atribuicao, ele teria os filhos de atribuicao + outro comando?*/
+/* acho que o role seria tipo pegar esse primeiro cmd_siples e adicionar nele o filho cmd list, isso eh, addSon($1, $2)  e $$ = $1 */
+cmd_simples: cmd_list              { $$ = $1; } ;
+
+cmd_list: cmd_block ';'    { $$ = $1; } ;
+cmd_list: var_local ';'    { $$ = $1; } ; 
+cmd_list: atrib ';'        { $$ = $1; } ; 
+cmd_list: if               { $$ = $1; } ;
+cmd_list: while ';'        { $$ = $1; } ; 
+cmd_list: return ';'       { $$ = $1; } ; 
+cmd_list: fun_call ';'     { $$ = $1; } ;
 
 
 
@@ -121,13 +130,13 @@ literal.*/
 
 var_local: tipo lista_local_var			{ $$ = createNode("decl_var_local"); addSon($$, $1); addSon($$, $2); } ;
 
-lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); } 
-			   | lista_local_var ',' init 				{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, $3); }
-			   | TK_IDENTIFICADOR 						{ $$ = createTerminalNode($1); }
-			   | init 									{ $$ = $1; }
+lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); } // acho q lista nao se faz assim.. nao tem nodo lista
+			   | lista_local_var ',' init   { $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, $3); }
+			   | TK_IDENTIFICADOR 	        { $$ = createTerminalNode($1); }
+			   | init 			{ $$ = $1; }
 			   ;
 
-init: TK_IDENTIFICADOR TK_OC_LE literais ;				{ $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, $3); }
+init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, $3); } ; 
 
 
 
@@ -141,14 +150,17 @@ atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createT
 /*10 - Chamada de Função: Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados 
 por vírgula. Um argumento pode ser uma expressão.*/
 
+
+/* fun call nao eh um nodo... o nodo pai que representa fun_call via ter o label q eh o identificador, o filho eh a lista de args */
+
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ $$ = createNode("fun_call"); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
 
 lista_args: um_ou_mais_args 	{ $$ = createNode("lista_args"); addSon($$, $1); }
-		  | 					{ $$ = 0; }
+		  | 		{ $$ = 0; }
 		  ;
 
 um_ou_mais_args: um_ou_mais_args ',' args 	{ $$ = createNode("lista_args"); addSon($$, $1); addSon($$, $3); }
-			   | args 						{ $$ = $1; }
+			   | args 		{ $$ = $1; }
 			   ;
 
 args: expressao 				{ $$ = $1; } ;
@@ -166,10 +178,10 @@ fluxo. A condicional consiste no token if seguido de uma expressão entre parên
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
 
-if: if_head cmd_block ; 
-if_head: TK_PR_IF '(' expressao ')' ;
+if: TK_PR_IF '(' expressao ')' cmd_block else { $$ = createNode("if_else"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; /*else can be null*/
 
-else: TK_PR_ELSE cmd_block ';' | ';' ;
+else: TK_PR_ELSE cmd_block ';'         { $$ = $2;}
+        | ';'                          { $$ = 0; } ;
 
 while: TK_PR_WHILE '(' expressao ')' cmd_block ; 
 
@@ -239,22 +251,22 @@ operadoresPrecedencia6: TK_OC_AND 	{ $$ = createNode("&"); } ;
 operadoresPrecedencia7: TK_OC_OR 	{ $$ = createNode("|"); } ;
 
 
-expressao: expr1 									{ $$ = $1; } ;
-expressao: expressao operadoresPrecedencia7 expr1 	{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr1: expr2 										{ $$ = $1; } ;
-expr1: expr1 operadoresPrecedencia6 expr2 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr2: expr3 										{ $$ = $1; } ;
-expr2: expr2 operadoresPrecedencia5 expr3 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr3: expr4 										{ $$ = $1; } ;
-expr3: expr3 operadoresPrecedencia4 expr4 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr4: expr5 										{ $$ = $1; } ;
-expr4: expr4 operadoresPrecedencia3 expr5 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr5: expr6 										{ $$ = $1; } ;
-expr5: expr5 operadoresPrecedencia2 expr6 			{ addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr6: expr7 										{ $$ = $1; } ;
-expr6: operadoresUnarios expr7 						{ addSon($1, $2); $$ = $1; } ;
-expr7: operandos 									{ $$ = $1; } ;
-expr7: '(' expressao ')'  							{ $$ = $2; } ;
+expressao: expr1                                        { $$ = $1; } ;
+expressao: expressao operadoresPrecedencia7 expr1       { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr1: expr2                                            { $$ = $1; } ;
+expr1: expr1 operadoresPrecedencia6 expr2               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr2: expr3 	                                        { $$ = $1; } ;
+expr2: expr2 operadoresPrecedencia5 expr3               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr3: expr4 		                                { $$ = $1; } ;
+expr3: expr3 operadoresPrecedencia4 expr4               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr4: expr5                                            { $$ = $1; } ;
+expr4: expr4 operadoresPrecedencia3 expr5               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr5: expr6 	                                        { $$ = $1; } ;
+expr5: expr5 operadoresPrecedencia2 expr6               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr6: expr7 	                                        { $$ = $1; } ;
+expr6: operadoresUnarios expr7 		                { addSon($1, $2); $$ = $1; } ;
+expr7: operandos 	                                { $$ = $1; } ;
+expr7: '(' expressao ')'                                { $$ = $2; } ;
 
 
 %%
