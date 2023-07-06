@@ -128,6 +128,10 @@ de variável (identificador) separadas por vírgula. Os tipos podem ser aqueles 
 Uma variável local pode ser opcionalmente inicializada caso sua declaração seja seguida do operador composto TK_OC_LE e de um 
 literal.*/
 
+/* aqui so vai pra arvore se tem inicializacao ou nao, acho que aqui vai o if... nao eh lista, eh declaracao filho de declaracao */
+/* proximo comando eh ANTES da lista ou eh irmao do primeiro da lista? */
+
+
 var_local: tipo lista_local_var			{ $$ = createNode("decl_var_local"); addSon($$, $1); addSon($$, $2); } ;
 
 lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); } // acho q lista nao se faz assim.. nao tem nodo lista
@@ -153,12 +157,15 @@ por vírgula. Um argumento pode ser uma expressão.*/
 
 /* fun call nao eh um nodo... o nodo pai que representa fun_call via ter o label q eh o identificador, o filho eh a lista de args */
 
+/* AQUI ACHO QUE EH DIFERENTE! ACHO QUE TU CRIA NODO COM TK_IDENTIFICADOR E FILHO DELE EH A LISTA ARGS */
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ $$ = createNode("fun_call"); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
 
+/* AQUI ACHO Q FICA ASSIM. $$ = $1 OU $$ = 0 */
 lista_args: um_ou_mais_args 	{ $$ = createNode("lista_args"); addSon($$, $1); }
 		  | 		{ $$ = 0; }
 		  ;
 
+/* AQUI ACHO QUE TU FAZ O addSon($3, $1) e args foi definidio pelo $$ = $1 do args que eh uma expressao q eh definida por $$ = $1 tambem q laaaa atras virou nodo expressa */
 um_ou_mais_args: um_ou_mais_args ',' args 	{ $$ = createNode("lista_args"); addSon($$, $1); addSon($$, $3); }
 			   | args 		{ $$ = $1; }
 			   ;
@@ -178,17 +185,19 @@ fluxo. A condicional consiste no token if seguido de uma expressão entre parên
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
 
-if: TK_PR_IF '(' expressao ')' cmd_block else { $$ = createNode("if_else"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; /*else can be null*/
+if: TK_PR_IF '(' expressao ')' cmd_block else  { $$ = createNode("if_else"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; /*else can be null*/
+ 
+else: TK_PR_ELSE cmd_block ';'                 { $$ = $2;}
+        | ';'                                  { $$ = 0; } ;
 
-else: TK_PR_ELSE cmd_block ';'         { $$ = $2;}
-        | ';'                          { $$ = 0; } ;
-
-while: TK_PR_WHILE '(' expressao ')' cmd_block ; 
+while: TK_PR_WHILE '(' expressao ')' cmd_block { $$ = createNode("while"); addSon($$, $3); addSon($$, $5); } ; 
 
 
 
 /*13 - As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um nome de variável (identificador) 
 separadas por vírgula. O tipo pode ser int, float e bool. As declarações de variáveis são terminadas por ponto-e-vírgula.*/
+
+/* ACHO QUE NAO VAI PRA ARVORE */
 
 declaracao_variavel_global: tipo lista_var ';'	{ $$ = createNode("decl_var_global"); addSon($$, $1); addSon($$, $2); } ;
 
@@ -199,6 +208,7 @@ lista_var: lista_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_var"); addSo
 
 /*Uso Geral*/
 
+/* ACHO QUE NAO VAI PRA ARVORE */
 tipo: TK_PR_INT 	{ $$ = createNode("tipo_int"); }
 	| TK_PR_FLOAT 	{ $$ = createNode("tipo_float"); }
 	| TK_PR_BOOL 	{ $$ = createNode("tipo_bool"); }
