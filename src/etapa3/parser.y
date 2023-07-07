@@ -102,16 +102,33 @@ param: tipo TK_IDENTIFICADOR ;
 simples cada um terminado por ponto-e-vírgula. Um bloco de comandos é considerado como um comando único simples, recursivamente, 
 e pode ser utilizado em qualquer construção que aceite um comando simples.*/
 
-corpo: cmd_block ;
-cmd_block: '{' cmd_simples '}' | '{' '}' ;
+corpo: cmd_block { $$ = $1; } ;
+cmd_block: '{' cmd_simples '}' { $$ = $2; }; /* se todos os comandos simples forem sequencias de iniciailizacoes sem atribuicoes aqui vai ser null, dai o addSon da funcao vai ver q primeiro comando eh null e vai adicionar nada */
+cmd_block: '{' '}' ;
 
 
 /*7 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
 operação de retorno, um bloco de comandos, e chamadas de função.*/
 
-cmd_simples: cmd_simples cmd_list  { $$ = createNode("lista_cmd_simples"); addSon($$, $1); addSon($$, $2); } ; /*lista vai pra arvore? sera q filho do cmd nao eh outro cmd? mas dai qual seria o comando em si? outro filho? tipo, o comando seria uma atribuicao, ele teria os filhos de atribuicao + outro comando?*/
+cmd_simples: cmd_simples cmd_list  { 
+	                               if($2 == NULL) { 
+                                           $$ = $1; 
+                                       }
+                                       else { 
+                                           if($1 != NULL) { 
+                                               addSon($2, $1); /* aqui eh se pelo menos algum antes do ultimo nao eh null, como sei q 1 nao vai ser null se direto em cima dele eh? */
+                                                               /* ah sim, eh por causa do if mais de cima! se o de cima eh null, ele vai passar o proximo da lista... pq o $1 de agora
+                                                                  eh o $$ do futuro que recebe o valor baseado se $2 eh ou nao null */
+                                               $$ = $2; 
+                                           } 
+                                           else { /*aqui eh no caso q o ultimo comando ever (rec esquerda) eh o unico que nao eh atribuicao */
+                                               $$ = $2; 
+                                           } 
+                                        } 
+                                    } ; 
+/*lista vai pra arvore? sera q filho do cmd nao eh outro cmd? mas dai qual seria o comando em si? outro filho? tipo, o comando seria uma atribuicao, ele teria os filhos de atribuicao + outro comando?*/
 /* acho que o role seria tipo pegar esse primeiro cmd_siples e adicionar nele o filho cmd list, isso eh, addSon($1, $2)  e $$ = $1 */
-cmd_simples: cmd_list              { $$ = $1; } ;
+cmd_simples: cmd_list              { if($1 != NULL) {$$ = $1;} else {$$ = NULL;} } ;
 
 cmd_list: cmd_block ';'    { $$ = $1; } ;
 cmd_list: var_local ';'    { $$ = $1; } ; 
@@ -132,13 +149,19 @@ literal.*/
 /* proximo comando eh ANTES da lista ou eh irmao do primeiro da lista? */
 
 
-var_local: tipo lista_local_var			{ $$ = createNode("decl_var_local"); addSon($$, $1); addSon($$, $2); } ;
+var_local: tipo lista_local_var			{ $$ = $2; } ;
 
-lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); } // acho q lista nao se faz assim.. nao tem nodo lista
-			   | lista_local_var ',' init   { $$ = createNode("lista_local_var"); addSon($$, $1); addSon($$, $3); }
-			   | TK_IDENTIFICADOR 	        { $$ = createTerminalNode($1); }
+lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ if($1 == NULL) { $$ = NULL;} else { $$ = $1;} } // acho q lista nao se faz assim.. nao tem nodo lista
+			   | lista_local_var ',' init   { addSon($3, $1); $$ = $3; } // se o addSon receber o filho como NULL, dai tem q adicionar NADA... isso eh importante... pq dai nao adicionaria filho
+                                                                            // tipo, esse init seria um nodo e tals da lista, mas se o lista fosse so outro tk_id, dai o filho sendo NULL nao adiciona!
+                                                                            // isso reflete ate la em cima, se o proximo comando eh NULL, ou seja, so declaracao sem inicializacao, dai ele skipa
+                                                                            // mas a cabeca tem q assumir um valor
+			   | TK_IDENTIFICADOR 	        { $$ = NULL; }
 			   | init 			{ $$ = $1; }
 			   ;
+
+/* Montar a arvore de comandos simples considerando a atribuicao quando assume NULL e ver indo da esquerda e como o comando da direita pega essa proximo da esquerda depois q um foi NULL, ver como
+esses Ifs e passando as coisas */
 
 init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, $3); } ; 
 
@@ -157,16 +180,18 @@ por vírgula. Um argumento pode ser uma expressão.*/
 
 /* fun call nao eh um nodo... o nodo pai que representa fun_call via ter o label q eh o identificador, o filho eh a lista de args */
 
-/* AQUI ACHO QUE EH DIFERENTE! ACHO QUE TU CRIA NODO COM TK_IDENTIFICADOR E FILHO DELE EH A LISTA ARGS */
-fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ $$ = createNode("fun_call"); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
+/* AQUI ACHO QUE EH DIFERENTE! ACHO QUE TU CRIA NODO COM TK_IDENTIFICADOR E FILHO DELE EH A LISTA ARGS 
+fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ char fun[20]; strcpy(fun, "call "); strcat(fun, $1->label); $$ = createNode(fun); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
+/* esse nodo tem um valor lexico */
+/* addSOn ver se eh zero ou null para nao adicionar */
+fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createTerminalNode($1); addSon($$, $3); } ; /* O LABEL VAI SER O NOME DA FUNCAO... SE NODO TEM FILHO E LEXICO, EH CHAMADA DE FUNCAO.. tem que ver se o nodo com label de TK_ID tem filho, se sim, ele vira um "call" no export.. nao eh terminal node o nome certo... */
 
-/* AQUI ACHO Q FICA ASSIM. $$ = $1 OU $$ = 0 */
-lista_args: um_ou_mais_args 	{ $$ = createNode("lista_args"); addSon($$, $1); }
+lista_args: um_ou_mais_args 	{ $$ = $1; }
 		  | 		{ $$ = 0; }
 		  ;
 
-/* AQUI ACHO QUE TU FAZ O addSon($3, $1) e args foi definidio pelo $$ = $1 do args que eh uma expressao q eh definida por $$ = $1 tambem q laaaa atras virou nodo expressa */
-um_ou_mais_args: um_ou_mais_args ',' args 	{ $$ = createNode("lista_args"); addSon($$, $1); addSon($$, $3); }
+/* problema eh que aqui paramentros (a, b, c) ficam call fun->c->b->a*/
+um_ou_mais_args: um_ou_mais_args ',' args 	{ addSon($3, $1); $$ = $3; } 
 			   | args 		{ $$ = $1; }
 			   ;
 
@@ -197,22 +222,16 @@ while: TK_PR_WHILE '(' expressao ')' cmd_block { $$ = createNode("while"); addSo
 /*13 - As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um nome de variável (identificador) 
 separadas por vírgula. O tipo pode ser int, float e bool. As declarações de variáveis são terminadas por ponto-e-vírgula.*/
 
-/* ACHO QUE NAO VAI PRA ARVORE */
+declaracao_variavel_global: tipo lista_var ';' ;
 
-declaracao_variavel_global: tipo lista_var ';'	{ $$ = createNode("decl_var_global"); addSon($$, $1); addSon($$, $2); } ;
+lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
-lista_var: lista_var ',' TK_IDENTIFICADOR 	{ $$ = createNode("lista_var"); addSon($$, $1); addSon($$, createTerminalNode($3)); }
-		 | TK_IDENTIFICADOR 				{ $$ = createTerminalNode($1); }
-		 ;
+
 
 
 /*Uso Geral*/
 
-/* ACHO QUE NAO VAI PRA ARVORE */
-tipo: TK_PR_INT 	{ $$ = createNode("tipo_int"); }
-	| TK_PR_FLOAT 	{ $$ = createNode("tipo_float"); }
-	| TK_PR_BOOL 	{ $$ = createNode("tipo_bool"); }
-	;
+tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
 /* Faz o token subir para ser convertido em nó com lex no operador*/
 literais: TK_LIT_INT 		{ $$ = $1; } ;
