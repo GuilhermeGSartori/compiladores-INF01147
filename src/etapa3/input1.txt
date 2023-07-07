@@ -1,5 +1,10 @@
 main () -> int {
     f(a, b, c);
+    int _a, _b, _c;
+    int g, h, i <= 0;
+    {
+        fun(i);
+    };
     int a <= 2, b, c <= 3;
     if(a<2) {
         a = b + c;

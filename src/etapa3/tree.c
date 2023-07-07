@@ -36,31 +36,62 @@ Node* createNode(char* value) {
 
 void addSon(Node* father, Node* son) {
  
-    printf("Num of kids: %d\n", father->n_sons);
     if(son != NULL) {
         if(father->n_sons == 0) 
-            father->sons = malloc(sizeof(struct astNode)); // isso ver, dando warning
+            father->sons = malloc(sizeof(struct astNode)); 
         else 
 	    father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode));
 
-        father->sons[father->n_sons] = son; // isso ver, dando warning
-        printf("Added son: %s\n", father->sons[father->n_sons]->label);
+        father->sons[father->n_sons] = son; 
 
         father->n_sons++;
     }
 }
 
-void exporta(void *arvore) { // ajeitar isso
-    Node *father = (Node*) arvore;
+void printEdges(Node* father) {
     int n_kids = father->n_sons;
-    int i = 0; // como fazer o role do call funcionar e INVERTER listas
-    printf("current node: %s\n\n", father->label); // tem que ver se identificador eh chamada de funcao, se sim, colocar call... como diferencias? declaracao de funcao e chamada tem estrutura igual
-                                                   // ambos sao "terminais" com filhos, como saber qual eh call? ver outro identificador sla mudar o Terminal para outro nome
+    int i = 0;
+
     while(n_kids > 0) {
-        exporta(father->sons[i]);
+        printf("%p, %p\n", father, father->sons[i]);
+	i++;
+	n_kids--;
+    }
+
+    n_kids = father->n_sons;
+    i = 0;
+
+    while(n_kids > 0) {
+        printEdges(father->sons[i]);
+	i++;
+	n_kids--;
+    }
+ 
+}
+
+void printNodes(Node* father) {
+    int n_kids = father->n_sons;
+    int i = 0;
+
+    printf("%p [label=\"%s\"];\n", father, father->label);
+
+    while(n_kids > 0) {
+        printNodes(father->sons[i]);
         i++;
         n_kids--;
     }
+}
+
+void exporta(void *arvore) {
+    Node *father = (Node*) arvore;
+    
+    printEdges(arvore);
+    printf("\n\n");
+    printNodes(arvore);
+
+    // como fazer o role do call funcionar e INVERTER listas
+    // tem que ver se identificador eh chamada de funcao, se sim, colocar call... como diferencias? declaracao de funcao e chamada tem estrutura igual
+    // ambos sao "terminais" com filhos, como saber qual eh call? ver outro identificador sla mudar o Terminal para outro nome
 
 }
 
@@ -72,7 +103,7 @@ void printKids(Node* father, int height) {
     height++;
     printf("current node: %s\n\n", father->label);
     while(n_kids > 0) {
-        printKids(father->sons[i], height/*height++*/);
+        printKids(father->sons[i], height);
 	i++;
 	n_kids--;
     }
