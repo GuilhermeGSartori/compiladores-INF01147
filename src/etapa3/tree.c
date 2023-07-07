@@ -8,7 +8,7 @@
 
 extern void exporta (void *arvore);
 
-Node* createTerminalNode(LexType* lex_value) { 
+Node* createLexTypeNode(LexType* lex_value) { 
    
     Node* new_node;
     new_node = (Node*) calloc(1, sizeof(Node));
@@ -50,12 +50,12 @@ void addSon(Node* father, Node* son) {
     }
 }
 
-void exporta(void *arvore) {
+void exporta(void *arvore) { // ajeitar isso
     Node *father = (Node*) arvore;
-    printf("\n\n\nWorking on it...\n\n\n");
     int n_kids = father->n_sons;
-    int i = 0;
-    printf("current node: %s\n\n", father->label);
+    int i = 0; // como fazer o role do call funcionar e INVERTER listas
+    printf("current node: %s\n\n", father->label); // tem que ver se identificador eh chamada de funcao, se sim, colocar call... como diferencias? declaracao de funcao e chamada tem estrutura igual
+                                                   // ambos sao "terminais" com filhos, como saber qual eh call? ver outro identificador sla mudar o Terminal para outro nome
     while(n_kids > 0) {
         exporta(father->sons[i]);
         i++;

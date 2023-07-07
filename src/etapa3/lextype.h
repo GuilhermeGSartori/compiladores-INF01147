@@ -9,7 +9,7 @@ typedef struct LexType {
     int line;
     enum lex_type type;
     //char* value;
-    char value[20]; // Valor de um literal/nome Id no maximo 20 char
+    char value[64]; // Valor de um literal/nome Id no maximo 20 char
 } LexType;
 
 LexType* createLexType(int line, int type, char* value);
