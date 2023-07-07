@@ -9,4 +9,11 @@ main () -> int {
     if(a<2) {
         a = b + c;
     };
+    
+    if(a == 5) {
+        return 0;
+    }
+    else {
+        return a;
+    };
 }
