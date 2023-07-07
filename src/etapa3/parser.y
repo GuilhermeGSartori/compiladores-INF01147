@@ -90,20 +90,21 @@ programa: lista   { arvore = $1; }
         ;
 
 lista: lista elemento  {
-                                       if($2 == NULL) {
-                                           $$ = $1;
-                                       }
-                                       else {
-                                           if($1 != NULL) {
-                                               addSon($2, $1);
-                                               $$ = $2;
-                                           }
-                                           else { 
-                                               $$ = $2;
-                                           }
-                                        }
-                                    } ;
-lista: elemento          { if($1 != NULL) {$$ = $1;} else {$$ = NULL;} } ;
+                           if($2 == NULL) {
+                               $$ = $1;
+                           }
+                           else {
+                               if($1 != NULL) {
+                                   addSon($2, $1);
+                                   $$ = $2;
+                                }
+                                else { 
+                                   $$ = $2;
+                                }
+                            }
+                        } ;
+
+lista: elemento         { if($1 != NULL) {$$ = $1;} else {$$ = NULL;} } ;
 
 elemento: funcao { $$ = $1; } ; 
 elemento: declaracao_variavel_global { $$ = NULL; } ;
@@ -119,7 +120,7 @@ funcao: cabecalho corpo { $$ = $1; addSon($$, $2); } ;
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
-cabecalho: TK_IDENTIFICADOR '(' lista_params ')' TK_OC_MAP tipo { $$ = createTerminalNode($1); };
+cabecalho: TK_IDENTIFICADOR '(' lista_params ')' TK_OC_MAP tipo { $$ = createLexTypeNode($1); };
 /* como diferencia ID de declaracao de funcao vs chmada de funcao? */
 
 
@@ -202,14 +203,14 @@ lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ if($1 == NULL) { $$ = N
 /* Montar a arvore de comandos simples considerando a atribuicao quando assume NULL e ver indo da esquerda e como o comando da direita pega essa proximo da esquerda depois q um foi NULL, ver como
 esses Ifs e passando as coisas */
 
-init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, createTerminalNode($3)); } ; 
+init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createLexTypeNode($1)); addSon($$, createLexTypeNode($3)); } ; 
 
 
 
 /*9 - Comando de Atribuição: O comando de atribuição consiste em um identificador seguido pelo caractere de igualdade seguido 
 por uma expressão*/
 
-atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
+atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createLexTypeNode($1)); addSon($$, $3); } ;
 
 
 
@@ -223,7 +224,7 @@ por vírgula. Um argumento pode ser uma expressão.*/
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ char fun[20]; strcpy(fun, "call "); strcat(fun, $1->label); $$ = createNode(fun); addSon($$, createTerminalNode($1)); addSon($$, $3); } ;
 /* esse nodo tem um valor lexico */
 /* addSOn ver se eh zero ou null para nao adicionar */
-fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createTerminalNode($1); addSon($$, $3); } ; /* O LABEL VAI SER O NOME DA FUNCAO... SE NODO TEM FILHO E LEXICO, EH CHAMADA DE FUNCAO.. tem que ver se o nodo com label de TK_ID tem filho, se sim, ele vira um "call" no export.. nao eh terminal node o nome certo... */
+fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createLexTypeNode($1); addSon($$, $3); } ; /* O LABEL VAI SER O NOME DA FUNCAO... SE NODO TEM FILHO E LEXICO, EH CHAMADA DE FUNCAO.. tem que ver se o nodo com label de TK_ID tem filho, se sim, ele vira um "call" no export.. nao eh terminal node o nome certo... */
 
 lista_args: um_ou_mais_args 	{ $$ = $1; }
 		  | 		{ $$ = NULL; }
@@ -252,7 +253,7 @@ uma construção de repetição que é o token while seguida de uma expressão e
 if: TK_PR_IF '(' expressao ')' cmd_block else  { $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; /*else can be null*/
  
 else: TK_PR_ELSE cmd_block ';'                 { $$ = $2;}
-        | ';'                                  { $$ = 0; } ;
+        | ';'                                  { $$ = NULL; } ;
 
 while: TK_PR_WHILE '(' expressao ')' cmd_block { $$ = createNode("while"); addSon($$, $3); addSon($$, $5); } ; 
 
@@ -287,8 +288,8 @@ literais: TK_LIT_FALSE 		{ $$ = $1; } ;
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
-operandos: TK_IDENTIFICADOR 		{ $$ = createTerminalNode($1); } ;
-operandos: literais 				{ $$ = createTerminalNode($1); } ;
+operandos: TK_IDENTIFICADOR 		{ $$ = createLexTypeNode($1); } ;
+operandos: literais 				{ $$ = createLexTypeNode($1); } ;
 operandos: fun_call  				{ $$ = NULL; } ;
 
 /* operadoresUnarios: '-' | '!' ; */
