@@ -6,6 +6,8 @@
 /* De cara ja vai existir um nodo raiz criado, vamos criando nodos e colando eles, arvore existe,
  * construimos uma de cima pra baixo e vamos colando */
 
+extern void exporta (void *arvore);
+
 Node* createTerminalNode(LexType* lex_value) { 
    
     Node* new_node;
@@ -35,19 +37,31 @@ Node* createNode(char* value) {
 void addSon(Node* father, Node* son) {
  
     printf("Num of kids: %d\n", father->n_sons);
-    if(father->n_sons == 0) 
-        father->sons = malloc(sizeof(struct astNode)); // isso ver, dando warning
-    else 
-	father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode));
+    if(son != NULL) {
+        if(father->n_sons == 0) 
+            father->sons = malloc(sizeof(struct astNode)); // isso ver, dando warning
+        else 
+	    father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode));
 
-    father->sons[father->n_sons] = son; // isso ver, dando warning
-    printf("Added son: %s\n", father->sons[father->n_sons]->label);
+        father->sons[father->n_sons] = son; // isso ver, dando warning
+        printf("Added son: %s\n", father->sons[father->n_sons]->label);
 
-    father->n_sons++;
+        father->n_sons++;
+    }
 }
 
-void exportTree() {
-    printf("Working on it...\n");
+void exporta(void *arvore) {
+    Node *father = (Node*) arvore;
+    printf("\n\n\nWorking on it...\n\n\n");
+    int n_kids = father->n_sons;
+    int i = 0;
+    printf("current node: %s\n\n", father->label);
+    while(n_kids > 0) {
+        exporta(father->sons[i]);
+        i++;
+        n_kids--;
+    }
+
 }
 
 void printKids(Node* father, int height) {

@@ -7,6 +7,7 @@
 int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
+extern void *arvore;
 %}
 %define parse.error verbose
 
@@ -33,6 +34,25 @@ extern int get_line_number();
 
 /* TK_IDENTIFICADOR já é atômico, literais não */
 %type<valor_lexico> literais
+%type<node> programa
+%type<node> lista
+%type<node> elemento
+%type<node> funcao
+%type<node> cabecalho
+%type<node> corpo
+%type<node> cmd_block
+%type<node> cmd_simples
+%type<node> cmd_list
+%type<node> var_local
+%type<node> lista_local_var
+%type<node> init
+%type<node> fun_call
+%type<node> lista_args
+%type<node> um_ou_mais_args
+%type<node> args
+%type<node> if
+%type<node> else
+%type<node> while
 %type<node> operandos
 %type<node> operadoresUnarios
 %type<node> operadoresPrecedencia2
@@ -54,7 +74,7 @@ extern int get_line_number();
 
 %union {
     struct LexType* valor_lexico;
-    struct Node* node;
+    struct astNode* node;
 }
 
 %%
@@ -65,23 +85,42 @@ extern int get_line_number();
 /*1 - Um programa na linguagem é composto por dois elementos, todos opcionais: um conjunto de declarações de variáveis globais e um 
 conjunto de funções. Esses elementos podem estar intercalados e em qualquer ordem.*/
 
-programa: lista | ;
-lista: lista elemento | elemento ;
-elemento: funcao | declaracao_variavel_global ;
+programa: lista   { arvore = $1; }
+	|         { arvore = NULL; }
+        ;
+
+lista: lista elemento  {
+                                       if($2 == NULL) {
+                                           $$ = $1;
+                                       }
+                                       else {
+                                           if($1 != NULL) {
+                                               addSon($2, $1);
+                                               $$ = $2;
+                                           }
+                                           else { 
+                                               $$ = $2;
+                                           }
+                                        }
+                                    } ;
+lista: elemento          { if($1 != NULL) {$$ = $1;} else {$$ = NULL;} } ;
+
+elemento: funcao { $$ = $1; } ; 
+elemento: declaracao_variavel_global { $$ = NULL; } ;
 
 
 
 /*2 - Cada função é definida por um cabeçalho e um corpo, sendo que esta definição não é terminada
 por ponto-e-vírgula.*/
 
-funcao: cabecalho corpo ;
+funcao: cabecalho corpo { $$ = $1; addSon($$, $2); } ;
 
 
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
-cabecalho: TK_IDENTIFICADOR '(' lista_params ')' TK_OC_MAP tipo ;
-
+cabecalho: TK_IDENTIFICADOR '(' lista_params ')' TK_OC_MAP tipo { $$ = createTerminalNode($1); };
+/* como diferencia ID de declaracao de funcao vs chmada de funcao? */
 
 
 /*4 - A lista de parâmetros é dada entre parênteses e é composta por zero ou mais parâmetros de entrada, separados por vírgula.*/
@@ -104,7 +143,7 @@ e pode ser utilizado em qualquer construção que aceite um comando simples.*/
 
 corpo: cmd_block { $$ = $1; } ;
 cmd_block: '{' cmd_simples '}' { $$ = $2; }; /* se todos os comandos simples forem sequencias de iniciailizacoes sem atribuicoes aqui vai ser null, dai o addSon da funcao vai ver q primeiro comando eh null e vai adicionar nada */
-cmd_block: '{' '}' ;
+cmd_block: '{' '}' { $$ = NULL; } ; /* e se o if tiver bloco vazio, o q vai acontecer? */
 
 
 /*7 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
@@ -163,7 +202,7 @@ lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ if($1 == NULL) { $$ = N
 /* Montar a arvore de comandos simples considerando a atribuicao quando assume NULL e ver indo da esquerda e como o comando da direita pega essa proximo da esquerda depois q um foi NULL, ver como
 esses Ifs e passando as coisas */
 
-init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, $3); } ; 
+init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createTerminalNode($1)); addSon($$, createTerminalNode($3)); } ; 
 
 
 
@@ -187,7 +226,7 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' 		{ char fun[20]; strcpy(fun, "cal
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createTerminalNode($1); addSon($$, $3); } ; /* O LABEL VAI SER O NOME DA FUNCAO... SE NODO TEM FILHO E LEXICO, EH CHAMADA DE FUNCAO.. tem que ver se o nodo com label de TK_ID tem filho, se sim, ele vira um "call" no export.. nao eh terminal node o nome certo... */
 
 lista_args: um_ou_mais_args 	{ $$ = $1; }
-		  | 		{ $$ = 0; }
+		  | 		{ $$ = NULL; }
 		  ;
 
 /* problema eh que aqui paramentros (a, b, c) ficam call fun->c->b->a*/
@@ -210,7 +249,7 @@ fluxo. A condicional consiste no token if seguido de uma expressão entre parên
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
 
-if: TK_PR_IF '(' expressao ')' cmd_block else  { $$ = createNode("if_else"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; /*else can be null*/
+if: TK_PR_IF '(' expressao ')' cmd_block else  { $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; /*else can be null*/
  
 else: TK_PR_ELSE cmd_block ';'                 { $$ = $2;}
         | ';'                                  { $$ = 0; } ;
@@ -259,7 +298,7 @@ operadoresUnarios: '!' 				{ $$ = createNode("!"); } ;
 /* operadoresPrecedencia2: '*' | '/' | '%' ; */
 operadoresPrecedencia2: '*' 		{ $$ = createNode("*"); } ;
 operadoresPrecedencia2: '/' 		{ $$ = createNode("/"); } ;
-operadoresPrecedencia2: '%' 		{ $$ = createNode('%'); } ;
+operadoresPrecedencia2: '%' 		{ $$ = createNode("%"); } ;
 
 /* operadoresPrecedencia3: '+' | '-' ; */
 operadoresPrecedencia3: '+'  		{ $$ = createNode("+"); } ;
