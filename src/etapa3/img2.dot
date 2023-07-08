@@ -1,0 +1,29 @@
+# Executado assim: output2dot.sh 
+# https://graphviz.org/doc/info/lang.html
+digraph {
+  x55774e595360 -> x55774e595f20
+  x55774e595f20 -> x55774e595ec0
+  x55774e595f20 -> x55774e595c80
+  x55774e595c80 -> x55774e595ce0
+  x55774e595c80 -> x55774e595c20
+  x55774e595c80 -> x55774e595910
+  x55774e595910 -> x55774e595970
+  x55774e595910 -> x55774e5959d0
+  x55774e595910 -> x55774e595580
+  x55774e595580 -> x55774e5955e0
+  x55774e595580 -> x55774e5956a0
+  
+  
+  x55774e595360 [label="f"];
+  x55774e595f20 [label="return"];
+  x55774e595ec0 [label="10"];
+  x55774e595c80 [label="="];
+  x55774e595ce0 [label="a"];
+  x55774e595c20 [label="3"];
+  x55774e595910 [label="<="];
+  x55774e595970 [label="e"];
+  x55774e5959d0 [label="4"];
+  x55774e595580 [label="<="];
+  x55774e5955e0 [label="c"];
+  x55774e5956a0 [label="3"];
+}
