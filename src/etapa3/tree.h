@@ -9,8 +9,15 @@ typedef struct astNode {
 
 Node* createLexTypeNode(LexType* lex_value);
 Node* createNode(char* label);
+
 void addSon(Node* father, Node* son);
+void updateLabel(Node* node);
+
 void printEdges(Node* father);
 void printNodes(Node* father);
 void printKids(Node* father, int height);
-void updateLabel(Node* node);
+
+Node* invertCmdList(Node* node);
+Node* invertPrmList(Node* node);
+Node* invertFunList(Node* node);
+Node* invertVarList(Node* node);
