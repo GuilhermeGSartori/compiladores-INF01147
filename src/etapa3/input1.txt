@@ -1,3 +1,12 @@
+int a;
+int b;
+
+fun(int i) -> int {
+    i <= 1;
+}
+
+int c;
+
 main () -> int {
     f(a, b, c);
     int _a, _b, _c;
