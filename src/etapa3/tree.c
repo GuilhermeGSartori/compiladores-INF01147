@@ -48,6 +48,11 @@ void addSon(Node* father, Node* son) {
     }
 }
 
+void setLabel(Node* node, char* new_label) {
+    if(node->lexical_value == NULL)
+        strcpy(node->label, new_label);
+}
+
 void printEdges(Node* father) {
     int n_kids = father->n_sons;
     int i = 0;
@@ -73,7 +78,10 @@ void printNodes(Node* father) {
     int n_kids = father->n_sons;
     int i = 0;
 
-    printf("%p [label=\"%s\"];\n", father, father->label);
+    if(strcmp(father->label, "if-else") == 0) // father->label is "if-else"
+        printf("%p [label=\"if\"];\n", father);
+    else
+        printf("%p [label=\"%s\"];\n", father, father->label);
 
     while(n_kids > 0) {
         printNodes(father->sons[i]);

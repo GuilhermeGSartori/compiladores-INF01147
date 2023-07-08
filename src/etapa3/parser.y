@@ -229,7 +229,10 @@ fluxo. A condicional consiste no token if seguido de uma expressão entre parên
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
 
-if: TK_PR_IF '(' expressao ')' cmd_block else  { $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6); } ; 
+if: TK_PR_IF '(' expressao ')' cmd_block else  { 
+                                                 $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6);
+                                                 if($6 != NULL) { setLabel($$, "if-else"); } 
+                                               } ; 
  
 else: TK_PR_ELSE cmd_block ';'                 { $$ = $2;}
         | ';'                                  { $$ = NULL; } ;
