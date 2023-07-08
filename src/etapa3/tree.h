@@ -17,7 +17,7 @@ void printEdges(Node* father);
 void printNodes(Node* father);
 void printKids(Node* father, int height);
 
-Node* invertCmdList(Node* node);
-Node* invertPrmList(Node* node);
-Node* invertFunList(Node* node);
-Node* invertVarList(Node* node);
+Node* invertCmdList(Node* node); // dai tem que ter switch case
+Node* invertPrmList(Node* node); // deve ter logica parecida com proximos
+Node* invertFunList(Node* node); // se 2 nodos (primeiro comando e proxima funcao), segue, se nao, sei q eh ultimo
+Node* invertVarList(Node* node); // sei q eh ultimo se nao tem 3 filhos

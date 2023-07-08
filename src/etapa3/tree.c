@@ -34,13 +34,13 @@ Node* createNode(char* value) {
     return new_node;
 }
 
-void addSon(Node* father, Node* son) {
+void addSon(Node* father, Node* son) { // O(n)
  
     if(son != NULL) {
         if(father->n_sons == 0) 
             father->sons = malloc(sizeof(struct astNode)); 
         else 
-	    father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode));
+	    father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode)); //O(n)
 
         father->sons[father->n_sons] = son; 
 
