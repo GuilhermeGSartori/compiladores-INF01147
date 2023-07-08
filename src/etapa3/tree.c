@@ -48,9 +48,17 @@ void addSon(Node* father, Node* son) {
     }
 }
 
-void setLabel(Node* node, char* new_label) {
-    if(node->lexical_value == NULL)
-        strcpy(node->label, new_label);
+void updateLabel(Node* node) {
+    if(strcmp(node->label, "if") == 0) // label is "if"
+        strcpy(node->label, "if-else");
+    else if(node->lexical_value != NULL) {
+        if(node->lexical_value->type == LEX_ID) {
+	    char dummy[LABEL_MAX_SIZE];
+	    strcpy(dummy, "call ");
+	    strcat(dummy, node->label);
+	    strcpy(node->label, dummy);
+	}
+    }
 }
 
 void printEdges(Node* father) {

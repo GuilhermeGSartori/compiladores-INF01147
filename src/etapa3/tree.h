@@ -13,4 +13,4 @@ void addSon(Node* father, Node* son);
 void printEdges(Node* father);
 void printNodes(Node* father);
 void printKids(Node* father, int height);
-void setLabel(Node* node, char* new_label);
+void updateLabel(Node* node);

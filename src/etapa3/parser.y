@@ -204,7 +204,7 @@ atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createL
 /*10 - Chamada de Função: Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados 
 por vírgula. Um argumento pode ser uma expressão.*/
 
-fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createLexTypeNode($1); addSon($$, $3); } ; 
+fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createLexTypeNode($1); updateLabel($$); addSon($$, $3); } ; 
 
 lista_args: um_ou_mais_args 	{ $$ = $1; }
 		  | 		{ $$ = NULL; }
@@ -231,7 +231,7 @@ uma construção de repetição que é o token while seguida de uma expressão e
 
 if: TK_PR_IF '(' expressao ')' cmd_block else  { 
                                                  $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6);
-                                                 if($6 != NULL) { setLabel($$, "if-else"); } 
+                                                 if($6 != NULL) { updateLabel($$); } 
                                                } ; 
  
 else: TK_PR_ELSE cmd_block ';'                 { $$ = $2;}
