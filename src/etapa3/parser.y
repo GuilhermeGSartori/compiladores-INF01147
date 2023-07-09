@@ -1,6 +1,6 @@
 %{
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
-// To Do: Testar estruturas, parser.y, exportar, gerar arvore
+
 #include <stdio.h>
 #include "tree.h"
 

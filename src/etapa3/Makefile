@@ -18,10 +18,5 @@ lextype.o: lextype.c lextype.h
 	gcc -c lextype.c
 tree.o: tree.c tree.h lextype.h
 	gcc -c tree.c
-test_data_structure.o: test_data_structure.c
-	gcc -c test_data_structure.c
 clean:
-	rm *.o lex.yy.c parser.tab.c etapa2
-
-test1: lextype.o tree.o parser.tab.o lex.yy.o test_data_structure.o 
-	gcc -o test1 parser.tab.o lex.yy.o lextype.o tree.o test_data_structure.o
+	rm *.o lex.yy.c parser.tab.c etapa3
