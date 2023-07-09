@@ -1,121 +1,129 @@
 # Executado assim: output2dot.sh 
 # https://graphviz.org/doc/info/lang.html
 digraph {
-  x55758bdcb360 -> x55758bdcedd0
-  x55758bdcedd0 -> x55758bdce920
-  x55758bdcedd0 -> x55758bdcebe0
-  x55758bdcedd0 -> x55758bdced10
-  x55758bdcedd0 -> x55758bdce6e0
-  x55758bdce920 -> x55758bdce8c0
-  x55758bdce920 -> x55758bdce9f0
-  x55758bdcebe0 -> x55758bdceb80
-  x55758bdced10 -> x55758bdcecb0
-  x55758bdce6e0 -> x55758bdce230
-  x55758bdce6e0 -> x55758bdce560
-  x55758bdce6e0 -> x55758bdcdff0
-  x55758bdce230 -> x55758bdce1d0
-  x55758bdce230 -> x55758bdce300
-  x55758bdce560 -> x55758bdce5c0
-  x55758bdce560 -> x55758bdce500
-  x55758bdcdff0 -> x55758bdcd260
-  x55758bdcdff0 -> x55758bdcde20
-  x55758bdcdff0 -> x55758bdcce30
-  x55758bdcd260 -> x55758bdcd070
-  x55758bdcd260 -> x55758bdcd390
-  x55758bdcd070 -> x55758bdcd010
-  x55758bdcd070 -> x55758bdcd140
-  x55758bdcd390 -> x55758bdcd330
-  x55758bdcd390 -> x55758bdcd460
-  x55758bdcde20 -> x55758bdcde80
-  x55758bdcde20 -> x55758bdcdc30
-  x55758bdcde20 -> x55758bdcd970
-  x55758bdcdc30 -> x55758bdcdbd0
-  x55758bdcdc30 -> x55758bdcdd00
-  x55758bdcd970 -> x55758bdcd9d0
-  x55758bdcd970 -> x55758bdcd780
-  x55758bdcd780 -> x55758bdcd720
-  x55758bdcd780 -> x55758bdcd850
-  x55758bdcce30 -> x55758bdcc790
-  x55758bdcce30 -> x55758bdcccb0
-  x55758bdcce30 -> x55758bdcc430
-  x55758bdcc790 -> x55758bdcc730
-  x55758bdcc790 -> x55758bdcc860
-  x55758bdcccb0 -> x55758bdccd10
-  x55758bdcccb0 -> x55758bdccac0
-  x55758bdccac0 -> x55758bdcca60
-  x55758bdccac0 -> x55758bdccb90
-  x55758bdcc430 -> x55758bdcc490
-  x55758bdcc430 -> x55758bdcc4f0
-  x55758bdcc430 -> x55758bdcc100
-  x55758bdcc430 -> x55758bdcbf00
-  x55758bdcc100 -> x55758bdcc160
-  x55758bdcc100 -> x55758bdcc1c0
-  x55758bdcbf00 -> x55758bdcbea0
-  x55758bdcbf00 -> x55758bdcbb30
-  x55758bdcbb30 -> x55758bdcbb90
-  x55758bdcbb30 -> x55758bdcbc50
-  x55758bdcbb30 -> x55758bdcb760
-  x55758bdcb760 -> x55758bdcb6a0
-  x55758bdcb6a0 -> x55758bdcb570
-  x55758bdcb570 -> x55758bdcb4a0
+  x55e3b328a910 -> x55e3b328e380
+  x55e3b328a910 -> x55e3b328a4b0
+  x55e3b328e380 -> x55e3b328ded0
+  x55e3b328e380 -> x55e3b328e190
+  x55e3b328e380 -> x55e3b328e2c0
+  x55e3b328e380 -> x55e3b328dc90
+  x55e3b328ded0 -> x55e3b328de70
+  x55e3b328ded0 -> x55e3b328dfa0
+  x55e3b328e190 -> x55e3b328e130
+  x55e3b328e2c0 -> x55e3b328e260
+  x55e3b328dc90 -> x55e3b328d7e0
+  x55e3b328dc90 -> x55e3b328db10
+  x55e3b328dc90 -> x55e3b328d5a0
+  x55e3b328d7e0 -> x55e3b328d780
+  x55e3b328d7e0 -> x55e3b328d8b0
+  x55e3b328db10 -> x55e3b328db70
+  x55e3b328db10 -> x55e3b328dab0
+  x55e3b328d5a0 -> x55e3b328c810
+  x55e3b328d5a0 -> x55e3b328d3d0
+  x55e3b328d5a0 -> x55e3b328c3e0
+  x55e3b328c810 -> x55e3b328c620
+  x55e3b328c810 -> x55e3b328c940
+  x55e3b328c620 -> x55e3b328c5c0
+  x55e3b328c620 -> x55e3b328c6f0
+  x55e3b328c940 -> x55e3b328c8e0
+  x55e3b328c940 -> x55e3b328ca10
+  x55e3b328d3d0 -> x55e3b328d430
+  x55e3b328d3d0 -> x55e3b328d1e0
+  x55e3b328d3d0 -> x55e3b328cf20
+  x55e3b328d1e0 -> x55e3b328d180
+  x55e3b328d1e0 -> x55e3b328d2b0
+  x55e3b328cf20 -> x55e3b328cf80
+  x55e3b328cf20 -> x55e3b328cd30
+  x55e3b328cd30 -> x55e3b328ccd0
+  x55e3b328cd30 -> x55e3b328ce00
+  x55e3b328c3e0 -> x55e3b328bd40
+  x55e3b328c3e0 -> x55e3b328c260
+  x55e3b328c3e0 -> x55e3b328b9e0
+  x55e3b328bd40 -> x55e3b328bce0
+  x55e3b328bd40 -> x55e3b328be10
+  x55e3b328c260 -> x55e3b328c2c0
+  x55e3b328c260 -> x55e3b328c070
+  x55e3b328c070 -> x55e3b328c010
+  x55e3b328c070 -> x55e3b328c140
+  x55e3b328b9e0 -> x55e3b328ba40
+  x55e3b328b9e0 -> x55e3b328baa0
+  x55e3b328b9e0 -> x55e3b328b6b0
+  x55e3b328b9e0 -> x55e3b328b4b0
+  x55e3b328b6b0 -> x55e3b328b710
+  x55e3b328b6b0 -> x55e3b328b770
+  x55e3b328b4b0 -> x55e3b328b450
+  x55e3b328b4b0 -> x55e3b328b0e0
+  x55e3b328b0e0 -> x55e3b328b140
+  x55e3b328b0e0 -> x55e3b328b200
+  x55e3b328b0e0 -> x55e3b328ad10
+  x55e3b328ad10 -> x55e3b328ac50
+  x55e3b328ac50 -> x55e3b328ab20
+  x55e3b328ab20 -> x55e3b328aa50
+  x55e3b328a4b0 -> x55e3b328a650
+  x55e3b328a650 -> x55e3b328a6b0
+  x55e3b328a650 -> x55e3b328a5f0
   
   
-  x55758bdcb360 [label="main"];
-  x55758bdcedd0 [label="if"];
-  x55758bdce920 [label="=="];
-  x55758bdce8c0 [label="a"];
-  x55758bdce9f0 [label="5"];
-  x55758bdcebe0 [label="return"];
-  x55758bdceb80 [label="0"];
-  x55758bdced10 [label="return"];
-  x55758bdcecb0 [label="a"];
-  x55758bdce6e0 [label="if"];
-  x55758bdce230 [label=">"];
-  x55758bdce1d0 [label="a"];
-  x55758bdce300 [label="5"];
-  x55758bdce560 [label="="];
-  x55758bdce5c0 [label="a"];
-  x55758bdce500 [label="5"];
-  x55758bdcdff0 [label="while"];
-  x55758bdcd260 [label="&"];
-  x55758bdcd070 [label=">"];
-  x55758bdcd010 [label="c"];
-  x55758bdcd140 [label="0"];
-  x55758bdcd390 [label="<"];
-  x55758bdcd330 [label="i"];
-  x55758bdcd460 [label="3"];
-  x55758bdcde20 [label="="];
-  x55758bdcde80 [label="i"];
-  x55758bdcdc30 [label="+"];
-  x55758bdcdbd0 [label="i"];
-  x55758bdcdd00 [label="1"];
-  x55758bdcd970 [label="="];
-  x55758bdcd9d0 [label="c"];
-  x55758bdcd780 [label="-"];
-  x55758bdcd720 [label="c"];
-  x55758bdcd850 [label="1"];
-  x55758bdcce30 [label="if"];
-  x55758bdcc790 [label="<"];
-  x55758bdcc730 [label="a"];
-  x55758bdcc860 [label="2"];
-  x55758bdcccb0 [label="="];
-  x55758bdccd10 [label="a"];
-  x55758bdccac0 [label="+"];
-  x55758bdcca60 [label="b"];
-  x55758bdccb90 [label="c"];
-  x55758bdcc430 [label="<="];
-  x55758bdcc490 [label="c"];
-  x55758bdcc4f0 [label="3"];
-  x55758bdcc100 [label="<="];
-  x55758bdcc160 [label="a"];
-  x55758bdcc1c0 [label="2"];
-  x55758bdcbf00 [label="call fun"];
-  x55758bdcbea0 [label="i"];
-  x55758bdcbb30 [label="<="];
-  x55758bdcbb90 [label="i"];
-  x55758bdcbc50 [label="0"];
-  x55758bdcb760 [label="call f"];
-  x55758bdcb6a0 [label="c"];
-  x55758bdcb570 [label="b"];
-  x55758bdcb4a0 [label="a"];
+  x55e3b328a910 [label="main"];
+  x55e3b328e380 [label="if"];
+  x55e3b328ded0 [label="=="];
+  x55e3b328de70 [label="a"];
+  x55e3b328dfa0 [label="5"];
+  x55e3b328e190 [label="return"];
+  x55e3b328e130 [label="0"];
+  x55e3b328e2c0 [label="return"];
+  x55e3b328e260 [label="a"];
+  x55e3b328dc90 [label="if"];
+  x55e3b328d7e0 [label=">"];
+  x55e3b328d780 [label="a"];
+  x55e3b328d8b0 [label="5"];
+  x55e3b328db10 [label="="];
+  x55e3b328db70 [label="a"];
+  x55e3b328dab0 [label="5"];
+  x55e3b328d5a0 [label="while"];
+  x55e3b328c810 [label="&"];
+  x55e3b328c620 [label=">"];
+  x55e3b328c5c0 [label="c"];
+  x55e3b328c6f0 [label="0"];
+  x55e3b328c940 [label="<"];
+  x55e3b328c8e0 [label="i"];
+  x55e3b328ca10 [label="3"];
+  x55e3b328d3d0 [label="="];
+  x55e3b328d430 [label="i"];
+  x55e3b328d1e0 [label="+"];
+  x55e3b328d180 [label="i"];
+  x55e3b328d2b0 [label="1"];
+  x55e3b328cf20 [label="="];
+  x55e3b328cf80 [label="c"];
+  x55e3b328cd30 [label="-"];
+  x55e3b328ccd0 [label="c"];
+  x55e3b328ce00 [label="1"];
+  x55e3b328c3e0 [label="if"];
+  x55e3b328bd40 [label="<"];
+  x55e3b328bce0 [label="a"];
+  x55e3b328be10 [label="2"];
+  x55e3b328c260 [label="="];
+  x55e3b328c2c0 [label="a"];
+  x55e3b328c070 [label="+"];
+  x55e3b328c010 [label="b"];
+  x55e3b328c140 [label="c"];
+  x55e3b328b9e0 [label="<="];
+  x55e3b328ba40 [label="c"];
+  x55e3b328baa0 [label="3"];
+  x55e3b328b6b0 [label="<="];
+  x55e3b328b710 [label="a"];
+  x55e3b328b770 [label="2"];
+  x55e3b328b4b0 [label="call fun"];
+  x55e3b328b450 [label="i"];
+  x55e3b328b0e0 [label="<="];
+  x55e3b328b140 [label="i"];
+  x55e3b328b200 [label="0"];
+  x55e3b328ad10 [label="call f"];
+  x55e3b328ac50 [label="c"];
+  x55e3b328ab20 [label="b"];
+  x55e3b328aa50 [label="a"];
+  x55e3b328a4b0 [label="fun"];
+  x55e3b328a650 [label="="];
+  x55e3b328a6b0 [label="i"];
+  x55e3b328a5f0 [label="1"];
 }

@@ -101,9 +101,11 @@ void printNodes(Node* father) {
 void exporta(void *arvore) {
     Node *father = (Node*) arvore;
     
-    printEdges(arvore);
-    printf("\n\n");
-    printNodes(arvore);
+    if(arvore != NULL) {
+        printEdges(arvore);
+        printf("\n\n");
+        printNodes(arvore);
+    }
 
     // como fazer o role do call funcionar e INVERTER listas
     // tem que ver se identificador eh chamada de funcao, se sim, colocar call... como diferencias? declaracao de funcao e chamada tem estrutura igual

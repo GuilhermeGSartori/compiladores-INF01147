@@ -2,7 +2,7 @@ int a;
 int b;
 
 fun(int i) -> int {
-    i <= 1;
+    i = 1;
 }
 
 int c;
