@@ -89,17 +89,17 @@ programa: lista   { arvore = $1; }
 	|         { arvore = NULL; }
         ;
 
-lista: lista elemento  {
-                           if($2 == NULL) {
-                               $$ = $1;
+lista: elemento lista  {
+                           if($1 == NULL) {
+                               $$ = $2;
                            }
                            else {
-                               if($1 != NULL) {
-                                   addSon($2, $1);
-                                   $$ = $2;
+                               if($2 != NULL) {
+                                   addSon($1, $2);
+                                   $$ = $1;
                                 }
                                 else { 
-                                   $$ = $2;
+                                   $$ = $1;
                                 }
                             }
                         } ;
@@ -150,27 +150,27 @@ cmd_block: '{' '}' { $$ = NULL; } ;
 /*7 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
 operação de retorno, um bloco de comandos, e chamadas de função.*/
 
-cmd_simples: cmd_simples cmd_list  { 
-	                               if($2 == NULL) { 
-                                           $$ = $1; 
+cmd_simples: cmd_list cmd_simples  { 
+	                               if($1 == NULL) { 
+                                           $$ = $2; 
                                        }
                                        else { 
-                                           if($1 != NULL) {
-                                               if(isAttr($2) == 1) { // if it is <=. Here only attr can be <=
-                                                   Node *leaf_attr = $2;
+                                           if($2 != NULL) {
+                                               if(isAttr($1) == 1) { // if it is <=. Here only attr can be <=
+                                                   Node *leaf_attr = $1;
                                                    while(leaf_attr->n_sons == 3)
                                                        leaf_attr = leaf_attr->sons[2];
-                                                   addSon(leaf_attr, $1);
+                                                   addSon(leaf_attr, $2);
                                                    //$$ = leaf_attr; point that started secondary recursion must turn into $$ (previous cmd_list in the recursion)
                                                }
                                                else {
-                                                   addSon($2, $1);
+                                                   addSon($1, $2);
                                                    //$$ = $2;
                                                } 
-                                               $$ = $2;
+                                               $$ = $1;
                                            } 
                                            else { 
-                                               $$ = $2; 
+                                               $$ = $1; 
                                            } 
                                         } 
                                     } ; 
@@ -194,8 +194,8 @@ literal.*/
 
 var_local: tipo lista_local_var			{ $$ = $2; } ;
 
-lista_local_var: lista_local_var ',' TK_IDENTIFICADOR 	{ if($1 == NULL) { $$ = NULL;} else { $$ = $1;} }
-			   | lista_local_var ',' init   { addSon($3, $1); $$ = $3; } 
+lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{ if($3 == NULL) { $$ = NULL;} else { $$ = $3;} }
+			   | init ',' lista_local_var   { addSon($1, $3); $$ = $1; } 
 			   | TK_IDENTIFICADOR 	        { $$ = NULL; }
 			   | init 			{ $$ = $1; }
 			   ;
@@ -220,7 +220,7 @@ lista_args: um_ou_mais_args 	{ $$ = $1; }
 		  | 		{ $$ = NULL; }
 		  ;
 
-um_ou_mais_args: um_ou_mais_args ',' args 	{ addSon($3, $1); $$ = $3; } 
+um_ou_mais_args: args ',' um_ou_mais_args 	{ addSon($1, $3); $$ = $1; } 
 			   | args 		{ $$ = $1; }
 			   ;
 
