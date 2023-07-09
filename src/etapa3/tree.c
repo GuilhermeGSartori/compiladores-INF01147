@@ -3,8 +3,6 @@
 #include <string.h>
 #include "tree.h"
 
-/* De cara ja vai existir um nodo raiz criado, vamos criando nodos e colando eles, arvore existe,
- * construimos uma de cima pra baixo e vamos colando */
 
 extern void exporta (void *arvore);
 
@@ -15,7 +13,7 @@ Node* createLexTypeNode(LexType* lex_value) {
 
     strcpy(new_node->label, lex_value->value);
     new_node->lexical_value = lex_value;
-    new_node->n_sons = 0;//tornar constante?
+    new_node->n_sons = 0;
     new_node->sons = NULL;
     
     return new_node;
@@ -113,10 +111,6 @@ void exporta(void *arvore) {
         printf("\n\n");
         printNodes(arvore);
     }
-
-    // como fazer o role do call funcionar e INVERTER listas
-    // tem que ver se identificador eh chamada de funcao, se sim, colocar call... como diferencias? declaracao de funcao e chamada tem estrutura igual
-    // ambos sao "terminais" com filhos, como saber qual eh call? ver outro identificador sla mudar o Terminal para outro nome
 
 }
 

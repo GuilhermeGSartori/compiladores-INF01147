@@ -10,7 +10,7 @@ enum lex_type {
 typedef struct LexType {
     int line;
     enum lex_type type;
-    char value[LABEL_MAX_SIZE]; // Valor de um literal/nome Id no maximo 20 char
+    char value[LABEL_MAX_SIZE];
 } LexType;
 
 LexType* createLexType(int line, int type, char* value);

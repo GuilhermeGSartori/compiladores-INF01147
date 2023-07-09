@@ -25,14 +25,13 @@ extern void *arvore;
 %token TK_OC_AND
 %token TK_OC_OR
 %token TK_OC_MAP
-%token<valor_lexico> TK_IDENTIFICADOR /*acho que isso ta errado... Nao deveria ser o tipo de yylval assume para esse TK? char*? */
+%token<valor_lexico> TK_IDENTIFICADOR
 %token<valor_lexico> TK_LIT_INT
 %token<valor_lexico> TK_LIT_FLOAT
 %token<valor_lexico> TK_LIT_FALSE
 %token<valor_lexico> TK_LIT_TRUE
 %token TK_ERRO
 
-/* TK_IDENTIFICADOR já é atômico, literais não */
 %type<valor_lexico> literais
 %type<node> programa
 %type<node> lista
@@ -161,13 +160,11 @@ cmd_simples: cmd_list cmd_simples  {
                                                    while(leaf_attr->n_sons == 3)
                                                        leaf_attr = leaf_attr->sons[2];
                                                    addSon(leaf_attr, $2);
-                                                   //$$ = leaf_attr; point that started secondary recursion must turn into $$ (previous cmd_list in the recursion)
                                                }
                                                else {
                                                    addSon($1, $2);
-                                                   //$$ = $2;
                                                } 
-                                               $$ = $1;
+                                               $$ = $1; // point that started the secondary recursion must turn into $$, the head (previous cmd_list in the recursion)
                                            } 
                                            else { 
                                                $$ = $1; 

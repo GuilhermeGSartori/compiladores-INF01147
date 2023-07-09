@@ -1,29 +1,29 @@
 # Executado assim: output2dot.sh 
 # https://graphviz.org/doc/info/lang.html
 digraph {
-  x5584eaecd360 -> x5584eaecd580
-  x5584eaecd580 -> x5584eaecd5e0
-  x5584eaecd580 -> x5584eaecd6a0
-  x5584eaecd580 -> x5584eaecd910
-  x5584eaecd910 -> x5584eaecd970
-  x5584eaecd910 -> x5584eaecd9d0
-  x5584eaecd910 -> x5584eaecdd40
-  x5584eaecdd40 -> x5584eaecdda0
-  x5584eaecdd40 -> x5584eaecdce0
-  x5584eaecdd40 -> x5584eaecdf90
-  x5584eaecdf90 -> x5584eaecdf30
+  x5593a0e90360 -> x5593a0e90580
+  x5593a0e90580 -> x5593a0e905e0
+  x5593a0e90580 -> x5593a0e906a0
+  x5593a0e90580 -> x5593a0e90910
+  x5593a0e90910 -> x5593a0e90970
+  x5593a0e90910 -> x5593a0e909d0
+  x5593a0e90910 -> x5593a0e90d40
+  x5593a0e90d40 -> x5593a0e90da0
+  x5593a0e90d40 -> x5593a0e90ce0
+  x5593a0e90d40 -> x5593a0e90f90
+  x5593a0e90f90 -> x5593a0e90f30
   
   
-  x5584eaecd360 [label="f"];
-  x5584eaecd580 [label="<="];
-  x5584eaecd5e0 [label="c"];
-  x5584eaecd6a0 [label="3"];
-  x5584eaecd910 [label="<="];
-  x5584eaecd970 [label="e"];
-  x5584eaecd9d0 [label="4"];
-  x5584eaecdd40 [label="="];
-  x5584eaecdda0 [label="a"];
-  x5584eaecdce0 [label="3"];
-  x5584eaecdf90 [label="return"];
-  x5584eaecdf30 [label="10"];
+  x5593a0e90360 [label="f"];
+  x5593a0e90580 [label="<="];
+  x5593a0e905e0 [label="c"];
+  x5593a0e906a0 [label="3"];
+  x5593a0e90910 [label="<="];
+  x5593a0e90970 [label="e"];
+  x5593a0e909d0 [label="4"];
+  x5593a0e90d40 [label="="];
+  x5593a0e90da0 [label="a"];
+  x5593a0e90ce0 [label="3"];
+  x5593a0e90f90 [label="return"];
+  x5593a0e90f30 [label="10"];
 }
