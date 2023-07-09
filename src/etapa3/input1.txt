@@ -23,6 +23,11 @@ main () -> int {
     while(c>0 & i < 3) {
         c = c - 1;
         i = i + 1;
+        bool meme <= true;
+        bool mene <= false;
+        if(meme & mene) {
+            c = 10000;
+        };
     };
   
     if(a > 5) { a = 5; }
