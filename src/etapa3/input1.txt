@@ -33,7 +33,7 @@ main () -> int {
     if(a > 5) { a = 5; }
     else { };
 
-    if(a == 5) {
+    if((a == 5) & ((2*2+3)*10 > 10)) {
         return 0;
     }
     else {
