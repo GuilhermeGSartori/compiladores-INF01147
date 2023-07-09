@@ -155,9 +155,19 @@ cmd_simples: cmd_simples cmd_list  {
                                            $$ = $1; 
                                        }
                                        else { 
-                                           if($1 != NULL) { 
-                                               addSon($2, $1);
-                                               $$ = $2; 
+                                           if($1 != NULL) {
+                                               if(isAttr($2) == 1) { // if it is <=. Here only attr can be <=
+                                                   Node *leaf_attr = $2;
+                                                   while(leaf_attr->n_sons == 3)
+                                                       leaf_attr = leaf_attr->sons[2];
+                                                   addSon(leaf_attr, $1);
+                                                   //$$ = leaf_attr; point that started secondary recursion must turn into $$ (previous cmd_list in the recursion)
+                                               }
+                                               else {
+                                                   addSon($2, $1);
+                                                   //$$ = $2;
+                                               } 
+                                               $$ = $2;
                                            } 
                                            else { 
                                                $$ = $2; 

@@ -12,6 +12,7 @@ Node* createNode(char* label);
 
 void addSon(Node* father, Node* son);
 void updateLabel(Node* node);
+int isAttr(Node* node);
 
 void printEdges(Node* father);
 void printNodes(Node* father);

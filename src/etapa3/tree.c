@@ -61,6 +61,13 @@ void updateLabel(Node* node) {
     }
 }
 
+int isAttr(Node* node) {
+    if(strcmp(node->label, "<=") == 0)
+        return 1;
+    else
+	return 0;
+}
+
 void printEdges(Node* father) {
     int n_kids = father->n_sons;
     int i = 0;

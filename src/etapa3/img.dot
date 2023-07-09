@@ -1,129 +1,149 @@
 # Executado assim: output2dot.sh 
 # https://graphviz.org/doc/info/lang.html
 digraph {
-  x55e3b328a910 -> x55e3b328e380
-  x55e3b328a910 -> x55e3b328a4b0
-  x55e3b328e380 -> x55e3b328ded0
-  x55e3b328e380 -> x55e3b328e190
-  x55e3b328e380 -> x55e3b328e2c0
-  x55e3b328e380 -> x55e3b328dc90
-  x55e3b328ded0 -> x55e3b328de70
-  x55e3b328ded0 -> x55e3b328dfa0
-  x55e3b328e190 -> x55e3b328e130
-  x55e3b328e2c0 -> x55e3b328e260
-  x55e3b328dc90 -> x55e3b328d7e0
-  x55e3b328dc90 -> x55e3b328db10
-  x55e3b328dc90 -> x55e3b328d5a0
-  x55e3b328d7e0 -> x55e3b328d780
-  x55e3b328d7e0 -> x55e3b328d8b0
-  x55e3b328db10 -> x55e3b328db70
-  x55e3b328db10 -> x55e3b328dab0
-  x55e3b328d5a0 -> x55e3b328c810
-  x55e3b328d5a0 -> x55e3b328d3d0
-  x55e3b328d5a0 -> x55e3b328c3e0
-  x55e3b328c810 -> x55e3b328c620
-  x55e3b328c810 -> x55e3b328c940
-  x55e3b328c620 -> x55e3b328c5c0
-  x55e3b328c620 -> x55e3b328c6f0
-  x55e3b328c940 -> x55e3b328c8e0
-  x55e3b328c940 -> x55e3b328ca10
-  x55e3b328d3d0 -> x55e3b328d430
-  x55e3b328d3d0 -> x55e3b328d1e0
-  x55e3b328d3d0 -> x55e3b328cf20
-  x55e3b328d1e0 -> x55e3b328d180
-  x55e3b328d1e0 -> x55e3b328d2b0
-  x55e3b328cf20 -> x55e3b328cf80
-  x55e3b328cf20 -> x55e3b328cd30
-  x55e3b328cd30 -> x55e3b328ccd0
-  x55e3b328cd30 -> x55e3b328ce00
-  x55e3b328c3e0 -> x55e3b328bd40
-  x55e3b328c3e0 -> x55e3b328c260
-  x55e3b328c3e0 -> x55e3b328b9e0
-  x55e3b328bd40 -> x55e3b328bce0
-  x55e3b328bd40 -> x55e3b328be10
-  x55e3b328c260 -> x55e3b328c2c0
-  x55e3b328c260 -> x55e3b328c070
-  x55e3b328c070 -> x55e3b328c010
-  x55e3b328c070 -> x55e3b328c140
-  x55e3b328b9e0 -> x55e3b328ba40
-  x55e3b328b9e0 -> x55e3b328baa0
-  x55e3b328b9e0 -> x55e3b328b6b0
-  x55e3b328b9e0 -> x55e3b328b4b0
-  x55e3b328b6b0 -> x55e3b328b710
-  x55e3b328b6b0 -> x55e3b328b770
-  x55e3b328b4b0 -> x55e3b328b450
-  x55e3b328b4b0 -> x55e3b328b0e0
-  x55e3b328b0e0 -> x55e3b328b140
-  x55e3b328b0e0 -> x55e3b328b200
-  x55e3b328b0e0 -> x55e3b328ad10
-  x55e3b328ad10 -> x55e3b328ac50
-  x55e3b328ac50 -> x55e3b328ab20
-  x55e3b328ab20 -> x55e3b328aa50
-  x55e3b328a4b0 -> x55e3b328a650
-  x55e3b328a650 -> x55e3b328a6b0
-  x55e3b328a650 -> x55e3b328a5f0
+  x55eb640ce910 -> x55eb640d2e30
+  x55eb640ce910 -> x55eb640ce4b0
+  x55eb640d2e30 -> x55eb640d2980
+  x55eb640d2e30 -> x55eb640d2c40
+  x55eb640d2e30 -> x55eb640d2d70
+  x55eb640d2e30 -> x55eb640d2740
+  x55eb640d2980 -> x55eb640d2920
+  x55eb640d2980 -> x55eb640d2a50
+  x55eb640d2c40 -> x55eb640d2be0
+  x55eb640d2d70 -> x55eb640d2d10
+  x55eb640d2740 -> x55eb640d2290
+  x55eb640d2740 -> x55eb640d25c0
+  x55eb640d2740 -> x55eb640d2050
+  x55eb640d2290 -> x55eb640d2230
+  x55eb640d2290 -> x55eb640d2360
+  x55eb640d25c0 -> x55eb640d2620
+  x55eb640d25c0 -> x55eb640d2560
+  x55eb640d2050 -> x55eb640d12c0
+  x55eb640d2050 -> x55eb640d1e80
+  x55eb640d2050 -> x55eb640d0e90
+  x55eb640d12c0 -> x55eb640d10d0
+  x55eb640d12c0 -> x55eb640d13f0
+  x55eb640d10d0 -> x55eb640d1070
+  x55eb640d10d0 -> x55eb640d11a0
+  x55eb640d13f0 -> x55eb640d1390
+  x55eb640d13f0 -> x55eb640d14c0
+  x55eb640d1e80 -> x55eb640d1ee0
+  x55eb640d1e80 -> x55eb640d1c90
+  x55eb640d1e80 -> x55eb640d19d0
+  x55eb640d1c90 -> x55eb640d1c30
+  x55eb640d1c90 -> x55eb640d1d60
+  x55eb640d19d0 -> x55eb640d1a30
+  x55eb640d19d0 -> x55eb640d17e0
+  x55eb640d17e0 -> x55eb640d1780
+  x55eb640d17e0 -> x55eb640d18b0
+  x55eb640d0e90 -> x55eb640d07f0
+  x55eb640d0e90 -> x55eb640d0d10
+  x55eb640d0e90 -> x55eb640d03e0
+  x55eb640d07f0 -> x55eb640d0790
+  x55eb640d07f0 -> x55eb640d08c0
+  x55eb640d0d10 -> x55eb640d0d70
+  x55eb640d0d10 -> x55eb640d0b20
+  x55eb640d0b20 -> x55eb640d0ac0
+  x55eb640d0b20 -> x55eb640d0bf0
+  x55eb640d03e0 -> x55eb640d0440
+  x55eb640d03e0 -> x55eb640d04a0
+  x55eb640d03e0 -> x55eb640d00d0
+  x55eb640d00d0 -> x55eb640d0130
+  x55eb640d00d0 -> x55eb640d0190
+  x55eb640d00d0 -> x55eb640cfe10
+  x55eb640cfe10 -> x55eb640cfe70
+  x55eb640cfe10 -> x55eb640cfed0
+  x55eb640cfe10 -> x55eb640cfc10
+  x55eb640cfc10 -> x55eb640cf9d0
+  x55eb640cfc10 -> x55eb640cf4b0
+  x55eb640cf9d0 -> x55eb640cf970
+  x55eb640cf9d0 -> x55eb640cfaa0
+  x55eb640cf9d0 -> x55eb640cf710
+  x55eb640cf710 -> x55eb640cf6b0
+  x55eb640cf710 -> x55eb640cf7e0
+  x55eb640cf4b0 -> x55eb640cf450
+  x55eb640cf4b0 -> x55eb640cf0e0
+  x55eb640cf0e0 -> x55eb640cf140
+  x55eb640cf0e0 -> x55eb640cf200
+  x55eb640cf0e0 -> x55eb640ced10
+  x55eb640ced10 -> x55eb640cec50
+  x55eb640cec50 -> x55eb640ceb20
+  x55eb640ceb20 -> x55eb640cea50
+  x55eb640ce4b0 -> x55eb640ce650
+  x55eb640ce650 -> x55eb640ce6b0
+  x55eb640ce650 -> x55eb640ce5f0
   
   
-  x55e3b328a910 [label="main"];
-  x55e3b328e380 [label="if"];
-  x55e3b328ded0 [label="=="];
-  x55e3b328de70 [label="a"];
-  x55e3b328dfa0 [label="5"];
-  x55e3b328e190 [label="return"];
-  x55e3b328e130 [label="0"];
-  x55e3b328e2c0 [label="return"];
-  x55e3b328e260 [label="a"];
-  x55e3b328dc90 [label="if"];
-  x55e3b328d7e0 [label=">"];
-  x55e3b328d780 [label="a"];
-  x55e3b328d8b0 [label="5"];
-  x55e3b328db10 [label="="];
-  x55e3b328db70 [label="a"];
-  x55e3b328dab0 [label="5"];
-  x55e3b328d5a0 [label="while"];
-  x55e3b328c810 [label="&"];
-  x55e3b328c620 [label=">"];
-  x55e3b328c5c0 [label="c"];
-  x55e3b328c6f0 [label="0"];
-  x55e3b328c940 [label="<"];
-  x55e3b328c8e0 [label="i"];
-  x55e3b328ca10 [label="3"];
-  x55e3b328d3d0 [label="="];
-  x55e3b328d430 [label="i"];
-  x55e3b328d1e0 [label="+"];
-  x55e3b328d180 [label="i"];
-  x55e3b328d2b0 [label="1"];
-  x55e3b328cf20 [label="="];
-  x55e3b328cf80 [label="c"];
-  x55e3b328cd30 [label="-"];
-  x55e3b328ccd0 [label="c"];
-  x55e3b328ce00 [label="1"];
-  x55e3b328c3e0 [label="if"];
-  x55e3b328bd40 [label="<"];
-  x55e3b328bce0 [label="a"];
-  x55e3b328be10 [label="2"];
-  x55e3b328c260 [label="="];
-  x55e3b328c2c0 [label="a"];
-  x55e3b328c070 [label="+"];
-  x55e3b328c010 [label="b"];
-  x55e3b328c140 [label="c"];
-  x55e3b328b9e0 [label="<="];
-  x55e3b328ba40 [label="c"];
-  x55e3b328baa0 [label="3"];
-  x55e3b328b6b0 [label="<="];
-  x55e3b328b710 [label="a"];
-  x55e3b328b770 [label="2"];
-  x55e3b328b4b0 [label="call fun"];
-  x55e3b328b450 [label="i"];
-  x55e3b328b0e0 [label="<="];
-  x55e3b328b140 [label="i"];
-  x55e3b328b200 [label="0"];
-  x55e3b328ad10 [label="call f"];
-  x55e3b328ac50 [label="c"];
-  x55e3b328ab20 [label="b"];
-  x55e3b328aa50 [label="a"];
-  x55e3b328a4b0 [label="fun"];
-  x55e3b328a650 [label="="];
-  x55e3b328a6b0 [label="i"];
-  x55e3b328a5f0 [label="1"];
+  x55eb640ce910 [label="main"];
+  x55eb640d2e30 [label="if"];
+  x55eb640d2980 [label="=="];
+  x55eb640d2920 [label="a"];
+  x55eb640d2a50 [label="5"];
+  x55eb640d2c40 [label="return"];
+  x55eb640d2be0 [label="0"];
+  x55eb640d2d70 [label="return"];
+  x55eb640d2d10 [label="a"];
+  x55eb640d2740 [label="if"];
+  x55eb640d2290 [label=">"];
+  x55eb640d2230 [label="a"];
+  x55eb640d2360 [label="5"];
+  x55eb640d25c0 [label="="];
+  x55eb640d2620 [label="a"];
+  x55eb640d2560 [label="5"];
+  x55eb640d2050 [label="while"];
+  x55eb640d12c0 [label="&"];
+  x55eb640d10d0 [label=">"];
+  x55eb640d1070 [label="c"];
+  x55eb640d11a0 [label="0"];
+  x55eb640d13f0 [label="<"];
+  x55eb640d1390 [label="i"];
+  x55eb640d14c0 [label="3"];
+  x55eb640d1e80 [label="="];
+  x55eb640d1ee0 [label="i"];
+  x55eb640d1c90 [label="+"];
+  x55eb640d1c30 [label="i"];
+  x55eb640d1d60 [label="1"];
+  x55eb640d19d0 [label="="];
+  x55eb640d1a30 [label="c"];
+  x55eb640d17e0 [label="-"];
+  x55eb640d1780 [label="c"];
+  x55eb640d18b0 [label="1"];
+  x55eb640d0e90 [label="if"];
+  x55eb640d07f0 [label="<"];
+  x55eb640d0790 [label="a"];
+  x55eb640d08c0 [label="2"];
+  x55eb640d0d10 [label="="];
+  x55eb640d0d70 [label="a"];
+  x55eb640d0b20 [label="+"];
+  x55eb640d0ac0 [label="b"];
+  x55eb640d0bf0 [label="c"];
+  x55eb640d03e0 [label="<="];
+  x55eb640d0440 [label="c"];
+  x55eb640d04a0 [label="3"];
+  x55eb640d00d0 [label="<="];
+  x55eb640d0130 [label="b"];
+  x55eb640d0190 [label="1"];
+  x55eb640cfe10 [label="<="];
+  x55eb640cfe70 [label="a"];
+  x55eb640cfed0 [label="2"];
+  x55eb640cfc10 [label="call j"];
+  x55eb640cf9d0 [label="*"];
+  x55eb640cf970 [label="2"];
+  x55eb640cfaa0 [label="2"];
+  x55eb640cf710 [label="+"];
+  x55eb640cf6b0 [label="2"];
+  x55eb640cf7e0 [label="2"];
+  x55eb640cf4b0 [label="call fun"];
+  x55eb640cf450 [label="i"];
+  x55eb640cf0e0 [label="<="];
+  x55eb640cf140 [label="i"];
+  x55eb640cf200 [label="0"];
+  x55eb640ced10 [label="call f"];
+  x55eb640cec50 [label="c"];
+  x55eb640ceb20 [label="b"];
+  x55eb640cea50 [label="a"];
+  x55eb640ce4b0 [label="fun"];
+  x55eb640ce650 [label="="];
+  x55eb640ce6b0 [label="i"];
+  x55eb640ce5f0 [label="1"];
 }
