@@ -2,8 +2,12 @@
 #Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
 ###
 
-etapa3: lextype.o tree.o parser.tab.o lex.yy.o main.o
-	gcc -o etapa3 parser.tab.o lex.yy.o lextype.o tree.o main.o
+etapa4: lextype.o tree.o parser.tab.o lex.yy.o main.o
+	gcc -o etapa4 parser.tab.o lex.yy.o lextype.o tree.o main.o
+
+test_ds: lextype.o tree.o table_content.o hash.o test_ds.o
+	gcc -o test_ds lextype.o tree.o table_content.o hash.o test_ds.o
+
 main.o: main.c
 	gcc -c main.c
 parser.tab.o: parser.tab.c
@@ -18,5 +22,9 @@ lextype.o: lextype.c lextype.h
 	gcc -c lextype.c
 tree.o: tree.c tree.h lextype.h
 	gcc -c tree.c
+table_content.o: table_content.h lextype.h
+	gcc -c table_content.c
+hash.o: table_content.h hash.h
+	gcc -c hash.c
 clean:
 	rm *.o lex.yy.c parser.tab.c etapa3

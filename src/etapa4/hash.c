@@ -35,12 +35,14 @@ HashItem* createHashItem(SymbolKey* key, TableContent* content) {
 int hashFunction(SymbolKey* key) {
     // Replace the following line with an appropriate hash function
     // Example: using string length as a basic hash function
-    return strlen(key) % TABLE_SIZE;
+
+    // maybe this is good?
+    return strlen(key->key_name) % TABLE_SIZE;
 }
 
 // Function to insert an element into the hash table
 void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
-    int index = hashFunction(key, table->size);
+    int index = hashFunction(key);
 
     // aqui tem que verificar se table ja nao ta cheia, se ta, usa a proxima (se a proxima eh null, aloca nova)
     // esquece, nao precisa!
@@ -51,6 +53,7 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
     // hash nao da a volta
     while (current != NULL) {
         if (strcmp(current->hash_key, key) == 0) {
+            printf("Lexeme already exists! Adapt this to report semantic error!\n");
             // Element with the same key already exists; you can handle this case accordingly
             return;
         }
@@ -71,7 +74,7 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
 
 // Function to find an element in the hash table
 TableContent* findInTable(SymbolKey* key, Scope* table) {
-    int index = hashFunction(key, table->size);
+    int index = hashFunction(key);
 
     // Traverse the linked list at the calculated index (separate chaining)
     HashItem* current = table->lexemes[index];
