@@ -1,6 +1,8 @@
 /* The contexts shall be hash tables, when a new scope is created, a new hash table is created, then you add the elements (tableContents) in the HASH*/
 #include "table_content.h"
 
+#define TABLE_SIZE 32
+
 typedef struct HashItem {
     SymbolKey* hash_key;
     TableContent* hash_content;
