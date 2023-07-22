@@ -1,5 +1,12 @@
 %{
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+/* TO DO:
+*         - Create Hash Table (one scope, with basic functions of hash)
+*         - Implement the Table Content funcitions
+*         - Implement a list of scopes (multiple hashes)
+*         - Use the new structs in the parser as defined by the professor
+*         - Implement the errors and the "high level stuff" as defined by the professor
+*/
 
 #include <stdio.h>
 #include "tree.h"
