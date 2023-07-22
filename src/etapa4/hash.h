@@ -6,21 +6,22 @@
 typedef struct HashItem {
     SymbolKey* hash_key;
     TableContent* hash_content;
-    HashItem* next;
+    struct HashItem* next;
 } HashItem;
 
-typedef struct HashTable {
+typedef struct Scope {
     int height;
+    //int size = TABLE_SIZE;
     int size;
     int count;
     HashItem** lexemes;
     //HashTable* linked_table; its the "same table", but its used if the original table is full -> NAO PRECISA
-    Scope* previous_scope;
+    struct Scope* previous_scope;
 } Scope;
 
 
-void addInTable(SymbolKey* key, Scope* table);
+void addInTable(SymbolKey* key, TableContent* content, Scope* table);
 //void linkTables(Scope* table); -> NAO PRECISA!
-void findInTable(SymbolKey* key, Scope* table);
-int hashFunction(SymbolKey* key, int size);
-Scope* createTable(int size, Scope* current_scope); //will return the (now current) scope
+TableContent* findInTable(SymbolKey* key, Scope* table);
+int hashFunction(SymbolKey* key);
+Scope* createTable(Scope* current_scope); //will return the (now current) scope
