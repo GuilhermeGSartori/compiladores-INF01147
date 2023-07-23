@@ -1,24 +1,39 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "hash.h"
 
 // Function to create a new hash table (Scope)
 Scope* createTable(Scope* current) {
     Scope* table = (Scope*)malloc(sizeof(Scope));
-
+    
     if(current == NULL) {
         // creates global scope
         table->height = 0;
         table->previous_scope = NULL;
+        printf("EH os guri\n");
     }
     else {
+        table->previous_scope = (Scope*)malloc(sizeof(Scope));
         table->height = current->height + 1;
         table->previous_scope = current;
     }
 
     table->size = TABLE_SIZE;
     table->count = 0;
-    table->lexemes = (HashItem**)calloc(TABLE_SIZE, sizeof(HashItem*)); // tamanho fixo ou dinâmico?
+    table->lexemes = malloc(TABLE_SIZE * sizeof(HashItem));
 
+    for(int i=0; i<TABLE_SIZE; i++)
+        table->lexemes[i] = NULL;
+    printf("Was able to malloc\n");
+
+    //table->lexemes = (HashItem**)calloc(TABLE_SIZE, sizeof(HashItem*)); // tamanho fixo ou dinâmico?
+
+    // precisa dar um jeito de alocar internamente o q ta dentro do HashItem como next
+
+    // precisa alocar as estruturas de dentro das estruturas?
+    // aloca, dai aloca o q ta dentro e tals...
+    // se nao aloca eh null
     
     return table;
 }
@@ -28,6 +43,7 @@ HashItem* createHashItem(SymbolKey* key, TableContent* content) {
     HashItem* item = (HashItem*)malloc(sizeof(HashItem));
     item->hash_key = key;
     item->hash_content = content;
+    item->next = NULL;
     return item;
 }
 
@@ -42,23 +58,33 @@ int hashFunction(SymbolKey* key) {
 
 // Function to insert an element into the hash table
 void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
+
+    //if(table->lexemes == NULL) { // isso basicamente vai ser se o [0] (o ponteiro) ta apontando pra nada, eh alocado vai estar..
+    //    return;
+    //}
+
     int index = hashFunction(key);
 
     // aqui tem que verificar se table ja nao ta cheia, se ta, usa a proxima (se a proxima eh null, aloca nova)
     // esquece, nao precisa!
 
     // Traverse the linked list at the calculated index (separate chaining)
+    printf("Index: %d\n", index);
     HashItem* current = table->lexemes[index];
+    printf("Aqui q da seg fault?\n");
     
     // hash nao da a volta
     while (current != NULL) {
-        if (strcmp(current->hash_key, key) == 0) {
+        if (strcmp(current->hash_key->key_name, key->key_name) == 0) {
             printf("Lexeme already exists! Adapt this to report semantic error!\n");
             // Element with the same key already exists; you can handle this case accordingly
             return;
         }
         current = current->next;
     }
+
+    scanf("%d", &index);
+    printf("Achei um espaço\n");
 
     // Create a new HashItem and add it to the linked list
     HashItem* new_item = createHashItem(key, content);
@@ -69,6 +95,14 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
                                             // eh infinito, mas dependnedo do tmanho pode ficar meio ineficiente (todos index terem listas grandes, sla)
     table->lexemes[index] = new_item;
     table->count++;
+
+    int counter = 0;
+    HashItem* it = table->lexemes[4];
+    while(it != NULL) {
+        counter++;
+        printf("counter: %d\n", counter);
+        it = it->next;
+    }
 }
 
 
@@ -79,7 +113,7 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
     // Traverse the linked list at the calculated index (separate chaining)
     HashItem* current = table->lexemes[index];
     while (current != NULL) {
-        if (strcmp(current->hash_key, key) == 0) {
+        if (strcmp(current->hash_key->key_name, key->key_name) == 0) {
             return current->hash_content; // Element found, return its content
         }
         current = current->next;

@@ -18,13 +18,13 @@ lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
 lex.yy.c: scanner.l
 	flex scanner.l 
-lextype.o: lextype.c lextype.h
+lextype.o: lextype.c lextype.h lextype.c
 	gcc -c lextype.c
-tree.o: tree.c tree.h lextype.h
+tree.o: tree.c tree.h lextype.h tree.c
 	gcc -c tree.c
-table_content.o: table_content.h lextype.h
+table_content.o: table_content.h lextype.h table_content.c
 	gcc -c table_content.c
-hash.o: table_content.h hash.h
+hash.o: table_content.h hash.h hash.c
 	gcc -c hash.c
 clean:
 	rm *.o lex.yy.c parser.tab.c etapa3

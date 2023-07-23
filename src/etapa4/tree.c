@@ -38,7 +38,7 @@ void addSon(Node* father, Node* son) { // O(n)
         if(father->n_sons == 0) 
             father->sons = malloc(sizeof(struct astNode)); 
         else 
-	    father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode)); //O(n)
+	        father->sons = realloc(father->sons, ((father->n_sons)+1) * sizeof(struct astNode)); //O(n)
 
         father->sons[father->n_sons] = son; 
 
@@ -51,11 +51,11 @@ void updateLabel(Node* node) {
         strcpy(node->label, "if-else");
     else if(node->lexical_value != NULL) {
         if(node->lexical_value->type == LEX_ID) {
-	    char dummy[LABEL_MAX_SIZE];
-	    strcpy(dummy, "call ");
-	    strcat(dummy, node->label);
-	    strcpy(node->label, dummy);
-	}
+	        char dummy[LABEL_MAX_SIZE];
+	        strcpy(dummy, "call ");
+	        strcat(dummy, node->label);
+	        strcpy(node->label, dummy);
+	    }
     }
 }
 
