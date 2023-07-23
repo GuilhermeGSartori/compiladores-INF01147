@@ -71,14 +71,13 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
     // Traverse the linked list at the calculated index (separate chaining)
     printf("Index: %d\n", index);
     HashItem* current = table->lexemes[index];
-    printf("Aqui q da seg fault?\n");
+    // printf("Aqui q da seg fault?\n");
     
     // hash nao da a volta
     while (current != NULL) {
         if (strcmp(current->hash_key->key_name, key->key_name) == 0) {
-            printf("Lexeme already exists! Adapt this to report semantic error!\n");
-            // Element with the same key already exists; you can handle this case accordingly
-            return;
+            printf("Symbol was already declared!\n");
+            exit(ERR_DECLARED);
         }
         current = current->next;
     }
@@ -105,6 +104,7 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
         printf("counter: %d\n", counter);
         it = it->next;
     }
+
 }
 
 
@@ -123,4 +123,24 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
 
     return NULL; // Element not found
 }
+
+
+TableContent* findInTableStack(SymbolKey* key, Scope* stack_top) {
+
+    //int current_height = stack_top->height;
+    Scope* stack_run = stack_top;
+
+    TableContent* content = NULL;
+
+    while(stack_run != NULL && content == NULL) {
+        content = findInTable(key, stack_run);
+        if(content != NULL)
+            return content;
+        stack_run = stack_run->previous_scope;
+    }
+
+    printf("Symbol was NOT declared!\n");
+    exit(ERR_UNDECLARED);
+     
+}   // vai descendo a stack de hash tables
 

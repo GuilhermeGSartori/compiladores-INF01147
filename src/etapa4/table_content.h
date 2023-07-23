@@ -1,10 +1,11 @@
 //#include "tree.h"
 #include "lextype.h"
 
-enum boolean {
-    FALSE = 0,
-    TRUE = 1
-};
+#define ERR_UNDECLARED 10 //2.2
+#define ERR_DECLARED 11 //2.2
+#define ERR_VARIABLE 20 //2.3
+#define ERR_FUNCTION 21 //2.3
+
 
 enum symbol_nature {
     LIT_SYMBOL,
@@ -29,7 +30,8 @@ typedef struct TableContent {
 TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum lex_type type); 
 // pega o contexto atual e tenta criar, se ja existe, retorna erro! -> usa findInCurrentTable
 
-TableContent* updateContent(); //atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
+void updateContent(TableContent* line, char* lexeme_value, int line_num, enum lex_type type); 
+//atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
 
 // atributos de NT sao usados para inferencia de tipos e tals... E controle de tabela atual? saber qual tabela to e etc
 // ONDE FICA A PILHA DE HASH
@@ -37,5 +39,5 @@ TableContent* updateContent(); //atualiza o conteudo de dado lexema no contexto 
 // essa funcao no fim no fim, vai chamar a addElement da hash table
 //void addToCurrentTable(TableContent* new_line); // tabela vai ser como? como sei que tenho uma tabela e pilha de tabelas? como eh essa pilha de tabela e o q eu de fato empilho?
                                            // outra struct? hash?  eh meio uma lista encadeada, mas o q tem em cada nodo da lista? eh a "hash" que via ter os simbolos dai
-enum boolean findInTableStack(SymbolKey key);   // vai descendo a stack de hash tables
-enum boolean findInCurrentTable(SymbolKey key); // procura na hash table atual (topo da stack)
+//enum boolean findInTableStack(SymbolKey key);   // vai descendo a stack de hash tables
+//enum boolean findInCurrentTable(SymbolKey key); // procura na hash table atual (topo da stack)

@@ -16,3 +16,17 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
 
     return table_line;
 }
+
+
+void updateContent(TableContent* line, char* lexeme_value, int line_num, enum lex_type type) {
+    
+    if(line->line != line_num)
+        line->line = line_num;
+    
+    if(strcmp(line->value, lexeme_value) == 1)
+        strcpy(line->value, lexeme_value);
+
+    if(line->type != type)
+        line->type = type;
+
+}

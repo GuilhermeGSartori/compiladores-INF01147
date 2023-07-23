@@ -1,5 +1,6 @@
 /* The contexts shall be hash tables, when a new scope is created, a new hash table is created, then you add the elements (tableContents) in the HASH*/
 #include "table_content.h"
+#include <stdlib.h>
 
 #define TABLE_SIZE 32
 
@@ -19,9 +20,10 @@ typedef struct Scope {
     struct Scope* previous_scope;
 } Scope;
 
+//Scope* scope_stack = NULL;
 
 void addInTable(SymbolKey* key, TableContent* content, Scope* table);
-//void linkTables(Scope* table); -> NAO PRECISA!
+TableContent* findInTableStack(SymbolKey* key, Scope* stack_top);
 TableContent* findInTable(SymbolKey* key, Scope* table);
 int hashFunction(SymbolKey* key);
 Scope* createTable(Scope* current_scope); //will return the (now current) scope
