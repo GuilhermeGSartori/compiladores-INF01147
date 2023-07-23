@@ -15,3 +15,9 @@ The assignment is divided in 7 phases.
 bash output2dot.sh < output.txt > img.dot
 
 **Phase 4)** In this phase, we are required to verify if the code semantics are correct, since the lexical verification was done and the syntax is correct, its necessary to finish with the verification of the semantics. If this is ok, then code can be generated since the code comply with the expected rules of the "C-like" language. The semantic validation is done by using a linked list (a "stack") of Hash Tables, every hash table then stores content associated to identifiers, functions and literals in its respective scope (the hash table), and with this, we can validate the semantics.
+
+
+
+**TO DO:** 
+
+Fix the bugs of phase 3 (fun call in expressions and comments)
