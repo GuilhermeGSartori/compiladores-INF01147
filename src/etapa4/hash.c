@@ -88,6 +88,8 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
 
     // Create a new HashItem and add it to the linked list
     HashItem* new_item = createHashItem(key, content);
+
+    // ver se ta colocando certinho nos buckets da id... essa lista do index e tals
     new_item->next = table->lexemes[index]; // tem sla, 128 slots sequenciaas em memoria, mas tu pula os vazios pq os slots ocupados se apontam
                                             // na verdade nao... eh um bucket! tem o indice 12 dos 128, todos que sao 12, dai fazem parte de uma lista
                                             // referente ao 12! se o 12 ta ocupado o cara nao vira o 13 nao, ele só vira a cabeca da lista do 12
@@ -97,7 +99,7 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
     table->count++;
 
     int counter = 0;
-    HashItem* it = table->lexemes[4];
+    HashItem* it = table->lexemes[index];
     while(it != NULL) {
         counter++;
         printf("counter: %d\n", counter);
