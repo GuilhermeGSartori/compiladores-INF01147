@@ -73,7 +73,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 74 "parser.y" /* yacc.c:1909  */
+#line 81 "parser.y" /* yacc.c:1909  */
 
     struct LexType* valor_lexico;
     struct astNode* node;
