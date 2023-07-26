@@ -1,8 +1,16 @@
 #include "lextype.h"
 
+enum semantic_type {
+    TYPE_INT, 
+    TYPE_FLOAT, 
+    TYPE_BOOL, 
+    TYPE_UNDEFINED
+};
+
 typedef struct astNode {
     char label[LABEL_MAX_SIZE];
     LexType* lexical_value;
+	enum semantic_type type;
     int n_sons;
     struct astNode** sons; // Dynamic array(first *) made of pointers to other nodes (second *)
 } Node;
