@@ -127,3 +127,31 @@ void printKids(Node* father, int height) {
 	n_kids--;
     }
 }
+
+int getType(Node* node){
+	
+	return node->type;
+}
+
+void setType(Node* node, enum semantic_type type) {
+ 
+    node->type = type;
+}
+
+int inferType(enum semantic_type type1, enum semantic_type type2){
+	
+	if(type1 == type2){
+		return type1;
+	} else if(((type1 == TYPE_INT) && (type2 == TYPE_FLOAT)) || ((type1 == TYPE_FLOAT) && (type2 == TYPE_INT))){
+		return TYPE_FLOAT;
+	} else if(((type1 == TYPE_INT) && (type2 == TYPE_BOOL)) || ((type1 == TYPE_BOOL) && (type2 == TYPE_INT))){
+		return TYPE_INT;
+	} else if(((type1 == TYPE_FLOAT) && (type2 == TYPE_BOOL)) || ((type1 == TYPE_BOOL) && (type2 == TYPE_FLOAT))){
+		return TYPE_FLOAT;
+	} else if(type1 == TYPE_UNDEFINED){
+		return type2;
+	} else if(type2 == TYPE_UNDEFINED){
+		return type1;
+	}
+	
+}
