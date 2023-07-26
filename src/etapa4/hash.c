@@ -52,7 +52,14 @@ int hashFunction(SymbolKey* key) {
     // Example: using string length as a basic hash function
 
     // maybe this is good?
-    return strlen(key->key_name) % TABLE_SIZE;
+    //return strlen(key->key_name) % TABLE_SIZE;
+    int sum_of_chars = 0;
+    for(int i=0; i<strlen(key->key_name); i++) {
+        sum_of_chars += (int)key->key_name[i];
+        printf("Teste: %d\n", sum_of_chars);
+    }
+    return sum_of_chars % TABLE_SIZE;
+    
 }
 
 // Function to insert an element into the hash table

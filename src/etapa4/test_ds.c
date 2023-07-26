@@ -26,9 +26,9 @@ int main() {
     
 
     printf("Will create lines\n");
-    TableContent* content = newContent(key, "2", 0, ID_SYMBOL, LEX_LIT_INT); 
-    TableContent* content2 = newContent(key2, "3", 0, ID_SYMBOL, LEX_LIT_INT); 
-    TableContent* content3 = newContent(key3, "7", 0, LIT_SYMBOL, LEX_LIT_INT); 
+    TableContent* content = newContent(key, "2", 0, ID_SYMBOL, TYPE_INT); 
+    TableContent* content2 = newContent(key2, "3", 0, ID_SYMBOL, TYPE_INT); 
+    TableContent* content3 = newContent(key3, "7", 0, LIT_SYMBOL, TYPE_INT); 
     printf("line created\n");
 
     //addToCurrentTable(content);

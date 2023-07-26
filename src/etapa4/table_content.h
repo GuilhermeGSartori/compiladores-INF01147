@@ -1,5 +1,5 @@
-//#include "tree.h"
-#include "lextype.h"
+#include "tree.h"
+//#include "lextype.h"
 
 #define ERR_UNDECLARED 10 //2.2
 #define ERR_DECLARED 11 //2.2
@@ -23,7 +23,7 @@ typedef struct TableContent {
     SymbolKey* key;
     int line;
     enum symbol_nature nature;
-    enum lex_type type;
+    enum semantic_type type;
     char value[LABEL_MAX_SIZE];
 } TableContent;
 

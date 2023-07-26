@@ -22,7 +22,7 @@ lextype.o: lextype.c lextype.h lextype.c
 	gcc -c lextype.c
 tree.o: tree.c tree.h lextype.h tree.c
 	gcc -c tree.c
-table_content.o: table_content.h lextype.h table_content.c
+table_content.o: table_content.h tree.h table_content.c
 	gcc -c table_content.c
 hash.o: table_content.h hash.h hash.c
 	gcc -c hash.c
