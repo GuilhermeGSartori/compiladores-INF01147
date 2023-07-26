@@ -39,9 +39,8 @@ Scope* createTable(Scope* current) {
 }
 
 // Function to create a new HashItem and initialize it
-HashItem* createHashItem(SymbolKey* key, TableContent* content) {
+HashItem* createHashItem(TableContent* content) {
     HashItem* item = (HashItem*)malloc(sizeof(HashItem));
-    item->hash_key = key;
     item->hash_content = content;
     item->next = NULL;
     return item;
@@ -57,13 +56,13 @@ int hashFunction(SymbolKey* key) {
 }
 
 // Function to insert an element into the hash table
-void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
+void addInTable(TableContent* content, Scope* table) {
 
     //if(table->lexemes == NULL) { // isso basicamente vai ser se o [0] (o ponteiro) ta apontando pra nada, eh alocado vai estar..
     //    return;
     //}
 
-    int index = hashFunction(key);
+    int index = hashFunction(content->key);
 
     // aqui tem que verificar se table ja nao ta cheia, se ta, usa a proxima (se a proxima eh null, aloca nova)
     // esquece, nao precisa!
@@ -75,7 +74,7 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
     
     // hash nao da a volta
     while (current != NULL) {
-        if (strcmp(current->hash_key->key_name, key->key_name) == 0) {
+        if (strcmp(current->hash_content->key->key_name, content->key->key_name) == 0) {
             printf("Symbol was already declared!\n");
             exit(ERR_DECLARED);
         }
@@ -86,7 +85,7 @@ void addInTable(SymbolKey* key, TableContent* content, Scope* table) {
     printf("Achei um espaço\n");
 
     // Create a new HashItem and add it to the linked list
-    HashItem* new_item = createHashItem(key, content);
+    HashItem* new_item = createHashItem(content);
 
     // ver se ta colocando certinho nos buckets da id... essa lista do index e tals
     new_item->next = table->lexemes[index]; // tem sla, 128 slots sequenciaas em memoria, mas tu pula os vazios pq os slots ocupados se apontam
@@ -115,7 +114,7 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
     // Traverse the linked list at the calculated index (separate chaining)
     HashItem* current = table->lexemes[index];
     while (current != NULL) {
-        if (strcmp(current->hash_key->key_name, key->key_name) == 0) {
+        if (strcmp(current->hash_content->key->key_name, key->key_name) == 0) {
             return current->hash_content; // Element found, return its content
         }
         current = current->next;
@@ -132,10 +131,15 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top) {
 
     TableContent* content = NULL;
 
+    int count = 0;
+
     while(stack_run != NULL && content == NULL) {
         content = findInTable(key, stack_run);
-        if(content != NULL)
+        if(content != NULL) {
+            printf("Jumped %d scopes!\n", count);
             return content;
+        }
+        count++;
         stack_run = stack_run->previous_scope;
     }
 

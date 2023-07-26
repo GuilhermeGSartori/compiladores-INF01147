@@ -5,7 +5,6 @@
 #define TABLE_SIZE 32
 
 typedef struct HashItem {
-    SymbolKey* hash_key;
     TableContent* hash_content;
     struct HashItem* next;
 } HashItem;
@@ -22,7 +21,8 @@ typedef struct Scope {
 
 //Scope* scope_stack = NULL;
 
-void addInTable(SymbolKey* key, TableContent* content, Scope* table);
+HashItem* createHashItem(TableContent* content);
+void addInTable(TableContent* content, Scope* table);
 TableContent* findInTableStack(SymbolKey* key, Scope* stack_top);
 TableContent* findInTable(SymbolKey* key, Scope* table);
 int hashFunction(SymbolKey* key);
