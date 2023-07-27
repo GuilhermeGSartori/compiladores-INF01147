@@ -104,8 +104,21 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
     return NULL; // Element not found
 }
 
+void assertContentIsID(int nature) {
+    if(nature != ID_SYMBOL && nature == FUN_SYMBOL) {
+        printf("Used function symbol as a identifier!\n");
+        exit(ERR_VARIABLE); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+    }
+}
 
-TableContent* findInTableStack(SymbolKey* key, Scope* stack_top) {
+void assertContentIsFUN(int nature) {
+    if(nature != FUN_SYMBOL && nature == ID_SYMBOL) {
+        printf("Used identifier symbol as a function!\n");
+        exit(ERR_FUNCTION); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+    }
+}
+
+TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
 
     Scope* stack_run = stack_top;
 
@@ -117,6 +130,10 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top) {
         content = findInTable(key, stack_run);
         if(content != NULL) {
             printf("Jumped %d scopes!\n", count);
+            if(nature == ID_SYMBOL)
+                assertContentIsID(content->nature);
+            else if(nature == FUN_SYMBOL)
+                assertContentIsFUN(content->nature);
             return content;
         }
         count++;
@@ -128,3 +145,7 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top) {
      
 }   // vai descendo a stack de hash tables
 
+
+void invalidSemanticOperation() {
+    printf("Invalid semantic operation!\n");
+}

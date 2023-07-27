@@ -34,10 +34,12 @@ void setKeyName(SymbolKey* key, char* value);
 
 char* getKeyName(TableContent* line);
 
-TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum lex_type type); 
+TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum semantic_type type); 
 // pega o contexto atual e tenta criar, se ja existe, retorna erro! -> usa findInCurrentTable
 
-void updateContent(TableContent* line, char* lexeme_value, int line_num, enum lex_type type); 
+void updateContent(TableContent* line, char* lexeme_value, int line_num, enum semantic_type type); 
+
+void updateContentType(TableContent* line, enum semantic_type type); 
 //atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
 
 // atributos de NT sao usados para inferencia de tipos e tals... E controle de tabela atual? saber qual tabela to e etc

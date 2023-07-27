@@ -17,7 +17,7 @@ char* getKeyName(TableContent* line) {
     return line->key->key_name;
 }
 
-TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum lex_type type) {
+TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum semantic_type type) {
     TableContent* table_line = (TableContent*)malloc(sizeof(TableContent));
     
     table_line->key = (SymbolKey*)malloc(sizeof(SymbolKey));
@@ -33,7 +33,7 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
 }
 
 
-void updateContent(TableContent* line, char* lexeme_value, int line_num, enum lex_type type) {
+void updateContent(TableContent* line, char* lexeme_value, int line_num, enum semantic_type type) {
     
     if(line->line != line_num)
         line->line = line_num;
@@ -44,4 +44,9 @@ void updateContent(TableContent* line, char* lexeme_value, int line_num, enum le
     if(line->type != type)
         line->type = type;
 
+}
+
+
+void updateContentType(TableContent* line, enum semantic_type type) {
+    line->type = type;
 }

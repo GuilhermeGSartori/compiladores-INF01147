@@ -45,16 +45,16 @@ int main() {
 
     TableContent* get;
 
-    get = findInTableStack(key2, scope_stack);
+    get = findInTableStack(key2, scope_stack, TYPE_INT);
     printf("key2 content: %s\n", get->value);
 
-    get = findInTableStack(key3, scope_stack);
+    get = findInTableStack(key3, scope_stack, TYPE_INT);
     printf("key3 content: %s\n", get->value);
 
-    get = findInTableStack(key, scope_stack);
+    get = findInTableStack(key, scope_stack, TYPE_INT);
     printf("key content: %s\n", get->value); // como sei q eh a key q ta no topo e nao na base?
 
-    get = findInTableStack(key4, scope_stack);
+    get = findInTableStack(key4, scope_stack, TYPE_INT);
     printf("key4 content: %s\n", get->value);
 
 

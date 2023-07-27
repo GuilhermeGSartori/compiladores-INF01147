@@ -23,7 +23,11 @@ typedef struct Scope {
 
 HashItem* createHashItem(TableContent* content);
 void addInTable(TableContent* content, Scope* table);
-TableContent* findInTableStack(SymbolKey* key, Scope* stack_top);
+void assertContentIsFUN(int nature);
+void assertContentIsID(int nature);
+TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature);
 TableContent* findInTable(SymbolKey* key, Scope* table);
 int hashFunction(SymbolKey* key);
 Scope* createTable(Scope* current_scope); //will return the (now current) scope
+void popTable(Scope* stack_top);
+void invalidSemanticOperation();

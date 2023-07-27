@@ -48,6 +48,7 @@ Scope* scope_stack_top = NULL;
 %type<node> elemento
 %type<node> funcao
 %type<node> cabecalho
+%type<node> fun_name
 %type<node> corpo
 %type<node> cmd_block
 %type<node> cmd_simples
@@ -94,6 +95,11 @@ Scope* scope_stack_top = NULL;
 /*1 - Um programa na linguagem é composto por dois elementos, todos opcionais: um conjunto de declarações de variáveis globais e um 
 conjunto de funções. Esses elementos podem estar intercalados e em qualquer ordem.*/
 
+inicio: abre_escopo programa fecha_escopo ;
+
+abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
+fecha_escopo: ; // pop e free e tirar ponteiros
+
 programa: lista   { arvore = $1; }
 	|         { arvore = NULL; }
         ;
@@ -123,14 +129,44 @@ elemento: declaracao_variavel_global { $$ = NULL; } ;
 /*2 - Cada função é definida por um cabeçalho e um corpo, sendo que esta definição não é terminada
 por ponto-e-vírgula.*/
 
-funcao: cabecalho corpo { $$ = $1; addSon($$, $2); } ;
+ //funcao: cabecalho corpo { $$ = $1; addSon($$, $2); } ;
 
+funcao: cabecalho TK_OC_MAP TK_PR_FLOAT corpo fecha_escopo { 
+                                                                $$ = $1; addSon($$, $4); setType($$, TYPE_FLOAT);
+                                                                SymbolKey* key = mallocAndSetKeyName($1->label);
+                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                                updateContentType(content, TYPE_FLOAT); 
+                                                           } ;
 
+funcao: cabecalho TK_OC_MAP TK_PR_INT corpo fecha_escopo   { 
+                                                                $$ = $1; addSon($$, $4); setType($$, TYPE_INT);
+                                                                SymbolKey* key = mallocAndSetKeyName($1->label);
+                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                                updateContentType(content, TYPE_INT); 
+                                                           } ;
+
+funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  { 
+                                                                $$ = $1; addSon($$, $4); setType($$, TYPE_BOOL);
+                                                                SymbolKey* key = mallocAndSetKeyName($1->label);
+                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                                updateContentType(content, TYPE_BOOL); 
+                                                           } ;
+
+ // verificar se tipo de chamada de funcao ta certo?
+ // cria um escopo na propria cabeça e dai coloca a lista de param como variaveis
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
-cabecalho: TK_IDENTIFICADOR '(' lista_params ')' TK_OC_MAP tipo { $$ = createLexTypeNode($1); };
+cabecalho: fun_name abre_escopo parametros { $$ = $1; } ;
 
+fun_name: TK_IDENTIFICADOR {
+                                $$ = createLexTypeNode($1); 
+                                SymbolKey* key = mallocAndSetKeyName($1->value);
+                                TableContent* content = newContent(key, $1->value, get_line_number(), FUN_SYMBOL, TYPE_UNDEFINED); 
+                                addInTable(content, scope_stack_top);
+                           } ;
+
+parametros: '(' lista_params ')' ;
 
 
 /*4 - A lista de parâmetros é dada entre parênteses e é composta por zero ou mais parâmetros de entrada, separados por vírgula.*/
@@ -207,7 +243,7 @@ lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{ if($3 == NULL) { $$ = NU
 			   | init 			{ $$ = $1; }
 			   ;
 
-init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createLexTypeNode($1)); addSon($$, createLexTypeNode($3)); } ; 
+init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createLexTypeNode($1)); addSon($$, $3); } ; 
 
 
 
@@ -229,7 +265,7 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   addSon($$, $3); 
                                                   SymbolKey* key = mallocAndSetKeyName($1->value); 
                                                   TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
-                                                  setType($$, content->semantic_type); 
+                                                  setType($$, content->type); 
                                               } ; 
 
 lista_args: um_ou_mais_args 	{ $$ = $1; }
@@ -300,7 +336,7 @@ operandos: TK_IDENTIFICADOR 		{
                                         $$ = createLexTypeNode($1); 
                                         SymbolKey* key = mallocAndSetKeyName($1->value); 
                                         TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
-                                        setType($$, content->semantic_type); 
+                                        setType($$, content->type); 
                                     } ;
 
 operandos: literais 				{ $$ = $1; } ;
@@ -350,7 +386,7 @@ expr3: expr3 operadoresPrecedencia4 expr4               {
                                                             int type2 = getType($3);
                                                             if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT));
                                                                 invalidSemanticOperation();   
-                                                            setType($2, TYPE_BOOL)  
+                                                            setType($2, TYPE_BOOL); 
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
                                                             $$ = $2; 
