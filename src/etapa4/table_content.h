@@ -27,6 +27,8 @@ typedef struct TableContent {
     char value[LABEL_MAX_SIZE];
 } TableContent;
 
+void setKeyName(SymbolKey* key, char* value);
+
 char* getKeyName(TableContent* line);
 
 TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum lex_type type); 

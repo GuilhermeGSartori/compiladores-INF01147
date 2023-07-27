@@ -42,7 +42,7 @@ HashItem* createHashItem(TableContent* content) {
 int hashFunction(SymbolKey* key) {
 
     int sum_of_chars = 0;
-    for(int i=0; i<strlen(key->key_name); i++) {
+    for(int i=0; i<strlen(key->key_name); i++) { // esse loop aqui consome mto recurso?
         sum_of_chars += (int)key->key_name[i];
         printf("Teste: %d\n", sum_of_chars);
     }

@@ -18,11 +18,15 @@ int main() {
     SymbolKey* key3 = malloc(sizeof(SymbolKey));
     SymbolKey* key4 = malloc(sizeof(SymbolKey));
 
-    strcpy(key->key_name, "var1");
+    setKeyName(key, "var1");
+    setKeyName(key2, "vaaaa2");
+    setKeyName(key4, "vaar4");
+    setKeyName(key3, "7");
+    //strcpy(key->key_name, "var1");
     //printf("Line 1 made\n");
-    strcpy(key2->key_name, "vaaaa2");
-    strcpy(key4->key_name, "vaar3");
-    strcpy(key3->key_name, "7");
+    //strcpy(key2->key_name, "vaaaa2");
+    //strcpy(key4->key_name, "vaar4");
+    //strcpy(key3->key_name, "7");
     
 
     printf("Will create lines\n");

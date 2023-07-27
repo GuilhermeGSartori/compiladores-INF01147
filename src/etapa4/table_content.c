@@ -3,6 +3,10 @@
 #include <string.h>
 
 
+void setKeyName(SymbolKey* key, char* value) {
+    strcpy(key->key_name, value);
+}
+
 char* getKeyName(TableContent* line) {
     return line->key->key_name;
 }

@@ -221,11 +221,13 @@ atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createL
 /*10 - Chamada de Função: Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados 
 por vírgula. Um argumento pode ser uma expressão.*/
 
+/* Coisas acontecem no final, sera que nao tem que quebrar em 2 e herdar e tals? */
+
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' { 
                                                   $$ = createLexTypeNode($1); 
                                                   updateLabel($$); 
                                                   addSon($$, $3); 
-                                                  SymbolKey* key; setKey(key, $1->value); 
+                                                  SymbolKey* key; setKeyName(key, $1->value); 
                                                   TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
                                                   setType($$, content->semantic_type); 
                                               } ; 
@@ -252,6 +254,9 @@ return: TK_PR_RETURN expressao  	{ $$ = createNode("return"); addSon($$, $2); } 
 fluxo. A condicional consiste no token if seguido de uma expressão entre parênteses e então por um bloco de comandos 
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
+
+/* como faz tudo no final acho q tem q quebrar em 2 e herdar, if fica como undefined e inter baseado na expressao */
+/* expressao nao tem q ser bool? */
 
 if: TK_PR_IF '(' expressao ')' cmd_block else  { 
                                                  $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6);
@@ -293,7 +298,7 @@ pelo emprego de operadores. Elas também permitem o uso de parênteses para for�
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
 operandos: TK_IDENTIFICADOR 		{
                                         $$ = createLexTypeNode($1); 
-                                        SymbolKey* key; setKey(key, $1->value); 
+                                        SymbolKey* key; setKeyName(key, $1->value); 
                                         TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
                                         setType($$, content->semantic_type); 
                                     } ;
