@@ -27,6 +27,9 @@ typedef struct TableContent {
     char value[LABEL_MAX_SIZE];
 } TableContent;
 
+
+SymbolKey* mallocAndSetKeyName(char* value);
+
 void setKeyName(SymbolKey* key, char* value);
 
 char* getKeyName(TableContent* line);

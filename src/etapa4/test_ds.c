@@ -13,20 +13,14 @@ int main() {
     // global fica no topo
     // isso q tava causando seg fault??
 
-    SymbolKey* key = malloc(sizeof(SymbolKey));
-    SymbolKey* key2 = malloc(sizeof(SymbolKey));
-    SymbolKey* key3 = malloc(sizeof(SymbolKey));
-    SymbolKey* key4 = malloc(sizeof(SymbolKey));
 
-    setKeyName(key, "var1");
-    setKeyName(key2, "vaaaa2");
-    setKeyName(key4, "vaar4");
-    setKeyName(key3, "7");
-    //strcpy(key->key_name, "var1");
-    //printf("Line 1 made\n");
-    //strcpy(key2->key_name, "vaaaa2");
-    //strcpy(key4->key_name, "vaar4");
-    //strcpy(key3->key_name, "7");
+    SymbolKey* key = mallocAndSetKeyName("var1");
+    SymbolKey* key2 = mallocAndSetKeyName("vaaaa2");
+    SymbolKey* key4 = mallocAndSetKeyName("vaar4");
+    SymbolKey* key3 = mallocAndSetKeyName("7");
+    // algo aqui invertendo key3 com key4 e malloc nao retornando mas setando internamente a key (passada como ponteiro) tava dando seg fault
+
+    printf("Criei Keys\n");
     
 
     printf("Will create lines\n");

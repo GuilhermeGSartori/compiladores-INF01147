@@ -227,7 +227,7 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   $$ = createLexTypeNode($1); 
                                                   updateLabel($$); 
                                                   addSon($$, $3); 
-                                                  SymbolKey* key; setKeyName(key, $1->value); 
+                                                  SymbolKey* key = mallocAndSetKeyName($1->value); 
                                                   TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
                                                   setType($$, content->semantic_type); 
                                               } ; 
@@ -298,7 +298,7 @@ pelo emprego de operadores. Elas também permitem o uso de parênteses para for�
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
 operandos: TK_IDENTIFICADOR 		{
                                         $$ = createLexTypeNode($1); 
-                                        SymbolKey* key; setKeyName(key, $1->value); 
+                                        SymbolKey* key = mallocAndSetKeyName($1->value); 
                                         TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
                                         setType($$, content->semantic_type); 
                                     } ;

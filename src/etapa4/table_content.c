@@ -3,6 +3,12 @@
 #include <string.h>
 
 
+SymbolKey* mallocAndSetKeyName(char* value) {
+    SymbolKey* key = malloc(sizeof(SymbolKey));
+    strcpy(key->key_name, value);
+    return key;
+}
+
 void setKeyName(SymbolKey* key, char* value) {
     strcpy(key->key_name, value);
 }
