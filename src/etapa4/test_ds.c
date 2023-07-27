@@ -28,7 +28,9 @@ int main() {
     printf("Will create lines\n");
     TableContent* content = newContent(key, "2", 0, ID_SYMBOL, TYPE_INT); 
     TableContent* content2 = newContent(key2, "3", 0, ID_SYMBOL, TYPE_INT); 
-    TableContent* content3 = newContent(key3, "7", 0, LIT_SYMBOL, TYPE_INT); 
+    TableContent* content3 = newContent(key3, "7", 0, LIT_SYMBOL, TYPE_INT);  // se for FUN_SYMBOL, o TYPE vai ser determinado pelo o q ele retorna
+    // lista para atribuicao/declaracao
+    // sla
     printf("line created\n");
 
     //addToCurrentTable(content);

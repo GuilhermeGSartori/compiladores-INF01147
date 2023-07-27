@@ -9,13 +9,16 @@
 */
 
 #include <stdio.h>
-#include "tree.h"
+//#include "tree.h"
+#include "hash.h"
 
 int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
+Scope* scope_stack_top = NULL;
 %}
+
 %define parse.error verbose
 
 %token TK_PR_INT
@@ -39,7 +42,7 @@ extern void *arvore;
 %token<valor_lexico> TK_LIT_TRUE
 %token TK_ERRO
 
-%type<valor_lexico> literais
+%type<node> literais
 %type<node> programa
 %type<node> lista
 %type<node> elemento
@@ -218,7 +221,14 @@ atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createL
 /*10 - Chamada de Função: Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados 
 por vírgula. Um argumento pode ser uma expressão.*/
 
-fun_call: TK_IDENTIFICADOR '(' lista_args ')' { $$ = createLexTypeNode($1); updateLabel($$); addSon($$, $3); } ; 
+fun_call: TK_IDENTIFICADOR '(' lista_args ')' { 
+                                                  $$ = createLexTypeNode($1); 
+                                                  updateLabel($$); 
+                                                  addSon($$, $3); 
+                                                  SymbolKey* key; setKey(key, $1->value); 
+                                                  TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                  setType($$, content->semantic_type); 
+                                              } ; 
 
 lista_args: um_ou_mais_args 	{ $$ = $1; }
 		  | 		{ $$ = NULL; }
@@ -269,10 +279,10 @@ lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
 
 tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
-literais: TK_LIT_INT 		{ $$ = $1; } ;
-literais: TK_LIT_FLOAT 		{ $$ = $1; } ;
-literais: TK_LIT_TRUE 		{ $$ = $1; } ;
-literais: TK_LIT_FALSE 		{ $$ = $1; } ;
+literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_INT); } ;
+literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_FLOAT); } ;
+literais: TK_LIT_TRUE 		{ $$ = createLexTypeNode($1); setType($$, TYPE_BOOL); } ;
+literais: TK_LIT_FALSE 		{ $$ = createLexTypeNode($1); setType($$, TYPE_BOOL); } ;
 
 
 
@@ -281,9 +291,18 @@ literais: TK_LIT_FALSE 		{ $$ = $1; } ;
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
 /* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
-operandos: TK_IDENTIFICADOR 		{ $$ = createLexTypeNode($1); } ;
-operandos: literais 				{ $$ = createLexTypeNode($1); } ;
-operandos: fun_call  				{ $$ = $1; } ;
+operandos: TK_IDENTIFICADOR 		{
+                                        $$ = createLexTypeNode($1); 
+                                        SymbolKey* key; setKey(key, $1->value); 
+                                        TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
+                                        setType($$, content->semantic_type); 
+                                    } ;
+
+operandos: literais 				{ $$ = $1; } ;
+
+operandos: fun_call  				{ $$ = $1; 
+
+                                    } ;
 
 /* operadoresUnarios: '-' | '!' ; */
 operadoresUnarios: '-'  			{ $$ = createNode("-"); } ;
@@ -320,7 +339,18 @@ expr1: expr1 operadoresPrecedencia6 expr2               { addSon($2, $1); addSon
 expr2: expr3 	                                        { $$ = $1; } ;
 expr2: expr2 operadoresPrecedencia5 expr3               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
 expr3: expr4 		                                { $$ = $1; } ;
-expr3: expr3 operadoresPrecedencia4 expr4               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+
+expr3: expr3 operadoresPrecedencia4 expr4               { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT));
+                                                                invalidSemanticOperation();   
+                                                            setType($2, TYPE_BOOL)  
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            $$ = $2; 
+                                                        } ;
+
 expr4: expr5                                            { $$ = $1; } ;
 expr4: expr4 operadoresPrecedencia3 expr5               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
 expr5: expr6 	                                        { $$ = $1; } ;
