@@ -27,6 +27,8 @@ typedef struct TableContent {
     char value[LABEL_MAX_SIZE];
 } TableContent;
 
+char* getKeyName(TableContent* line);
+
 TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum lex_type type); 
 // pega o contexto atual e tenta criar, se ja existe, retorna erro! -> usa findInCurrentTable
 

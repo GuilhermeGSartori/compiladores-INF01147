@@ -11,7 +11,7 @@ Scope* createTable(Scope* current) {
         // creates global scope
         table->height = 0;
         table->previous_scope = NULL;
-        printf("EH os guri\n");
+        printf("Criei a global\n");
     }
     else {
         table->previous_scope = (Scope*)malloc(sizeof(Scope));
@@ -25,16 +25,8 @@ Scope* createTable(Scope* current) {
 
     for(int i=0; i<TABLE_SIZE; i++)
         table->lexemes[i] = NULL;
-    printf("Was able to malloc\n");
+    printf("Consegui alocar uma nova tabela\n");
 
-    //table->lexemes = (HashItem**)calloc(TABLE_SIZE, sizeof(HashItem*)); // tamanho fixo ou dinâmico?
-
-    // precisa dar um jeito de alocar internamente o q ta dentro do HashItem como next
-
-    // precisa alocar as estruturas de dentro das estruturas?
-    // aloca, dai aloca o q ta dentro e tals...
-    // se nao aloca eh null
-    
     return table;
 }
 
@@ -48,11 +40,7 @@ HashItem* createHashItem(TableContent* content) {
 
 // Function to calculate the hash index using a simple hash function
 int hashFunction(SymbolKey* key) {
-    // Replace the following line with an appropriate hash function
-    // Example: using string length as a basic hash function
 
-    // maybe this is good?
-    //return strlen(key->key_name) % TABLE_SIZE;
     int sum_of_chars = 0;
     for(int i=0; i<strlen(key->key_name); i++) {
         sum_of_chars += (int)key->key_name[i];
@@ -65,23 +53,14 @@ int hashFunction(SymbolKey* key) {
 // Function to insert an element into the hash table
 void addInTable(TableContent* content, Scope* table) {
 
-    //if(table->lexemes == NULL) { // isso basicamente vai ser se o [0] (o ponteiro) ta apontando pra nada, eh alocado vai estar..
-    //    return;
-    //}
-
     int index = hashFunction(content->key);
 
-    // aqui tem que verificar se table ja nao ta cheia, se ta, usa a proxima (se a proxima eh null, aloca nova)
-    // esquece, nao precisa!
-
-    // Traverse the linked list at the calculated index (separate chaining)
     printf("Index: %d\n", index);
     HashItem* current = table->lexemes[index];
-    // printf("Aqui q da seg fault?\n");
-    
+
     // hash nao da a volta
     while (current != NULL) {
-        if (strcmp(current->hash_content->key->key_name, content->key->key_name) == 0) {
+        if (strcmp(getKeyName(current->hash_content), getKeyName(content)) == 0) {
             printf("Symbol was already declared!\n");
             exit(ERR_DECLARED);
         }
@@ -94,12 +73,7 @@ void addInTable(TableContent* content, Scope* table) {
     // Create a new HashItem and add it to the linked list
     HashItem* new_item = createHashItem(content);
 
-    // ver se ta colocando certinho nos buckets da id... essa lista do index e tals
-    new_item->next = table->lexemes[index]; // tem sla, 128 slots sequenciaas em memoria, mas tu pula os vazios pq os slots ocupados se apontam
-                                            // na verdade nao... eh um bucket! tem o indice 12 dos 128, todos que sao 12, dai fazem parte de uma lista
-                                            // referente ao 12! se o 12 ta ocupado o cara nao vira o 13 nao, ele só vira a cabeca da lista do 12
-                                            // nao precisa criar uma nova table
-                                            // eh infinito, mas dependnedo do tmanho pode ficar meio ineficiente (todos index terem listas grandes, sla)
+    new_item->next = table->lexemes[index];
     table->lexemes[index] = new_item;
     table->count++;
 
@@ -121,7 +95,7 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
     // Traverse the linked list at the calculated index (separate chaining)
     HashItem* current = table->lexemes[index];
     while (current != NULL) {
-        if (strcmp(current->hash_content->key->key_name, key->key_name) == 0) {
+        if (strcmp(getKeyName(current->hash_content), key->key_name) == 0) {
             return current->hash_content; // Element found, return its content
         }
         current = current->next;
@@ -133,7 +107,6 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
 
 TableContent* findInTableStack(SymbolKey* key, Scope* stack_top) {
 
-    //int current_height = stack_top->height;
     Scope* stack_run = stack_top;
 
     TableContent* content = NULL;

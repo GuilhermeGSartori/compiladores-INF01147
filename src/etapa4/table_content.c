@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+char* getKeyName(TableContent* line) {
+    return line->key->key_name;
+}
+
 TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum lex_type type) {
     TableContent* table_line = (TableContent*)malloc(sizeof(TableContent));
     
