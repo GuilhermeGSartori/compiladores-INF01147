@@ -17,8 +17,8 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
-ParameterList* param_list = NULL;
-KeyList* global_list = NULL;
+//ParameterList* param_list = NULL;
+KeyList* key_list = NULL;
 %}
 
 %define parse.error verbose
@@ -163,10 +163,11 @@ cabecalho: fun_name abre_escopo parametros {
                                                $$ = $1;
                                                SymbolKey* key = mallocAndSetKeyName($1->label);
                                                TableContent* content = findInTable(key, scope_stack_top->previous_scope);
-                                               setParametersList(content, param_list);
+                                               setParametersList(content, key_list); //key list eh literalmente o endereco da cabeça, que quando usa "->"
+                                                                                     //aponta para o proximo, por isso passar só o primeiro end eh o suficiente
                                                // freeParamList(param_list); NA VERDADE NAO PRECISA DAR FREE, 
                                                // PQ PASSO ESSES PONTEIROS PRO CONTENT EM VEZ DE ALOCAR NOVOS E DAR VALOR
-                                               param_list = NULL;
+                                               key_list = NULL;
                                                //ParameterList* current = content->parameters; // se fosse isso direto no while dai sim mudaria o primeiro end
                                                // current eh so numero e trocar de endereco so muda ele dai! o local e -> acessa
                                                //while(current != NULL) {
@@ -203,21 +204,21 @@ param: TK_PR_BOOL TK_IDENTIFICADOR   {
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                          addInTable(content, scope_stack_top);
-                                         addParameterInList(TYPE_BOOL, &param_list);
+                                         addKeyInList(key->key_name, &key_list, TYPE_BOOL);
                                      } ;
 
 param: TK_PR_INT TK_IDENTIFICADOR    { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
                                          addInTable(content, scope_stack_top);
-                                         addParameterInList(TYPE_INT, &param_list);
+                                         addKeyInList(key->key_name, &key_list, TYPE_INT);
                                      } ;
 
 param: TK_PR_FLOAT TK_IDENTIFICADOR  { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
                                          addInTable(content, scope_stack_top);
-                                         addParameterInList(TYPE_FLOAT, &param_list);
+                                         addKeyInList(key->key_name, &key_list, TYPE_FLOAT);
                                      } ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
@@ -258,13 +259,13 @@ cmd_simples: cmd_list cmd_simples  {
 
 cmd_simples: cmd_list              { if($1 != NULL) {$$ = $1;} else {$$ = NULL;} } ;
 
-cmd_list: cmd_block ';'    { $$ = $1; } ;
-cmd_list: var_local ';'    { $$ = $1; } ; 
-cmd_list: atrib ';'        { $$ = $1; } ; 
-cmd_list: if               { $$ = $1; } ;
-cmd_list: while ';'        { $$ = $1; } ; 
-cmd_list: return ';'       { $$ = $1; } ; 
-cmd_list: fun_call ';'     { $$ = $1; } ;
+cmd_list: abre_escopo cmd_block fecha_escopo ';'    { $$ = $2; } ;
+cmd_list: var_local ';'                             { $$ = $1; } ; 
+cmd_list: atrib ';'                                 { $$ = $1; } ; 
+cmd_list: if                                        { $$ = $1; } ;
+cmd_list: while ';'                                 { $$ = $1; } ; 
+cmd_list: return ';'                                { $$ = $1; } ; 
+cmd_list: fun_call ';'                              { $$ = $1; } ;
 
 
 
@@ -288,7 +289,18 @@ init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, cre
 /*9 - Comando de Atribuição: O comando de atribuição consiste em um identificador seguido pelo caractere de igualdade seguido 
 por uma expressão*/
 
-atrib: TK_IDENTIFICADOR '=' expressao { $$ = createNode("="); addSon($$, createLexTypeNode($1)); addSon($$, $3); } ;
+atrib: TK_IDENTIFICADOR '=' expressao {
+                                          SymbolKey* key = mallocAndSetKeyName($1->value);
+                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
+                                          printf("Variable type: %d\n", content->type);
+                                          printf("Expression type: %d\n", $3->type);
+                                          if(content->type != $3->type)
+                                              invalidSemanticOperation();
+                                          $$ = createNode("="); 
+                                          addSon($$, createLexTypeNode($1)); 
+                                          addSon($$, $3); 
+                                          setType($$, $1->type);
+                                      } ;
 
 
 
@@ -332,15 +344,15 @@ uma construção de repetição que é o token while seguida de uma expressão e
 /* como faz tudo no final acho q tem q quebrar em 2 e herdar, if fica como undefined e inter baseado na expressao */
 /* expressao nao tem q ser bool? */
 
-if: TK_PR_IF '(' expressao ')' cmd_block else  { 
-                                                 $$ = createNode("if"); addSon($$, $3); addSon($$, $5); addSon($$, $6);
-                                                 if($6 != NULL) { updateLabel($$); } 
-                                               } ; 
+if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  { 
+                                                                            $$ = createNode("if"); addSon($$, $3); addSon($$, $6); addSon($$, $8);
+                                                                            if($8 != NULL) { updateLabel($$); } 
+                                                                        } ; 
  
-else: TK_PR_ELSE cmd_block ';'                 { $$ = $2;}
-        | ';'                                  { $$ = NULL; } ;
+else: TK_PR_ELSE abre_escopo cmd_block fecha_escopo ';'                 { $$ = $3;}
+                                                  | ';'                 { $$ = NULL; } ;
 
-while: TK_PR_WHILE '(' expressao ')' cmd_block { $$ = createNode("while"); addSon($$, $3); addSon($$, $5); } ; 
+while: TK_PR_WHILE '(' expressao ')' abre_escopo cmd_block fecha_escopo { $$ = createNode("while"); addSon($$, $3); addSon($$, $6); } ; 
 
 
 
@@ -348,40 +360,45 @@ while: TK_PR_WHILE '(' expressao ')' cmd_block { $$ = createNode("while"); addSo
 separadas por vírgula. O tipo pode ser int, float e bool. As declarações de variáveis são terminadas por ponto-e-vírgula.*/
 
 declaracao_variavel_global: TK_PR_BOOL lista_var ';' {   
-                                                         while(global_list != NULL) {                             
-                                                             SymbolKey* key = mallocAndSetKeyName(global_list->key.key_name);
+                                                         while(key_list != NULL) {                             
+                                                             SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                                              addInTable(content, scope_stack_top);
-                                                             global_list = global_list->next;
+                                                             key_list = key_list->next;
                                                          }
-                                                         global_list = NULL;
+                                                         key_list = NULL;
                                                      } ;
 
 
 declaracao_variavel_global: TK_PR_INT lista_var ';' {   
-                                                         while(global_list != NULL) {                             
-                                                             SymbolKey* key = mallocAndSetKeyName(global_list->key.key_name);
+                                                         while(key_list != NULL) {                             
+                                                             SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                                              addInTable(content, scope_stack_top);
-                                                             global_list = global_list->next;
+                                                             key_list = key_list->next;
                                                          }
-                                                         global_list = NULL;
+                                                         key_list = NULL;
                                                      } ;
 
 
 declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {   
-                                                         while(global_list != NULL) {                             
-                                                             SymbolKey* key = mallocAndSetKeyName(global_list->key.key_name);
+                                                         while(key_list != NULL) {                             
+                                                             SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                                              addInTable(content, scope_stack_top);
-                                                             global_list = global_list->next;
+                                                             key_list = key_list->next; // var local so pega o proximo end (valor), muda nada no apontado
+                                                             // ao apontar nao precisa alocar nem nada... so aponta, eh só um endereco
+                                                             // so precisa alocar se ele for COMEÇAR a apontar para algo
+                                                             // dai separa um endereço pra ele
+                                                             // essa eh a moral, separa endreco
+                                                             
                                                          }
-                                                         global_list = NULL;
+                                                         key_list = NULL;
                                                       } ;
 
 
-lista_var: lista_var ',' TK_IDENTIFICADOR { addKeyInList($3->value, &global_list); } ;
-lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &global_list); } ;
+lista_var: lista_var ',' TK_IDENTIFICADOR { addKeyInList($3->value, &key_list, TYPE_UNDEFINED); } ;
+lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &key_list, TYPE_UNDEFINED); } ;
 
 
 

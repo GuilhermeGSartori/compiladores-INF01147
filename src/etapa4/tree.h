@@ -1,10 +1,10 @@
 #include "lextype.h"
 
 enum semantic_type {
+    TYPE_UNDEFINED,
     TYPE_INT, 
     TYPE_FLOAT, 
-    TYPE_BOOL, 
-    TYPE_UNDEFINED
+    TYPE_BOOL
 };
 
 typedef struct astNode {

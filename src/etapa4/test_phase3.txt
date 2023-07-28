@@ -3,7 +3,15 @@ int b;
 int c,d;
 
 fun(int i, bool j) -> int {
+    a = 2; 
     i = 1;
+    c = a;
+    if(b) {
+        c = a;
+    }
+    else {
+        c = a;
+    };
 }
 
 //int c;

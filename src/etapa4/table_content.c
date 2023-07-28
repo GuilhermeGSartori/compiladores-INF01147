@@ -53,8 +53,32 @@ void updateContentType(TableContent* line, enum semantic_type type) {
 }
 
 
-void setParametersList(TableContent* content, ParameterList* list) {
+void setParametersList(TableContent* content, KeyList* list) {
     if(list != NULL) {
         content->parameters = list;
+    }
+}
+
+void addKeyInList(char* name, KeyList** list, int type) {
+
+    KeyList* new_item = (KeyList*)malloc(sizeof(KeyList));
+    SymbolKey* key = mallocAndSetKeyName(name);
+    strcpy(new_item->key.key_name, key->key_name);
+    new_item->next = NULL;
+    new_item->type - type;
+
+    if(*list == NULL) {
+        //printf("aaa\n");
+        *list = new_item;
+    }
+
+    else {
+        //printf("bbb\n");
+        KeyList* current = *list;
+        while(current->next != NULL) {
+            //printf("current: %d\n", current->type);
+            current = current->next;
+        }
+        current->next = new_item;
     }
 }

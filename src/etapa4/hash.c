@@ -137,7 +137,7 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
     while(stack_run != NULL && content == NULL) {
         content = findInTable(key, stack_run);
         if(content != NULL) {
-            printf("Jumped %d scopes!\n", count);
+            printf("Jumped %d scopes and found \"%s\"!\n", count, content->key->key_name);
             if(nature == ID_SYMBOL)
                 assertContentIsID(content->nature);
             else if(nature == FUN_SYMBOL)
@@ -153,50 +153,6 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
      
 }   // vai descendo a stack de hash tables
 
-void addParameterInList(int type, ParameterList** list) {
-
-    ParameterList* new_item = (ParameterList*)malloc(sizeof(ParameterList));
-    new_item->type = type;
-    new_item->next = NULL;
-
-    if(*list == NULL) {
-        printf("aaa\n");
-        *list = new_item;
-    }
-
-    else {
-        printf("bbb\n");
-        ParameterList* current = *list;
-        while(current->next != NULL) {
-            printf("current: %d\n", current->type);
-            current = current->next;
-        }
-        current->next = new_item;
-    }
-
-}
-
-void addKeyInList(char* name, KeyList** list) {
-    KeyList* new_item = (KeyList*)malloc(sizeof(KeyList));
-    SymbolKey* key = mallocAndSetKeyName(name);
-    strcpy(new_item->key.key_name, key->key_name);
-    new_item->next = NULL;
-
-    if(*list == NULL) {
-        printf("aaa\n");
-        *list = new_item;
-    }
-
-    else {
-        printf("bbb\n");
-        KeyList* current = *list;
-        while(current->next != NULL) {
-            //printf("current: %d\n", current->type);
-            current = current->next;
-        }
-        current->next = new_item;
-    }
-}
 
 void invalidSemanticOperation() {
     printf("Invalid semantic operation!\n");

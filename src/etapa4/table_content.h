@@ -16,13 +16,9 @@ enum symbol_nature {
 
 typedef struct SymbolKey { char key_name[LABEL_MAX_SIZE]; } SymbolKey;
 
-typedef struct ParameterList {
-    enum semantic_type type;
-    struct ParameterList* next;
-} ParameterList;
-
 typedef struct KeyList {
     SymbolKey key;
+    enum semantic_type type;
     struct KeyList* next;
 } KeyList;
 
@@ -36,7 +32,7 @@ typedef struct TableContent {
     enum semantic_type type;
     char value[LABEL_MAX_SIZE];
 
-    ParameterList* parameters;
+    KeyList* parameters;
 } TableContent;
 
 
@@ -53,7 +49,9 @@ void updateContent(TableContent* line, char* lexeme_value, int line_num, enum se
 
 void updateContentType(TableContent* line, enum semantic_type type); 
 
-void setParametersList(TableContent* content, ParameterList* list);
+void setParametersList(TableContent* content, KeyList* list);
+
+void addKeyInList(char* name, KeyList** list, int type);
 
 //atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
 

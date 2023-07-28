@@ -38,5 +38,3 @@ int hashFunction(SymbolKey* key);
 Scope* createTable(Scope* current_scope); //will return the (now current) scope
 Scope* popTable(Scope* stack_top);
 void invalidSemanticOperation();
-void addParameterInList(int type, ParameterList** list);
-void addKeyInList(char* name, KeyList** list);
