@@ -66,7 +66,8 @@ KeyList* key_list = NULL;
 %type<node> else
 %type<node> while
 %type<node> operandos
-%type<node> operadoresUnarios
+%type<node> operadoresUnariosNeg
+%type<node> operadoresUnariosNot
 %type<node> operadoresPrecedencia2
 %type<node> operadoresPrecedencia3
 %type<node> operadoresPrecedencia4
@@ -373,7 +374,7 @@ declaracao_variavel_global: TK_PR_BOOL lista_var ';' {
 declaracao_variavel_global: TK_PR_INT lista_var ';' {   
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
-                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_INT); 
                                                              addInTable(content, scope_stack_top);
                                                              key_list = key_list->next;
                                                          }
@@ -384,7 +385,7 @@ declaracao_variavel_global: TK_PR_INT lista_var ';' {
 declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {   
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
-                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
                                                              addInTable(content, scope_stack_top);
                                                              key_list = key_list->next; // var local so pega o proximo end (valor), muda nada no apontado
                                                              // ao apontar nao precisa alocar nem nada... so aponta, eh só um endereco
@@ -433,8 +434,8 @@ operandos: fun_call  				{ $$ = $1;
                                     } ;
 
 /* operadoresUnarios: '-' | '!' ; */
-operadoresUnarios: '-'  			{ $$ = createNode("-"); } ;
-operadoresUnarios: '!' 				{ $$ = createNode("!"); } ;
+operadoresUnariosNeg: '-'    			{ $$ = createNode("-"); } ;
+operadoresUnariosNot: '!' 				{ $$ = createNode("!"); } ;
 
 /* operadoresPrecedencia2: '*' | '/' | '%' ; */
 operadoresPrecedencia2: '*' 		{ $$ = createNode("*"); } ;
@@ -461,31 +462,115 @@ operadoresPrecedencia7: TK_OC_OR 	{ $$ = createNode("|"); } ;
 
 
 expressao: expr1                                        { $$ = $1; } ;
-expressao: expressao operadoresPrecedencia7 expr1       { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr1: expr2                                            { $$ = $1; } ;
-expr1: expr1 operadoresPrecedencia6 expr2               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr2: expr3 	                                        { $$ = $1; } ;
-expr2: expr2 operadoresPrecedencia5 expr3               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
-expr3: expr4 		                                { $$ = $1; } ;
 
-expr3: expr3 operadoresPrecedencia4 expr4               { 
+expressao: expressao operadoresPrecedencia7 expr1       { 
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
-                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT));
+                                                            if(type1 != TYPE_BOOL  || type2 != TYPE_BOOL)
                                                                 invalidSemanticOperation();   
                                                             setType($2, TYPE_BOOL); 
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
-                                                            $$ = $2; 
+                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
                                                         } ;
 
-expr4: expr5                                            { $$ = $1; } ;
-expr4: expr4 operadoresPrecedencia3 expr5               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+expr1: expr2                                            { $$ = $1; } ;
+
+expr1: expr1 operadoresPrecedencia6 expr2               { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            if(type1 != TYPE_BOOL  || type2 != TYPE_BOOL)
+                                                                invalidSemanticOperation();   
+                                                            setType($2, TYPE_BOOL); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                        } ;
+
+expr2: expr3 	                                        { $$ = $1; } ;
+
+expr2: expr2 operadoresPrecedencia5 expr3               { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            if(
+                                                                ((type1==TYPE_FLOAT || type1==TYPE_INT) && (type2==TYPE_FLOAT || type2==TYPE_INT)) ||
+                                                                (type1==TYPE_BOOL && type2==TYPE_BOOL)
+                                                              ) 
+                                                            {
+                                                                setType($2, TYPE_BOOL); 
+                                                                addSon($2, $1); 
+                                                                addSon($2, $3); 
+                                                                $$ = $2; // since dolar dolar is dolar2, type was already set  
+                                                            }
+                                                            else    
+                                                                invalidSemanticOperation();   
+
+                                                        } ;
+
+expr3: expr4 		                                    { $$ = $1; } ;
+
+expr3: expr3 operadoresPrecedencia4 expr4               { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
+                                                                invalidSemanticOperation();   
+                                                            setType($2, TYPE_BOOL); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                        } ;
+
+expr4: expr5                                            { $$ = $1; } ; // since we are passing the pointer up, its not required to set the type...
+                                                                       // dolar dolar is dolar 1, literally the same address, not required to set the type
+
+expr4: expr4 operadoresPrecedencia3 expr5               {  // revisar se pode somar e tals true com numero e pq inferencia dessas coisas e pá
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
+                                                                invalidSemanticOperation();   
+                                                            int infered_type = inferType(type1, type2);
+                                                            setType($2, infered_type); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                        } ;
+
 expr5: expr6 	                                        { $$ = $1; } ;
-expr5: expr5 operadoresPrecedencia2 expr6               { addSon($2, $1); addSon($2, $3); $$ = $2; } ;
+
+expr5: expr5 operadoresPrecedencia2 expr6               { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
+                                                                invalidSemanticOperation();   
+                                                            int infered_type = inferType(type1, type2);
+                                                            setType($2, infered_type); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                        } ;
+
 expr6: expr7 	                                        { $$ = $1; } ;
-expr6: operadoresUnarios expr7 		                { addSon($1, $2); $$ = $1; } ;
-expr7: operandos 	                                { $$ = $1; } ;
+
+expr6: operadoresUnariosNeg expr7 		                { 
+                                                            addSon($1, $2); 
+                                                            $$ = $1;
+                                                            int type = getType($2); 
+                                                            if(type != TYPE_FLOAT && type != TYPE_INT)
+                                                                invalidSemanticOperation();
+                                                            setType($1, type); 
+                                                        } ; 
+                                                        // checar se expr7 eh numero? OK to change dolar1 after 
+                                                        // dolar dolar is address
+expr6: operadoresUnariosNot expr7                       { 
+                                                            addSon($1, $2); 
+                                                            $$ = $1;
+                                                            int type = getType($2); 
+                                                            if(type != TYPE_BOOL)
+                                                                invalidSemanticOperation();
+                                                            setType($1, type); 
+                                                        } ; 
+
+expr7: operandos 	                                    { $$ = $1; } ;
 expr7: '(' expressao ')'                                { $$ = $2; } ;
 
 
