@@ -21,6 +21,11 @@ typedef struct ParameterList {
     struct ParameterList* next;
 } ParameterList;
 
+typedef struct KeyList {
+    SymbolKey key;
+    struct KeyList* next;
+} KeyList;
+
 /* this should represent a line (symbol) in the table of a scope, every scope has a table in the stack
  * the attributes are the values of each collumn in the table.
  * The first collumn of the table should be the key to the rest of the line */
@@ -47,6 +52,9 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
 void updateContent(TableContent* line, char* lexeme_value, int line_num, enum semantic_type type); 
 
 void updateContentType(TableContent* line, enum semantic_type type); 
+
+void setParametersList(TableContent* content, ParameterList* list);
+
 //atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
 
 // atributos de NT sao usados para inferencia de tipos e tals... E controle de tabela atual? saber qual tabela to e etc

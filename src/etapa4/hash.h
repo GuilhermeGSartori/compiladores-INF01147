@@ -36,6 +36,7 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature);
 TableContent* findInTable(SymbolKey* key, Scope* table);
 int hashFunction(SymbolKey* key);
 Scope* createTable(Scope* current_scope); //will return the (now current) scope
-void popTable(Scope* stack_top);
+Scope* popTable(Scope* stack_top);
 void invalidSemanticOperation();
 void addParameterInList(int type, ParameterList** list);
+void addKeyInList(char* name, KeyList** list);

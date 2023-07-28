@@ -51,3 +51,10 @@ void updateContent(TableContent* line, char* lexeme_value, int line_num, enum se
 void updateContentType(TableContent* line, enum semantic_type type) {
     line->type = type;
 }
+
+
+void setParametersList(TableContent* content, ParameterList* list) {
+    if(list != NULL) {
+        content->parameters = list;
+    }
+}

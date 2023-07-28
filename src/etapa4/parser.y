@@ -18,6 +18,7 @@ extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
 ParameterList* param_list = NULL;
+KeyList* global_list = NULL;
 %}
 
 %define parse.error verbose
@@ -99,7 +100,7 @@ conjunto de funções. Esses elementos podem estar intercalados e em qualquer or
 inicio: abre_escopo programa fecha_escopo ;
 
 abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
-fecha_escopo: ; // pop e free e tirar ponteiros
+fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; // pop e free e tirar ponteiros
 
 programa: lista   { arvore = $1; }
 	|         { arvore = NULL; }
@@ -158,7 +159,21 @@ funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  {
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
-cabecalho: fun_name abre_escopo parametros { $$ = $1; } ; // pega a label do node do fun_name, procura essa key no escopo anterior
+cabecalho: fun_name abre_escopo parametros { 
+                                               $$ = $1;
+                                               SymbolKey* key = mallocAndSetKeyName($1->label);
+                                               TableContent* content = findInTable(key, scope_stack_top->previous_scope);
+                                               setParametersList(content, param_list);
+                                               // freeParamList(param_list); NA VERDADE NAO PRECISA DAR FREE, 
+                                               // PQ PASSO ESSES PONTEIROS PRO CONTENT EM VEZ DE ALOCAR NOVOS E DAR VALOR
+                                               param_list = NULL;
+                                               //ParameterList* current = content->parameters; // se fosse isso direto no while dai sim mudaria o primeiro end
+                                               // current eh so numero e trocar de endereco so muda ele dai! o local e -> acessa
+                                               //while(current != NULL) {
+                                               //    printf("heey %d\n", current->type);
+                                               //    current = current->next;
+                                               //}
+                                           } ; // pega a label do node do fun_name, procura essa key no escopo anterior
                                                           // adiciona a lista dai no "parameters" do table content dele usando
                                                           // a lista anterior
                                                           // e limpa a lista recursivamente dai
@@ -332,9 +347,41 @@ while: TK_PR_WHILE '(' expressao ')' cmd_block { $$ = createNode("while"); addSo
 /*13 - As variáveis globais são declaradas pelo tipo seguido de uma lista composta de pelo menos um nome de variável (identificador) 
 separadas por vírgula. O tipo pode ser int, float e bool. As declarações de variáveis são terminadas por ponto-e-vírgula.*/
 
-declaracao_variavel_global: tipo lista_var ';' ;
+declaracao_variavel_global: TK_PR_BOOL lista_var ';' {   
+                                                         while(global_list != NULL) {                             
+                                                             SymbolKey* key = mallocAndSetKeyName(global_list->key.key_name);
+                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                                             addInTable(content, scope_stack_top);
+                                                             global_list = global_list->next;
+                                                         }
+                                                         global_list = NULL;
+                                                     } ;
 
-lista_var: lista_var ',' TK_IDENTIFICADOR | TK_IDENTIFICADOR ;
+
+declaracao_variavel_global: TK_PR_INT lista_var ';' {   
+                                                         while(global_list != NULL) {                             
+                                                             SymbolKey* key = mallocAndSetKeyName(global_list->key.key_name);
+                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                                             addInTable(content, scope_stack_top);
+                                                             global_list = global_list->next;
+                                                         }
+                                                         global_list = NULL;
+                                                     } ;
+
+
+declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {   
+                                                         while(global_list != NULL) {                             
+                                                             SymbolKey* key = mallocAndSetKeyName(global_list->key.key_name);
+                                                             TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                                             addInTable(content, scope_stack_top);
+                                                             global_list = global_list->next;
+                                                         }
+                                                         global_list = NULL;
+                                                      } ;
+
+
+lista_var: lista_var ',' TK_IDENTIFICADOR { addKeyInList($3->value, &global_list); } ;
+lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &global_list); } ;
 
 
 

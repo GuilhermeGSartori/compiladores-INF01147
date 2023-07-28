@@ -33,6 +33,11 @@ Scope* createTable(Scope* current) {
     return table;
 }
 
+Scope* popTable(Scope* stack_top) {
+    return stack_top->previous_scope; // melhorar isso, dar free e etc, guardar o escopo removido em algum lugar e etc
+    // fazer mais decente... dar free, desfazer os ponteiros e etc
+}
+
 // Function to create a new HashItem and initialize it
 HashItem* createHashItem(TableContent* content) {
     HashItem* item = (HashItem*)malloc(sizeof(HashItem));
@@ -64,13 +69,13 @@ void addInTable(TableContent* content, Scope* table) {
     // hash nao da a volta
     while (current != NULL) {
         if (strcmp(getKeyName(current->hash_content), getKeyName(content)) == 0) {
-            printf("Symbol was already declared!\n");
+            printf("Symbol \"%s\" was already declared!\n", getKeyName(content));
             exit(ERR_DECLARED);
         }
         current = current->next;
     }
 
-    scanf("%d", &index);
+    //scanf("%d", &index); -> consome do proprio arquiv stdin
     printf("Achei um espaço\n");
 
     // Create a new HashItem and add it to the linked list
@@ -143,7 +148,7 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
         stack_run = stack_run->previous_scope;
     }
 
-    printf("Symbol was NOT declared!\n");
+    printf("Symbol \"%s\" was NOT declared!\n", key->key_name);
     exit(ERR_UNDECLARED);
      
 }   // vai descendo a stack de hash tables
@@ -169,6 +174,28 @@ void addParameterInList(int type, ParameterList** list) {
         current->next = new_item;
     }
 
+}
+
+void addKeyInList(char* name, KeyList** list) {
+    KeyList* new_item = (KeyList*)malloc(sizeof(KeyList));
+    SymbolKey* key = mallocAndSetKeyName(name);
+    strcpy(new_item->key.key_name, key->key_name);
+    new_item->next = NULL;
+
+    if(*list == NULL) {
+        printf("aaa\n");
+        *list = new_item;
+    }
+
+    else {
+        printf("bbb\n");
+        KeyList* current = *list;
+        while(current->next != NULL) {
+            //printf("current: %d\n", current->type);
+            current = current->next;
+        }
+        current->next = new_item;
+    }
 }
 
 void invalidSemanticOperation() {
