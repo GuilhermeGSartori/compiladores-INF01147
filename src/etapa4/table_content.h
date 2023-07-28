@@ -16,6 +16,11 @@ enum symbol_nature {
 
 typedef struct SymbolKey { char key_name[LABEL_MAX_SIZE]; } SymbolKey;
 
+typedef struct ParameterList {
+    enum semantic_type type;
+    struct ParameterList* next;
+} ParameterList;
+
 /* this should represent a line (symbol) in the table of a scope, every scope has a table in the stack
  * the attributes are the values of each collumn in the table.
  * The first collumn of the table should be the key to the rest of the line */
@@ -25,6 +30,8 @@ typedef struct TableContent {
     enum symbol_nature nature;
     enum semantic_type type;
     char value[LABEL_MAX_SIZE];
+
+    ParameterList* parameters;
 } TableContent;
 
 

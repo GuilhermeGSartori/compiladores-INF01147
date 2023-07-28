@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 Scope* scope_stack = NULL;
+ParameterList* list = NULL;
 
 int main() {
 
@@ -22,6 +23,17 @@ int main() {
 
     printf("Criei Keys\n");
     
+    addParameterInList(TYPE_INT, &list);
+    addParameterInList(TYPE_FLOAT, &list);
+    addParameterInList(TYPE_BOOL, &list);
+    addParameterInList(TYPE_INT, &list);
+
+    while(list != NULL) {
+        printf("Tipo: %d\n",list->type);
+        list = list->next;
+    }
+
+    printf("Imprimi tipos\n");
 
     printf("Will create lines\n");
     TableContent* content = newContent(key, "2", 0, ID_SYMBOL, TYPE_INT); 

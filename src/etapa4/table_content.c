@@ -27,7 +27,8 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
     table_line->line = line;
     table_line->nature = nat;
     table_line->type = type;
-    
+
+    table_line->parameters = NULL;
 
     return table_line;
 }

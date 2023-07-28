@@ -25,6 +25,9 @@ Scope* createTable(Scope* current) {
 
     for(int i=0; i<TABLE_SIZE; i++)
         table->lexemes[i] = NULL;
+
+    //table->parameters = NULL;
+
     printf("Consegui alocar uma nova tabela\n");
 
     return table;
@@ -145,6 +148,28 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
      
 }   // vai descendo a stack de hash tables
 
+void addParameterInList(int type, ParameterList** list) {
+
+    ParameterList* new_item = (ParameterList*)malloc(sizeof(ParameterList));
+    new_item->type = type;
+    new_item->next = NULL;
+
+    if(*list == NULL) {
+        printf("aaa\n");
+        *list = new_item;
+    }
+
+    else {
+        printf("bbb\n");
+        ParameterList* current = *list;
+        while(current->next != NULL) {
+            printf("current: %d\n", current->type);
+            current = current->next;
+        }
+        current->next = new_item;
+    }
+
+}
 
 void invalidSemanticOperation() {
     printf("Invalid semantic operation!\n");

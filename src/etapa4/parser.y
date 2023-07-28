@@ -17,6 +17,7 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
+ParameterList* param_list = NULL;
 %}
 
 %define parse.error verbose
@@ -157,7 +158,10 @@ funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  {
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
-cabecalho: fun_name abre_escopo parametros { $$ = $1; } ;
+cabecalho: fun_name abre_escopo parametros { $$ = $1; } ; // pega a label do node do fun_name, procura essa key no escopo anterior
+                                                          // adiciona a lista dai no "parameters" do table content dele usando
+                                                          // a lista anterior
+                                                          // e limpa a lista recursivamente dai
 
 fun_name: TK_IDENTIFICADOR {
                                 $$ = createLexTypeNode($1); 
@@ -178,9 +182,28 @@ um_ou_mais_param: um_ou_mais_param ',' param | param ;
 
 /*5 - Cada parâmetro é definido pelo seu tipo e nome.*/
 
-param: tipo TK_IDENTIFICADOR ;
+/* como defino o valor das variaveis passando as coisas como parametro na chamda de funcao..? aqui adiciono, mas como DEFINO o valor se eh só o valor */
 
+param: TK_PR_BOOL TK_IDENTIFICADOR   { 
+                                         SymbolKey* key = mallocAndSetKeyName($2->value);
+                                         TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                         addInTable(content, scope_stack_top);
+                                         addParameterInList(TYPE_BOOL, &param_list);
+                                     } ;
 
+param: TK_PR_INT TK_IDENTIFICADOR    { 
+                                         SymbolKey* key = mallocAndSetKeyName($2->value);
+                                         TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
+                                         addInTable(content, scope_stack_top);
+                                         addParameterInList(TYPE_INT, &param_list);
+                                     } ;
+
+param: TK_PR_FLOAT TK_IDENTIFICADOR  { 
+                                         SymbolKey* key = mallocAndSetKeyName($2->value);
+                                         TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
+                                         addInTable(content, scope_stack_top);
+                                         addParameterInList(TYPE_FLOAT, &param_list);
+                                     } ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
 /*6.1 - Um bloco de comandos é definido entre chaves, e consiste em uma sequência, possivelmente vazia, de comandos 
@@ -282,7 +305,7 @@ args: expressao 				{ $$ = $1; } ;
 
 /*11 - Comando de Retorno: Trata-se do token return seguido de uma expressão. */
 
-return: TK_PR_RETURN expressao  	{ $$ = createNode("return"); addSon($$, $2); } ;
+return: TK_PR_RETURN expressao  	{ $$ = createNode("return"); addSon($$, $2); int type = getType($2); setType($$, type); } ;
 
 
 
