@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 Scope* scope_stack = NULL;
-ParameterList* list = NULL;
+KeyList* list = NULL;
 
 int main() {
 
@@ -23,10 +23,10 @@ int main() {
 
     printf("Criei Keys\n");
     
-    addParameterInList(TYPE_INT, &list);
-    addParameterInList(TYPE_FLOAT, &list);
-    addParameterInList(TYPE_BOOL, &list);
-    addParameterInList(TYPE_INT, &list);
+    addKeyInList(TYPE_INT, &list, TYPE_UNDEFINED, NULL);
+    addKeyInList(TYPE_FLOAT, &list, TYPE_UNDEFINED, NULL);
+    addKeyInList(TYPE_BOOL, &list, TYPE_UNDEFINED, NULL);
+    addKeyInList(TYPE_INT, &list, TYPE_UNDEFINED, NULL);
 
     while(list != NULL) {
         printf("Tipo: %d\n",list->type);

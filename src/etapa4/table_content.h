@@ -19,6 +19,7 @@ typedef struct SymbolKey { char key_name[LABEL_MAX_SIZE]; } SymbolKey;
 typedef struct KeyList {
     SymbolKey key;
     enum semantic_type type;
+    char value[LABEL_MAX_SIZE];
     struct KeyList* next;
 } KeyList;
 
@@ -51,7 +52,7 @@ void updateContentType(TableContent* line, enum semantic_type type);
 
 void setParametersList(TableContent* content, KeyList* list);
 
-void addKeyInList(char* name, KeyList** list, int type);
+void addKeyInList(char* name, KeyList** list, int type, char* value);
 
 //atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
 

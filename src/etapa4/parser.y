@@ -200,26 +200,27 @@ um_ou_mais_param: um_ou_mais_param ',' param | param ;
 /*5 - Cada parâmetro é definido pelo seu tipo e nome.*/
 
 /* como defino o valor das variaveis passando as coisas como parametro na chamda de funcao..? aqui adiciono, mas como DEFINO o valor se eh só o valor */
+// baseado na ordem do atributo do table_content de parametros
 
 param: TK_PR_BOOL TK_IDENTIFICADOR   { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                          addInTable(content, scope_stack_top);
-                                         addKeyInList(key->key_name, &key_list, TYPE_BOOL);
+                                         addKeyInList(key->key_name, &key_list, TYPE_BOOL, NULL);
                                      } ;
 
 param: TK_PR_INT TK_IDENTIFICADOR    { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
                                          addInTable(content, scope_stack_top);
-                                         addKeyInList(key->key_name, &key_list, TYPE_INT);
+                                         addKeyInList(key->key_name, &key_list, TYPE_INT, NULL);
                                      } ;
 
 param: TK_PR_FLOAT TK_IDENTIFICADOR  { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
                                          addInTable(content, scope_stack_top);
-                                         addKeyInList(key->key_name, &key_list, TYPE_FLOAT);
+                                         addKeyInList(key->key_name, &key_list, TYPE_FLOAT, NULL);
                                      } ;
 
 /*6 - O corpo da função é um bloco de comandos.*/
@@ -275,15 +276,98 @@ de variável (identificador) separadas por vírgula. Os tipos podem ser aqueles 
 Uma variável local pode ser opcionalmente inicializada caso sua declaração seja seguida do operador composto TK_OC_LE e de um 
 literal.*/
 
-var_local: tipo lista_local_var			{ $$ = $2; } ;
+var_local: TK_PR_BOOL lista_local_var	{
+                                            $$ = $2; 
+                                            if($2 != NULL) {
+                                                Node *leaf_attr = $2;
+                                                setType($$, TK_PR_BOOL);
+                                                while(leaf_attr->n_sons == 3) {
+                                                    leaf_attr = leaf_attr->sons[2];
+                                                    setType(leaf_attr, TK_PR_BOOL);
+                                                }
+                                            }
+                                            while(key_list != NULL) {                             
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
+                                                if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_BOOL)
+                                                    invalidSemanticOperation();
+                                                TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
+                                                addInTable(content, scope_stack_top);
+                                                key_list = key_list->next;
+                                            }
+                                            key_list = NULL;
+                                        } ; 
 
-lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{ if($3 == NULL) { $$ = NULL;} else { $$ = $3;} }
-			   | init ',' lista_local_var   { addSon($1, $3); $$ = $1; } 
-			   | TK_IDENTIFICADOR 	        { $$ = NULL; }
-			   | init 			{ $$ = $1; }
-			   ;
+var_local: TK_PR_INT lista_local_var	{
+                                            $$ = $2; 
+                                            if($2 != NULL) {
+                                                printf("Will set node types\n");
+                                                Node *leaf_attr = $2;
+                                                setType($$, TK_PR_INT);
+                                                while(leaf_attr->n_sons == 3) {
+                                                    leaf_attr = leaf_attr->sons[2];
+                                                    setType(leaf_attr, TK_PR_INT);
+                                                }
+                                            }
+                                            printf("Set node types\n");
+                                            while(key_list != NULL) {                             
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
+                                                printf("Will create new var content!\n");
+                                                if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_INT)
+                                                    invalidSemanticOperation();
+                                                TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
+                                                printf("Created new var content!\n");
+                                                addInTable(content, scope_stack_top);
+                                                key_list = key_list->next;
+                                            }
+                                            key_list = NULL;
+                                        } ; 
 
-init: TK_IDENTIFICADOR TK_OC_LE literais { $$ = createNode("<="); addSon($$, createLexTypeNode($1)); addSon($$, $3); } ; 
+var_local: TK_PR_FLOAT lista_local_var	{
+                                            $$ = $2; 
+                                            if($2 != NULL) {
+                                                Node *leaf_attr = $2;
+                                                setType($$, TK_PR_BOOL);
+                                                while(leaf_attr->n_sons == 3) {
+                                                    leaf_attr = leaf_attr->sons[2];
+                                                    setType(leaf_attr, TK_PR_FLOAT);
+                                                }
+                                            }
+                                            while(key_list != NULL) {                             
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
+                                                if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_FLOAT)
+                                                    invalidSemanticOperation();
+                                                TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
+                                                addInTable(content, scope_stack_top);
+                                                key_list = key_list->next;
+                                            }
+                                            key_list = NULL;
+                                        } ; 
+                                        // percorrer a lista local var colocando tipo dos nodos como init
+                                        // percorrer a key list e adicionar na table
+
+lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{ 
+                                                            if($3 == NULL) { 
+                                                                $$ = NULL;
+                                                            } else { 
+                                                                $$ = $3;
+                                                            } 
+                                                            addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL);
+                                                        }
+
+			   | init ',' lista_local_var               { addSon($1, $3); $$ = $1; } 
+			   
+               | TK_IDENTIFICADOR 	                    { $$ = NULL; addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL); printf("ID declarado!\n"); }
+			   
+               | init 			                        { $$ = $1; }
+			   
+               ;
+
+init: TK_IDENTIFICADOR TK_OC_LE literais {
+                                             $$ = createNode("<="); 
+                                             addSon($$, createLexTypeNode($1)); 
+                                             addSon($$, $3);
+                                             addKeyInList($1->value, &key_list, $3->type, $3->lexical_value->value);
+                                         } ; 
 
 
 
@@ -319,7 +403,7 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   setType($$, content->type); 
                                               } ; 
 
-lista_args: um_ou_mais_args 	{ $$ = $1; }
+lista_args: um_ou_mais_args 	{ $$ = $1; } // tem q ver se lista bate os os parametros armazenados
 		  | 		{ $$ = NULL; }
 		  ;
 
@@ -348,12 +432,13 @@ uma construção de repetição que é o token while seguida de uma expressão e
 if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  { 
                                                                             $$ = createNode("if"); addSon($$, $3); addSon($$, $6); addSon($$, $8);
                                                                             if($8 != NULL) { updateLabel($$); } 
+                                                                            setType($$, getType($3));
                                                                         } ; 
  
 else: TK_PR_ELSE abre_escopo cmd_block fecha_escopo ';'                 { $$ = $3;}
                                                   | ';'                 { $$ = NULL; } ;
 
-while: TK_PR_WHILE '(' expressao ')' abre_escopo cmd_block fecha_escopo { $$ = createNode("while"); addSon($$, $3); addSon($$, $6); } ; 
+while: TK_PR_WHILE '(' expressao ')' abre_escopo cmd_block fecha_escopo { $$ = createNode("while"); addSon($$, $3); addSon($$, $6); setType($$, getType($3)); } ; 
 
 
 
@@ -398,15 +483,15 @@ declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {
                                                       } ;
 
 
-lista_var: lista_var ',' TK_IDENTIFICADOR { addKeyInList($3->value, &key_list, TYPE_UNDEFINED); } ;
-lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &key_list, TYPE_UNDEFINED); } ;
+lista_var: lista_var ',' TK_IDENTIFICADOR { addKeyInList($3->value, &key_list, TYPE_UNDEFINED, NULL); } ;
+lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL); } ;
 
 
 
 
 /*Uso Geral*/
 
-tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
+//tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
 literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_INT); } ;
 literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_FLOAT); } ;

@@ -23,7 +23,14 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
     table_line->key = (SymbolKey*)malloc(sizeof(SymbolKey));
 
     strcpy(table_line->key->key_name, key->key_name);
-    strcpy(table_line->value, lexeme_value);
+    //printf("will copy value \"%s\"!\n", lexeme_value);
+    if(lexeme_value == NULL) {
+        strcpy(table_line->value, "0");
+        //table_line->value = NULL; // confirmar se deixo em NULL ou zero
+    }
+    else
+        strcpy(table_line->value, lexeme_value);
+    //printf("copied value!\n");
     table_line->line = line;
     table_line->nature = nat;
     table_line->type = type;
@@ -59,13 +66,20 @@ void setParametersList(TableContent* content, KeyList* list) {
     }
 }
 
-void addKeyInList(char* name, KeyList** list, int type) {
+void addKeyInList(char* name, KeyList** list, int type, char* value) {
 
     KeyList* new_item = (KeyList*)malloc(sizeof(KeyList));
     SymbolKey* key = mallocAndSetKeyName(name);
     strcpy(new_item->key.key_name, key->key_name);
     new_item->next = NULL;
-    new_item->type - type;
+    new_item->type = type;
+    if(value != NULL)
+        strcpy(new_item->value, value);
+    else {
+        strcpy(new_item->value, "0");
+        //new_item->value = NULL;
+    }
+    //printf("Criei item novo para lista!\n");
 
     if(*list == NULL) {
         //printf("aaa\n");

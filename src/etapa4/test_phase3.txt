@@ -5,10 +5,12 @@ int c,d;
 fun(int i, bool j) -> int {
     a = 2+2;
     //a = 2+2.0;
-    f();
-    int g;  // nao deveria dar
-    int g;  // nao deveria dar
+    //f();
+    //int g, y, _ble <= 2.0; 
+    int g, y, _ble <= 2;
+    //int g;  // nao deveria dar
     j = 2;  // nao deveria dar
+    f();
     i = 1;
     c = a;
     if(b) {
