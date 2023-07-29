@@ -44,7 +44,6 @@ void setKeyName(SymbolKey* key, char* value);
 char* getKeyName(TableContent* line);
 
 TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symbol_nature nat, enum semantic_type type); 
-// pega o contexto atual e tenta criar, se ja existe, retorna erro! -> usa findInCurrentTable
 
 void updateContent(TableContent* line, char* lexeme_value, int line_num, enum semantic_type type); 
 
@@ -55,14 +54,3 @@ void setParametersList(TableContent* content, KeyList* list);
 void addKeyInList(char* name, KeyList** list, int type, char* value);
 
 void checkParameters(KeyList* parameters, KeyList* list);
-
-//atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
-
-// atributos de NT sao usados para inferencia de tipos e tals... E controle de tabela atual? saber qual tabela to e etc
-// ONDE FICA A PILHA DE HASH
-
-// essa funcao no fim no fim, vai chamar a addElement da hash table
-//void addToCurrentTable(TableContent* new_line); // tabela vai ser como? como sei que tenho uma tabela e pilha de tabelas? como eh essa pilha de tabela e o q eu de fato empilho?
-                                           // outra struct? hash?  eh meio uma lista encadeada, mas o q tem em cada nodo da lista? eh a "hash" que via ter os simbolos dai
-//enum boolean findInTableStack(SymbolKey key);   // vai descendo a stack de hash tables
-//enum boolean findInCurrentTable(SymbolKey key); // procura na hash table atual (topo da stack)

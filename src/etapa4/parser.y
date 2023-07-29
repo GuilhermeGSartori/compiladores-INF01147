@@ -17,7 +17,6 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
-//ParameterList* param_list = NULL;
 KeyList* key_list = NULL;
 %}
 
@@ -101,7 +100,7 @@ conjunto de funções. Esses elementos podem estar intercalados e em qualquer or
 inicio: abre_escopo programa fecha_escopo ;
 
 abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
-fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; // pop e free e tirar ponteiros
+fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; 
 
 programa: lista   { arvore = $1; }
 	|         { arvore = NULL; }
@@ -131,8 +130,6 @@ elemento: declaracao_variavel_global { $$ = NULL; } ;
 
 /*2 - Cada função é definida por um cabeçalho e um corpo, sendo que esta definição não é terminada
 por ponto-e-vírgula.*/
-
- //funcao: cabecalho corpo { $$ = $1; addSon($$, $2); } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_FLOAT corpo fecha_escopo { 
                                                                 $$ = $1; addSon($$, $4); setType($$, TYPE_FLOAT);
@@ -164,22 +161,9 @@ cabecalho: fun_name abre_escopo parametros {
                                                $$ = $1;
                                                SymbolKey* key = mallocAndSetKeyName($1->label);
                                                TableContent* content = findInTable(key, scope_stack_top->previous_scope);
-                                               setParametersList(content, key_list); //key list eh literalmente o endereco da cabeça, que quando usa "->"
-                                                                                     //aponta para o proximo, por isso passar só o primeiro end eh o suficiente
-                                               // freeParamList(param_list); NA VERDADE NAO PRECISA DAR FREE, 
-                                               // PQ PASSO ESSES PONTEIROS PRO CONTENT EM VEZ DE ALOCAR NOVOS E DAR VALOR
+                                               setParametersList(content, key_list); 
                                                key_list = NULL;
-                                               //ParameterList* current = content->parameters; // se fosse isso direto no while dai sim mudaria o primeiro end
-                                               // current eh so numero e trocar de endereco so muda ele dai! o local e -> acessa
-                                               //while(current != NULL) {
-                                               //    printf("heey %d\n", current->type);
-                                               //    current = current->next;
-                                               //}
-                                           } ; // pega a label do node do fun_name, procura essa key no escopo anterior
-                                                          // adiciona a lista dai no "parameters" do table content dele usando
-                                                          // a lista anterior
-                                                          // e limpa a lista recursivamente dai
-
+                                           } ; 
 fun_name: TK_IDENTIFICADOR {
                                 $$ = createLexTypeNode($1); 
                                 SymbolKey* key = mallocAndSetKeyName($1->value);
@@ -188,6 +172,7 @@ fun_name: TK_IDENTIFICADOR {
                            } ;
 
 parametros: '(' lista_params ')' ;
+
 
 
 /*4 - A lista de parâmetros é dada entre parênteses e é composta por zero ou mais parâmetros de entrada, separados por vírgula.*/
@@ -231,6 +216,7 @@ e pode ser utilizado em qualquer construção que aceite um comando simples.*/
 corpo: cmd_block { $$ = $1; } ;
 cmd_block: '{' cmd_simples '}' { $$ = $2; }; 
 cmd_block: '{' '}' { $$ = NULL; } ; 
+
 
 
 /*7 - Os comandos simples da linguagem podem ser: declaração de variável local, atribuição, construções de fluxo de controle, 
@@ -300,7 +286,6 @@ var_local: TK_PR_BOOL lista_local_var	{
 var_local: TK_PR_INT lista_local_var	{
                                             $$ = $2; 
                                             if($2 != NULL) {
-                                                printf("Will set node types\n");
                                                 Node *leaf_attr = $2;
                                                 setType($$, TK_PR_INT);
                                                 while(leaf_attr->n_sons == 3) {
@@ -308,14 +293,11 @@ var_local: TK_PR_INT lista_local_var	{
                                                     setType(leaf_attr, TK_PR_INT);
                                                 }
                                             }
-                                            printf("Set node types\n");
                                             while(key_list != NULL) {                             
                                                 SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
-                                                printf("Will create new var content!\n");
                                                 if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_INT)
                                                     invalidSemanticOperation();
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
-                                                printf("Created new var content!\n");
                                                 addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
                                             }
@@ -356,7 +338,7 @@ lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{
 
 			   | init ',' lista_local_var               { addSon($1, $3); $$ = $1; } 
 			   
-               | TK_IDENTIFICADOR 	                    { $$ = NULL; addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL); printf("ID declarado!\n"); }
+               | TK_IDENTIFICADOR 	                    { $$ = NULL; addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL); }
 			   
                | init 			                        { $$ = $1; }
 			   
@@ -391,8 +373,6 @@ atrib: TK_IDENTIFICADOR '=' expressao {
 
 /*10 - Chamada de Função: Uma chamada de função consiste no nome da função, seguida de argumentos entre parênteses separados 
 por vírgula. Um argumento pode ser uma expressão.*/
-
-/* Coisas acontecem no final, sera que nao tem que quebrar em 2 e herdar e tals? */
 
 fun_call: TK_IDENTIFICADOR '(' lista_args ')' { 
                                                   $$ = createLexTypeNode($1); 
@@ -478,12 +458,7 @@ declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
                                                              addInTable(content, scope_stack_top, get_line_number());
-                                                             key_list = key_list->next; // var local so pega o proximo end (valor), muda nada no apontado
-                                                             // ao apontar nao precisa alocar nem nada... so aponta, eh só um endereco
-                                                             // so precisa alocar se ele for COMEÇAR a apontar para algo
-                                                             // dai separa um endereço pra ele
-                                                             // essa eh a moral, separa endreco
-                                                             
+                                                             key_list = key_list->next;                                                              
                                                          }
                                                          key_list = NULL;
                                                       } ;
@@ -496,8 +471,6 @@ lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &key_list, TYPE_UNDEFINED,
 
 
 /*Uso Geral*/
-
-//tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL ;
 
 literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_INT); } ;
 literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_FLOAT); } ;
@@ -520,9 +493,7 @@ operandos: TK_IDENTIFICADOR 		{
 
 operandos: literais 				{ $$ = $1; } ;
 
-operandos: fun_call  				{ $$ = $1; 
-
-                                    } ;
+operandos: fun_call  				{ $$ = $1; } ;
 
 /* operadoresUnarios: '-' | '!' ; */
 operadoresUnariosNeg: '-'    			{ $$ = createNode("-"); } ;

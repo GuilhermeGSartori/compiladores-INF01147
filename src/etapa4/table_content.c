@@ -24,14 +24,14 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
     table_line->key = (SymbolKey*)malloc(sizeof(SymbolKey));
 
     strcpy(table_line->key->key_name, key->key_name);
-    //printf("will copy value \"%s\"!\n", lexeme_value);
+    
     if(lexeme_value == NULL) {
         strcpy(table_line->value, "0");
         //table_line->value = NULL; // confirmar se deixo em NULL ou zero
     }
     else
         strcpy(table_line->value, lexeme_value);
-    //printf("copied value!\n");
+    
     table_line->line = line;
     table_line->nature = nat;
     table_line->type = type;
@@ -78,20 +78,15 @@ void addKeyInList(char* name, KeyList** list, int type, char* value) {
         strcpy(new_item->value, value);
     else {
         strcpy(new_item->value, "0");
-        //new_item->value = NULL;
     }
-    //printf("Criei item novo para lista!\n");
 
     if(*list == NULL) {
-        //printf("aaa\n");
         *list = new_item;
     }
 
     else {
-        //printf("bbb\n");
         KeyList* current = *list;
         while(current->next != NULL) {
-            //printf("current: %d\n", current->type);
             current = current->next;
         }
         current->next = new_item;
@@ -102,45 +97,11 @@ void checkParameters(KeyList* parameters, KeyList* list) {
 
     int list_count = 0;
     int param_count = 0;
-    KeyList* heritage = NULL;
 
     KeyList* it = list;
-
-    while(it != NULL) {
-        printf("OG LIST: %s\n", it->key.key_name);
-        it = it->next;
-    }
-
-    /*while(list != NULL) {
-        KeyList* next = list->next;
-        if(next == NULL) {
-            list->next = heritage;
-            break;
-        }
-        else if(next->next != NULL) {
-            KeyList* save_prev_next = next->next;
-            //next->next = list;            
-            next->next = list;
-            KeyList* prev_list = list;
-            list = save_prev_next;
-            //list->next = next;
-            prev_list->next = heritage;
-            heritage = next;
-
-        }
-        else {
-            list->next = heritage;
-            heritage = list;
-            //heritage = list;
-            //KeyList* prev_list = list;
-            list = next;
-            //prev_list->next = heritage;
-        }
-    }*/
     
     it = list;
     while(it != NULL) {
-        printf("NEW LIST: %s\n", it->key.key_name);
         it = it->next;
         list_count++;
     }
@@ -153,7 +114,7 @@ void checkParameters(KeyList* parameters, KeyList* list) {
     if(param_count == list_count) {
         while(list != NULL) {
             if(parameters->type != list->type)
-                printf("Wront type passed as parameter!\n");
+                printf("Wrong type passed as parameter!\n");
             list = list->next;
             parameters = parameters->next;
         }

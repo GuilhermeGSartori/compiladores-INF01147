@@ -11,7 +11,6 @@ Scope* createTable(Scope* current) {
         // creates global scope
         table->height = 0;
         table->previous_scope = NULL;
-        printf("Criei a global\n");
     }
     else {
         table->previous_scope = (Scope*)malloc(sizeof(Scope));
@@ -26,9 +25,6 @@ Scope* createTable(Scope* current) {
     for(int i=0; i<TABLE_SIZE; i++)
         table->lexemes[i] = NULL;
 
-    //table->parameters = NULL;
-
-    printf("Consegui alocar uma nova tabela\n");
 
     return table;
 }
@@ -52,8 +48,7 @@ Scope* popTable(Scope* stack_top) {
     }
     Scope* new_top = stack_top->previous_scope;
     free(stack_top);
-    return new_top; // melhorar isso, dar free e etc, guardar o escopo removido em algum lugar e etc
-    // fazer mais decente... dar free, desfazer os ponteiros e etc
+    return new_top; 
 }
 
 // Function to create a new HashItem and initialize it
@@ -70,7 +65,7 @@ int hashFunction(SymbolKey* key) {
     int sum_of_chars = 0;
     for(int i=0; i<strlen(key->key_name); i++) { // esse loop aqui consome mto recurso?
         sum_of_chars += (int)key->key_name[i];
-        printf("Teste: %d\n", sum_of_chars);
+        // printf("Teste: %d\n", sum_of_chars);
     }
     return sum_of_chars % TABLE_SIZE;
     
@@ -81,7 +76,6 @@ void addInTable(TableContent* content, Scope* table, int line) {
 
     int index = hashFunction(content->key);
 
-    printf("Index: %d\n", index);
     HashItem* current = table->lexemes[index];
 
     // hash nao da a volta
@@ -93,8 +87,6 @@ void addInTable(TableContent* content, Scope* table, int line) {
         current = current->next;
     }
 
-    //scanf("%d", &index); -> consome do proprio arquiv stdin
-    printf("Achei um espaço\n");
 
     // Create a new HashItem and add it to the linked list
     HashItem* new_item = createHashItem(content);
@@ -102,14 +94,6 @@ void addInTable(TableContent* content, Scope* table, int line) {
     new_item->next = table->lexemes[index];
     table->lexemes[index] = new_item;
     table->count++;
-
-    int counter = 0;
-    HashItem* it = table->lexemes[index];
-    while(it != NULL) {
-        counter++;
-        printf("counter: %d\n", counter);
-        it = it->next;
-    }
 
 }
 
