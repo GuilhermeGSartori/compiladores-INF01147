@@ -23,10 +23,14 @@ int main() {
 
     printf("Criei Keys\n");
     
-    addKeyInList(TYPE_INT, &list, TYPE_UNDEFINED, NULL);
-    addKeyInList(TYPE_FLOAT, &list, TYPE_UNDEFINED, NULL);
-    addKeyInList(TYPE_BOOL, &list, TYPE_UNDEFINED, NULL);
-    addKeyInList(TYPE_INT, &list, TYPE_UNDEFINED, NULL);
+    addKeyInList("0", &list, TYPE_UNDEFINED, NULL);
+    addKeyInList("1", &list, TYPE_UNDEFINED, NULL);
+    addKeyInList("2", &list, TYPE_UNDEFINED, NULL);
+    addKeyInList("3", &list, TYPE_UNDEFINED, NULL);
+    addKeyInList("4", &list, TYPE_UNDEFINED, NULL);
+    addKeyInList("5", &list, TYPE_UNDEFINED, NULL);
+
+    checkParameters(list, list);
 
     while(list != NULL) {
         printf("Tipo: %d\n",list->type);
@@ -45,28 +49,28 @@ int main() {
 
     //addToCurrentTable(content);
 
-    addInTable(content, scope_stack);
+    addInTable(content, scope_stack, 0);
     
-    addInTable(content2, scope_stack);
+    addInTable(content2, scope_stack, 0);
 
     scope_stack = createTable(scope_stack);
 
-    addInTable(content, scope_stack);
+    addInTable(content, scope_stack, 0);
 
-    addInTable(content3, scope_stack); // tirar a key dos parametros
+    addInTable(content3, scope_stack, 0); // tirar a key dos parametros
 
     TableContent* get;
 
-    get = findInTableStack(key2, scope_stack, TYPE_INT);
+    get = findInTableStack(key2, scope_stack, TYPE_INT, 0);
     printf("key2 content: %s\n", get->value);
 
-    get = findInTableStack(key3, scope_stack, TYPE_INT);
+    get = findInTableStack(key3, scope_stack, TYPE_INT, 0);
     printf("key3 content: %s\n", get->value);
 
-    get = findInTableStack(key, scope_stack, TYPE_INT);
+    get = findInTableStack(key, scope_stack, TYPE_INT, 0);
     printf("key content: %s\n", get->value); // como sei q eh a key q ta no topo e nao na base?
 
-    get = findInTableStack(key4, scope_stack, TYPE_INT);
+    get = findInTableStack(key4, scope_stack, TYPE_INT, 0);
     printf("key4 content: %s\n", get->value);
 
 

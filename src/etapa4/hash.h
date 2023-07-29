@@ -29,10 +29,10 @@ typedef struct Scope {
 //Scope* scope_stack = NULL;
 
 HashItem* createHashItem(TableContent* content);
-void addInTable(TableContent* content, Scope* table);
-void assertContentIsFUN(int nature);
-void assertContentIsID(int nature);
-TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature);
+void addInTable(TableContent* content, Scope* table, int line);
+void assertContentIsFUN(int nature, int line);
+void assertContentIsID(int nature, int line);
+TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature, int line);
 TableContent* findInTable(SymbolKey* key, Scope* table);
 int hashFunction(SymbolKey* key);
 Scope* createTable(Scope* current_scope); //will return the (now current) scope

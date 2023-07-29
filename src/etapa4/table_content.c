@@ -1,6 +1,7 @@
 #include "table_content.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 SymbolKey* mallocAndSetKeyName(char* value) {
@@ -95,4 +96,70 @@ void addKeyInList(char* name, KeyList** list, int type, char* value) {
         }
         current->next = new_item;
     }
+}
+
+void checkParameters(KeyList* parameters, KeyList* list) {
+
+    int list_count = 0;
+    int param_count = 0;
+    KeyList* heritage = NULL;
+
+    KeyList* it = list;
+
+    while(it != NULL) {
+        printf("OG LIST: %s\n", it->key.key_name);
+        it = it->next;
+    }
+
+    /*while(list != NULL) {
+        KeyList* next = list->next;
+        if(next == NULL) {
+            list->next = heritage;
+            break;
+        }
+        else if(next->next != NULL) {
+            KeyList* save_prev_next = next->next;
+            //next->next = list;            
+            next->next = list;
+            KeyList* prev_list = list;
+            list = save_prev_next;
+            //list->next = next;
+            prev_list->next = heritage;
+            heritage = next;
+
+        }
+        else {
+            list->next = heritage;
+            heritage = list;
+            //heritage = list;
+            //KeyList* prev_list = list;
+            list = next;
+            //prev_list->next = heritage;
+        }
+    }*/
+    
+    it = list;
+    while(it != NULL) {
+        printf("NEW LIST: %s\n", it->key.key_name);
+        it = it->next;
+        list_count++;
+    }
+    it = parameters;
+    while(it != NULL) {
+        it = it->next;
+        param_count++;
+    }
+
+    if(param_count == list_count) {
+        while(list != NULL) {
+            if(parameters->type != list->type)
+                printf("Wront type passed as parameter!\n");
+            list = list->next;
+            parameters = parameters->next;
+        }
+    }
+    else {
+        printf("Wrong number of parameters\n");        
+    }
+
 }

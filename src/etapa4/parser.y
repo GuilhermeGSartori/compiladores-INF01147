@@ -137,21 +137,21 @@ por ponto-e-vírgula.*/
 funcao: cabecalho TK_OC_MAP TK_PR_FLOAT corpo fecha_escopo { 
                                                                 $$ = $1; addSon($$, $4); setType($$, TYPE_FLOAT);
                                                                 SymbolKey* key = mallocAndSetKeyName($1->label);
-                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_FLOAT); 
                                                            } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_INT corpo fecha_escopo   { 
                                                                 $$ = $1; addSon($$, $4); setType($$, TYPE_INT);
                                                                 SymbolKey* key = mallocAndSetKeyName($1->label);
-                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_INT); 
                                                            } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  { 
                                                                 $$ = $1; addSon($$, $4); setType($$, TYPE_BOOL);
                                                                 SymbolKey* key = mallocAndSetKeyName($1->label);
-                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                                TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_BOOL); 
                                                            } ;
 
@@ -184,7 +184,7 @@ fun_name: TK_IDENTIFICADOR {
                                 $$ = createLexTypeNode($1); 
                                 SymbolKey* key = mallocAndSetKeyName($1->value);
                                 TableContent* content = newContent(key, $1->value, get_line_number(), FUN_SYMBOL, TYPE_UNDEFINED); 
-                                addInTable(content, scope_stack_top);
+                                addInTable(content, scope_stack_top, get_line_number());
                            } ;
 
 parametros: '(' lista_params ')' ;
@@ -205,21 +205,21 @@ um_ou_mais_param: um_ou_mais_param ',' param | param ;
 param: TK_PR_BOOL TK_IDENTIFICADOR   { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
-                                         addInTable(content, scope_stack_top);
+                                         addInTable(content, scope_stack_top, get_line_number());
                                          addKeyInList(key->key_name, &key_list, TYPE_BOOL, NULL);
                                      } ;
 
 param: TK_PR_INT TK_IDENTIFICADOR    { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
-                                         addInTable(content, scope_stack_top);
+                                         addInTable(content, scope_stack_top, get_line_number());
                                          addKeyInList(key->key_name, &key_list, TYPE_INT, NULL);
                                      } ;
 
 param: TK_PR_FLOAT TK_IDENTIFICADOR  { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
-                                         addInTable(content, scope_stack_top);
+                                         addInTable(content, scope_stack_top, get_line_number());
                                          addKeyInList(key->key_name, &key_list, TYPE_FLOAT, NULL);
                                      } ;
 
@@ -291,7 +291,7 @@ var_local: TK_PR_BOOL lista_local_var	{
                                                 if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_BOOL)
                                                     invalidSemanticOperation();
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
-                                                addInTable(content, scope_stack_top);
+                                                addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
                                             }
                                             key_list = NULL;
@@ -316,7 +316,7 @@ var_local: TK_PR_INT lista_local_var	{
                                                     invalidSemanticOperation();
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
                                                 printf("Created new var content!\n");
-                                                addInTable(content, scope_stack_top);
+                                                addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
                                             }
                                             key_list = NULL;
@@ -337,7 +337,7 @@ var_local: TK_PR_FLOAT lista_local_var	{
                                                 if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_FLOAT)
                                                     invalidSemanticOperation();
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
-                                                addInTable(content, scope_stack_top);
+                                                addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
                                             }
                                             key_list = NULL;
@@ -376,7 +376,7 @@ por uma expressão*/
 
 atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
-                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
+                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
                                           printf("Variable type: %d\n", content->type);
                                           printf("Expression type: %d\n", $3->type);
                                           if(content->type != $3->type)
@@ -399,19 +399,25 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   updateLabel($$); 
                                                   addSon($$, $3); 
                                                   SymbolKey* key = mallocAndSetKeyName($1->value); 
-                                                  TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL);
+                                                  TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                   setType($$, content->type); 
+                                                  checkParameters(content->parameters, key_list);
+                                                  key_list = NULL;
                                               } ; 
 
 lista_args: um_ou_mais_args 	{ $$ = $1; } // tem q ver se lista bate os os parametros armazenados
-		  | 		{ $$ = NULL; }
-		  ;
+		    | 		            { $$ = NULL; }
+		    ;
 
-um_ou_mais_args: args ',' um_ou_mais_args 	{ addSon($1, $3); $$ = $1; } 
-			   | args 		{ $$ = $1; }
-			   ;
+um_ou_mais_args: args ',' um_ou_mais_args 	{ addSon($1, $3); $$ = $1; }  // vai ficar na ordem inversa... tenho q ver se tamanho das 2 bate, nisso 
+                                                                          // ja inverto uma e vou colocando os tipos dai
+			     | args 	                { $$ = $1; }
+			     ;
 
-args: expressao 				{ $$ = $1; } ;
+args: expressao 				{
+                                    $$ = $1; 
+                                    addKeyInList($1->label, &key_list, $1->type, NULL); //so importa tipo!
+                                } ; // nao precisa setar type pq $$ eh literalmnente $1, SÓ SETA AO CRIAR NODO!!
 
 
 
@@ -449,7 +455,7 @@ declaracao_variavel_global: TK_PR_BOOL lista_var ';' {
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
-                                                             addInTable(content, scope_stack_top);
+                                                             addInTable(content, scope_stack_top, get_line_number());
                                                              key_list = key_list->next;
                                                          }
                                                          key_list = NULL;
@@ -460,7 +466,7 @@ declaracao_variavel_global: TK_PR_INT lista_var ';' {
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_INT); 
-                                                             addInTable(content, scope_stack_top);
+                                                             addInTable(content, scope_stack_top, get_line_number());
                                                              key_list = key_list->next;
                                                          }
                                                          key_list = NULL;
@@ -471,7 +477,7 @@ declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
-                                                             addInTable(content, scope_stack_top);
+                                                             addInTable(content, scope_stack_top, get_line_number());
                                                              key_list = key_list->next; // var local so pega o proximo end (valor), muda nada no apontado
                                                              // ao apontar nao precisa alocar nem nada... so aponta, eh só um endereco
                                                              // so precisa alocar se ele for COMEÇAR a apontar para algo
@@ -508,7 +514,7 @@ pelo emprego de operadores. Elas também permitem o uso de parênteses para for�
 operandos: TK_IDENTIFICADOR 		{
                                         $$ = createLexTypeNode($1); 
                                         SymbolKey* key = mallocAndSetKeyName($1->value); 
-                                        TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL);
+                                        TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
                                         setType($$, content->type); 
                                     } ;
 

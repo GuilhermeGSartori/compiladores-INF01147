@@ -54,6 +54,8 @@ void setParametersList(TableContent* content, KeyList* list);
 
 void addKeyInList(char* name, KeyList** list, int type, char* value);
 
+void checkParameters(KeyList* parameters, KeyList* list);
+
 //atualiza o conteudo de dado lexema no contexto mais proximo (desce stack) -> usa findInTableStack e verifica semantica!
 
 // atributos de NT sao usados para inferencia de tipos e tals... E controle de tabela atual? saber qual tabela to e etc

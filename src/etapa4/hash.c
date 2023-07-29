@@ -59,7 +59,7 @@ int hashFunction(SymbolKey* key) {
 }
 
 // Function to insert an element into the hash table
-void addInTable(TableContent* content, Scope* table) {
+void addInTable(TableContent* content, Scope* table, int line) {
 
     int index = hashFunction(content->key);
 
@@ -69,7 +69,7 @@ void addInTable(TableContent* content, Scope* table) {
     // hash nao da a volta
     while (current != NULL) {
         if (strcmp(getKeyName(current->hash_content), getKeyName(content)) == 0) {
-            printf("Symbol \"%s\" was already declared!\n", getKeyName(content));
+            printf("Semantic Error in Line %d: Symbol \"%s\" was declared in line %d!\n", line, getKeyName(content), current->hash_content->line);
             exit(ERR_DECLARED);
         }
         current = current->next;
@@ -112,21 +112,21 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
     return NULL; // Element not found
 }
 
-void assertContentIsID(int nature) {
+void assertContentIsID(int nature, int line) {
     if(nature != ID_SYMBOL && nature == FUN_SYMBOL) {
-        printf("Used function symbol as a identifier!\n");
+        printf("Used function symbol as a identifier in line %d!\n", line);
         exit(ERR_VARIABLE); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
     }
 }
 
-void assertContentIsFUN(int nature) {
+void assertContentIsFUN(int nature, int line) {
     if(nature != FUN_SYMBOL && nature == ID_SYMBOL) {
-        printf("Used identifier symbol as a function!\n");
+        printf("Used identifier symbol as a function in line %d!\n", line);
         exit(ERR_FUNCTION); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
     }
 }
 
-TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
+TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature, int line) {
 
     Scope* stack_run = stack_top;
 
@@ -139,16 +139,16 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature) {
         if(content != NULL) {
             printf("Jumped %d scopes and found \"%s\"!\n", count, content->key->key_name);
             if(nature == ID_SYMBOL)
-                assertContentIsID(content->nature);
+                assertContentIsID(content->nature, line);
             else if(nature == FUN_SYMBOL)
-                assertContentIsFUN(content->nature);
+                assertContentIsFUN(content->nature, line);
             return content;
         }
         count++;
         stack_run = stack_run->previous_scope;
     }
 
-    printf("Symbol \"%s\" was NOT declared!\n", key->key_name);
+    printf("Symbol \"%s\", used in line %d was NOT declared!\n", key->key_name, line);
     exit(ERR_UNDECLARED);
      
 }   // vai descendo a stack de hash tables

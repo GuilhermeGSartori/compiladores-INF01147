@@ -2,7 +2,11 @@ int a;
 int b;
 int c,d;
 
+funcao(int k, float l, bool mu) -> int {}
+
 fun(int i, bool j) -> int {
+    funcao(1, 1.0, true);
+    f();
     a = 2+2;
     //a = 2+2.0;
     //f();
