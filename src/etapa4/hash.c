@@ -116,15 +116,15 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
 
 void assertContentIsID(int nature, int line) {
     if(nature != ID_SYMBOL && nature == FUN_SYMBOL) {
-        printf("Used function symbol as a identifier in line %d!\n", line);
-        exit(ERR_VARIABLE); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        printf("Used function symbol as a variable in line %d!\n", line);
+        exit(ERR_FUNCTION); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
     }
 }
 
 void assertContentIsFUN(int nature, int line) {
     if(nature != FUN_SYMBOL && nature == ID_SYMBOL) {
-        printf("Used identifier symbol as a function in line %d!\n", line);
-        exit(ERR_FUNCTION); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        printf("Used variable symbol as a function in line %d!\n", line);
+        exit(ERR_VARIABLE); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
     }
 }
 
