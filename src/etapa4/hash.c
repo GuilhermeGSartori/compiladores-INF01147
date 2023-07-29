@@ -34,7 +34,25 @@ Scope* createTable(Scope* current) {
 }
 
 Scope* popTable(Scope* stack_top) {
-    return stack_top->previous_scope; // melhorar isso, dar free e etc, guardar o escopo removido em algum lugar e etc
+    for(int i=0; i<TABLE_SIZE;i++) {
+        HashItem* item = stack_top->lexemes[i];
+        while(item != NULL) {
+            free(item->hash_content->key);
+            KeyList* parameters = item->hash_content->parameters;
+            while(parameters != NULL) {
+                KeyList* prev = parameters;
+                parameters = parameters->next;
+                free(prev);
+            }
+            free(item->hash_content);
+            HashItem* prev = item;
+            item = item->next;
+            free(prev);
+        }
+    }
+    Scope* new_top = stack_top->previous_scope;
+    free(stack_top);
+    return new_top; // melhorar isso, dar free e etc, guardar o escopo removido em algum lugar e etc
     // fazer mais decente... dar free, desfazer os ponteiros e etc
 }
 

@@ -289,7 +289,7 @@ var_local: TK_PR_BOOL lista_local_var	{
                                             while(key_list != NULL) {                             
                                                 SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                 if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_BOOL)
-                                                    invalidSemanticOperation();
+                                                    invalidSemanticOperation(); // acho que pode... só que o literal vai ser convertido para bool sla
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                                 addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
@@ -380,7 +380,7 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                           printf("Variable type: %d\n", content->type);
                                           printf("Expression type: %d\n", $3->type);
                                           if(content->type != $3->type)
-                                              invalidSemanticOperation();
+                                              invalidSemanticOperation(); // ACHO QUE PODE, = FICA TIPO DO DA ESQUERDA E DEU
                                           $$ = createNode("="); 
                                           addSon($$, createLexTypeNode($1)); 
                                           addSon($$, $3); 
@@ -585,7 +585,7 @@ expr2: expr2 operadoresPrecedencia5 expr3               {
                                                             int type2 = getType($3);
                                                             if(
                                                                 ((type1==TYPE_FLOAT || type1==TYPE_INT) && (type2==TYPE_FLOAT || type2==TYPE_INT)) ||
-                                                                (type1==TYPE_BOOL && type2==TYPE_BOOL)
+                                                                (type1==TYPE_BOOL && type2==TYPE_BOOL) 
                                                               ) 
                                                             {
                                                                 setType($2, TYPE_BOOL); 
@@ -594,7 +594,7 @@ expr2: expr2 operadoresPrecedencia5 expr3               {
                                                                 $$ = $2; // since dolar dolar is dolar2, type was already set  
                                                             }
                                                             else    
-                                                                invalidSemanticOperation();   
+                                                                invalidSemanticOperation();   // ACHO QUE PODE... SÓ TEM QUE FAZER INFERENCIA DE TIPO 
 
                                                         } ;
 
@@ -618,7 +618,7 @@ expr4: expr4 operadoresPrecedencia3 expr5               {  // revisar se pode so
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
                                                             if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
-                                                                invalidSemanticOperation();   
+                                                                invalidSemanticOperation();    // ACHO QUE PODE... SÓ TEM QUE FAZER INFERENCIA DE TIPO
                                                             int infered_type = inferType(type1, type2);
                                                             setType($2, infered_type); 
                                                             addSon($2, $1); 
@@ -632,7 +632,7 @@ expr5: expr5 operadoresPrecedencia2 expr6               {
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
                                                             if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
-                                                                invalidSemanticOperation();   
+                                                                invalidSemanticOperation();    // ACHO QUE PODE... SÓ TEM QUE FAZER INFERENCIA DE TIPO
                                                             int infered_type = inferType(type1, type2);
                                                             setType($2, infered_type); 
                                                             addSon($2, $1); 

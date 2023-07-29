@@ -1,0 +1,28 @@
+int a;
+int b;
+int c,d;
+float ue;
+
+funcao(int k, float l, bool mu) -> int {
+    bool meme;
+    meme = mu;    
+}
+
+main() -> int {
+    ue = funcao(1, 1.0, true);
+    a = funcao(a, 1.0, true);
+    {
+        {
+            a = 2+2;
+        };
+        a = 2 + 2;
+    };
+    int g, y, _ble <= 2;
+    float j <= 2.0; 
+    if(b) {
+        c = a;
+    }
+    else {
+        c = a;
+    };
+}
