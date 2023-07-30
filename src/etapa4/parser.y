@@ -1,15 +1,7 @@
 %{
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
-/* TO DO:
-*         - Create Hash Table (one scope, with basic functions of hash)
-*         - Implement the Table Content funcitions
-*         - Implement a list of scopes (multiple hashes)
-*         - Use the new structs in the parser as defined by the professor
-*         - Implement the errors and the "high level stuff" as defined by the professor
-*/
 
 #include <stdio.h>
-//#include "tree.h"
 #include "hash.h"
 
 int yylex(void);
@@ -273,9 +265,7 @@ var_local: TK_PR_BOOL lista_local_var	{
                                                 }
                                             }
                                             while(key_list != NULL) {                             
-                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
-                                                if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_BOOL)
-                                                    invalidSemanticOperation(); // acho que pode... só que o literal vai ser convertido para bool sla
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                               
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
                                                 addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
@@ -294,9 +284,7 @@ var_local: TK_PR_INT lista_local_var	{
                                                 }
                                             }
                                             while(key_list != NULL) {                             
-                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
-                                                if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_INT)
-                                                    invalidSemanticOperation();
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                                
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
                                                 addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
@@ -315,9 +303,7 @@ var_local: TK_PR_FLOAT lista_local_var	{
                                                 }
                                             }
                                             while(key_list != NULL) {                             
-                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
-                                                if(key_list->type != TYPE_UNDEFINED && key_list->type != TYPE_FLOAT)
-                                                    invalidSemanticOperation();
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                                
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
                                                 addInTable(content, scope_stack_top, get_line_number());
                                                 key_list = key_list->next;
@@ -358,13 +344,11 @@ por uma expressão*/
 
 atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
-                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
-                                          if(content->type != $3->type)
-                                              invalidSemanticOperation(); // ACHO QUE PODE, = FICA TIPO DO DA ESQUERDA E DEU
+                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                          
                                           $$ = createNode("="); 
                                           addSon($$, createLexTypeNode($1)); 
                                           addSon($$, $3); 
-                                          setType($$, $1->type);
+                                          setType($$, content->type);
                                       } ;
 
 
@@ -379,7 +363,7 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   SymbolKey* key = mallocAndSetKeyName($1->value); 
                                                   TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                   setType($$, content->type); 
-                                                  checkParameters(content->parameters, key_list);
+                                                  //checkParameters(content->parameters, key_list);
                                                   // tem que procurar os parametros na tabela e setar valor?
                                                   // nao precisa, pegar o conteúdo de fato da tabela e setar o valor fica pra depois
                                                   key_list = NULL;
@@ -549,74 +533,55 @@ expressao: expr1                                        { $$ = $1; } ;
 
 expressao: expressao operadoresPrecedencia7 expr1       { 
                                                             int type1 = getType($1);
-                                                            int type2 = getType($3);
-                                                            if(type1 != TYPE_BOOL  || type2 != TYPE_BOOL)
-                                                                invalidSemanticOperation();   
-                                                            setType($2, TYPE_BOOL); 
+                                                            int type2 = getType($3);															
+                                                            setType($2, inferType(type1, type2)); 
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
-                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                            $$ = $2;
                                                         } ;
 
 expr1: expr2                                            { $$ = $1; } ;
 
 expr1: expr1 operadoresPrecedencia6 expr2               { 
                                                             int type1 = getType($1);
-                                                            int type2 = getType($3);
-                                                            if(type1 != TYPE_BOOL  || type2 != TYPE_BOOL)
-                                                                invalidSemanticOperation();   
-                                                            setType($2, TYPE_BOOL); 
+                                                            int type2 = getType($3);                                                              
+                                                            setType($2, inferType(type1, type2));
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
-                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                            $$ = $2;
                                                         } ;
 
 expr2: expr3 	                                        { $$ = $1; } ;
 
 expr2: expr2 operadoresPrecedencia5 expr3               { 
                                                             int type1 = getType($1);
-                                                            int type2 = getType($3);
-                                                            if(
-                                                                ((type1==TYPE_FLOAT || type1==TYPE_INT) && (type2==TYPE_FLOAT || type2==TYPE_INT)) ||
-                                                                (type1==TYPE_BOOL && type2==TYPE_BOOL) 
-                                                              ) 
-                                                            {
-                                                                setType($2, TYPE_BOOL); 
-                                                                addSon($2, $1); 
-                                                                addSon($2, $3); 
-                                                                $$ = $2; // since dolar dolar is dolar2, type was already set  
-                                                            }
-                                                            else    
-                                                                invalidSemanticOperation();   // ACHO QUE PODE... SÓ TEM QUE FAZER INFERENCIA DE TIPO 
-
+                                                            int type2 = getType($3);                                                      
+                                                            setType($2, inferType(type1, type2)); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            $$ = $2;                                                           
                                                         } ;
 
 expr3: expr4 		                                    { $$ = $1; } ;
 
 expr3: expr3 operadoresPrecedencia4 expr4               { 
                                                             int type1 = getType($1);
-                                                            int type2 = getType($3);
-                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
-                                                                invalidSemanticOperation();   
-                                                            setType($2, TYPE_BOOL); 
+                                                            int type2 = getType($3);                                                               
+                                                            setType($2, inferType(type1, type2)); 
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
-                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                            $$ = $2;
                                                         } ;
 
-expr4: expr5                                            { $$ = $1; } ; // since we are passing the pointer up, its not required to set the type...
-                                                                       // dolar dolar is dolar 1, literally the same address, not required to set the type
+expr4: expr5                                            { $$ = $1; } ; 
 
-expr4: expr4 operadoresPrecedencia3 expr5               {  // revisar se pode somar e tals true com numero e pq inferencia dessas coisas e pá
+expr4: expr4 operadoresPrecedencia3 expr5               {
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
-                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
-                                                                invalidSemanticOperation();    // ACHO QUE PODE... SÓ TEM QUE FAZER INFERENCIA DE TIPO
-                                                            int infered_type = inferType(type1, type2);
-                                                            setType($2, infered_type); 
+                                                            setType($2, inferType(type1, type2));
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
-                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                            $$ = $2;
                                                         } ;
 
 expr5: expr6 	                                        { $$ = $1; } ;
@@ -624,13 +589,10 @@ expr5: expr6 	                                        { $$ = $1; } ;
 expr5: expr5 operadoresPrecedencia2 expr6               { 
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
-                                                            if((type1!=TYPE_FLOAT && type1!=TYPE_INT) || (type2!=TYPE_FLOAT && type2!=TYPE_INT))
-                                                                invalidSemanticOperation();    // ACHO QUE PODE... SÓ TEM QUE FAZER INFERENCIA DE TIPO
-                                                            int infered_type = inferType(type1, type2);
-                                                            setType($2, infered_type); 
+                                                            setType($2, inferType(type1, type2)); 
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
-                                                            $$ = $2; // since dolar dolar is dolar2, type was already set
+                                                            $$ = $2;
                                                         } ;
 
 expr6: expr7 	                                        { $$ = $1; } ;
@@ -638,20 +600,13 @@ expr6: expr7 	                                        { $$ = $1; } ;
 expr6: operadoresUnariosNeg expr7 		                { 
                                                             addSon($1, $2); 
                                                             $$ = $1;
-                                                            int type = getType($2); 
-                                                            if(type != TYPE_FLOAT && type != TYPE_INT)
-                                                                invalidSemanticOperation();
-                                                            setType($1, type); 
+                                                            setType($1, getType($2)); 
                                                         } ; 
-                                                        // checar se expr7 eh numero? OK to change dolar1 after 
-                                                        // dolar dolar is address
+                                                        
 expr6: operadoresUnariosNot expr7                       { 
                                                             addSon($1, $2); 
-                                                            $$ = $1;
-                                                            int type = getType($2); 
-                                                            if(type != TYPE_BOOL)
-                                                                invalidSemanticOperation();
-                                                            setType($1, type); 
+                                                            $$ = $1;                                                            
+                                                            setType($1, getType($2)); 
                                                         } ; 
 
 expr7: operandos 	                                    { $$ = $1; } ;
