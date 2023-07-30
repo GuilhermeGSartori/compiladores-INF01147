@@ -359,8 +359,6 @@ por uma expressão*/
 atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
                                           TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
-                                          printf("Variable type: %d\n", content->type);
-                                          printf("Expression type: %d\n", $3->type);
                                           if(content->type != $3->type)
                                               invalidSemanticOperation(); // ACHO QUE PODE, = FICA TIPO DO DA ESQUERDA E DEU
                                           $$ = createNode("="); 
@@ -382,6 +380,8 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                   setType($$, content->type); 
                                                   checkParameters(content->parameters, key_list);
+                                                  // tem que procurar os parametros na tabela e setar valor?
+                                                  // nao precisa, pegar o conteúdo de fato da tabela e setar o valor fica pra depois
                                                   key_list = NULL;
                                               } ; 
 

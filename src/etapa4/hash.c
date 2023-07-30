@@ -65,7 +65,6 @@ int hashFunction(SymbolKey* key) {
     int sum_of_chars = 0;
     for(int i=0; i<strlen(key->key_name); i++) { // esse loop aqui consome mto recurso?
         sum_of_chars += (int)key->key_name[i];
-        // printf("Teste: %d\n", sum_of_chars);
     }
     return sum_of_chars % TABLE_SIZE;
     
@@ -92,7 +91,6 @@ void addInTable(TableContent* content, Scope* table, int line) {
 
     // Create a new HashItem and add it to the linked list
     HashItem* new_item = createHashItem(content);// se ainda não existir na tabela, adiciona, independente da natureza
-	printf("Inseri \"%s\" na tabela\n", getKeyName(content));
     new_item->next = table->lexemes[index];
     table->lexemes[index] = new_item;
     table->count++;
