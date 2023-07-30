@@ -9,6 +9,8 @@ funcao(int k, float l, bool mu) -> int {
 }
 
 main() -> int {
+    int a, b <= 2, c, d;
+    //int a;
     ue = funcao(1, 1.0, true);
     a = funcao(a, 1.0, true);
     {
