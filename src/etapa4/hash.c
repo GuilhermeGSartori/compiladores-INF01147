@@ -154,8 +154,3 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature, int
     exit(ERR_UNDECLARED);
      
 }   // vai descendo a stack de hash tables
-
-
-void invalidSemanticOperation() {
-    printf("Invalid semantic operation!\n");
-}

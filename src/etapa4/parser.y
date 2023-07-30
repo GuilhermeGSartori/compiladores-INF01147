@@ -144,8 +144,7 @@ funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  {
                                                                 updateContentType(content, TYPE_BOOL); 
                                                            } ;
 
- // verificar se tipo de chamada de funcao ta certo?
- // cria um escopo na propria cabeça e dai coloca a lista de param como variaveis
+                                                           
 
 /*3 - O cabeçalho consiste no nome da função, uma lista de parâmetros, o operador composto TK_OC_MAP e o tipo de retorno*/
 
@@ -175,9 +174,6 @@ um_ou_mais_param: um_ou_mais_param ',' param | param ;
 
 
 /*5 - Cada parâmetro é definido pelo seu tipo e nome.*/
-
-/* como defino o valor das variaveis passando as coisas como parametro na chamda de funcao..? aqui adiciono, mas como DEFINO o valor se eh só o valor */
-// baseado na ordem do atributo do table_content de parametros
 
 param: TK_PR_BOOL TK_IDENTIFICADOR   { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
@@ -258,10 +254,14 @@ var_local: TK_PR_BOOL lista_local_var	{
                                             $$ = $2; 
                                             if($2 != NULL) {
                                                 Node *leaf_attr = $2;
-                                                setType($$, TK_PR_BOOL);
+                                                Node *id = $2->sons[0];
+                                                setType($$, TYPE_BOOL);
+                                                setType(id, TYPE_BOOL);
                                                 while(leaf_attr->n_sons == 3) {
                                                     leaf_attr = leaf_attr->sons[2];
-                                                    setType(leaf_attr, TK_PR_BOOL);
+                                                    id = leaf_attr->sons[0];
+                                                    setType(leaf_attr, TYPE_BOOL);
+                                                    setType(id, TYPE_BOOL);
                                                 }
                                             }
                                             while(key_list != NULL) {                             
@@ -277,10 +277,14 @@ var_local: TK_PR_INT lista_local_var	{
                                             $$ = $2; 
                                             if($2 != NULL) {
                                                 Node *leaf_attr = $2;
-                                                setType($$, TK_PR_INT);
+                                                Node *id = $2->sons[0];
+                                                setType($$, TYPE_INT);
+                                                setType(id, TYPE_INT);
                                                 while(leaf_attr->n_sons == 3) {
                                                     leaf_attr = leaf_attr->sons[2];
-                                                    setType(leaf_attr, TK_PR_INT);
+                                                    id = leaf_attr->sons[0];
+                                                    setType(leaf_attr, TYPE_INT);
+                                                    setType(id, TYPE_INT);
                                                 }
                                             }
                                             while(key_list != NULL) {                             
@@ -296,10 +300,14 @@ var_local: TK_PR_FLOAT lista_local_var	{
                                             $$ = $2; 
                                             if($2 != NULL) {
                                                 Node *leaf_attr = $2;
-                                                setType($$, TK_PR_BOOL);
+                                                Node *id = $2->sons[0];
+                                                setType($$, TYPE_FLOAT);
+                                                setType(id, TYPE_FLOAT);
                                                 while(leaf_attr->n_sons == 3) {
                                                     leaf_attr = leaf_attr->sons[2];
-                                                    setType(leaf_attr, TK_PR_FLOAT);
+                                                    id = leaf_attr->sons[0];
+                                                    setType(leaf_attr, TYPE_FLOAT);
+                                                    setType(id, TYPE_FLOAT);
                                                 }
                                             }
                                             while(key_list != NULL) {                             
@@ -310,8 +318,7 @@ var_local: TK_PR_FLOAT lista_local_var	{
                                             }
                                             key_list = NULL;
                                         } ; 
-                                        // percorrer a lista local var colocando tipo dos nodos como init
-                                        // percorrer a key list e adicionar na table
+
 
 lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{ 
                                                             if($3 == NULL) { 
@@ -346,7 +353,9 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
                                           TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                          
                                           $$ = createNode("="); 
-                                          addSon($$, createLexTypeNode($1)); 
+                                          Node* id = createLexTypeNode($1);
+                                          setType(id, content->type);
+                                          addSon($$, id); 
                                           addSon($$, $3); 
                                           setType($$, content->type);
                                       } ;
@@ -369,20 +378,19 @@ fun_call: TK_IDENTIFICADOR '(' lista_args ')' {
                                                   key_list = NULL;
                                               } ; 
 
-lista_args: um_ou_mais_args 	{ $$ = $1; } // tem q ver se lista bate os os parametros armazenados
+lista_args: um_ou_mais_args 	{ $$ = $1; } 
 		    | 		            { $$ = NULL; }
 		    ;
 
-um_ou_mais_args: args ',' um_ou_mais_args 	{ addSon($1, $3); $$ = $1; }  // vai ficar na ordem inversa... tenho q ver se tamanho das 2 bate, nisso 
-                                                                          // ja inverto uma e vou colocando os tipos dai
+um_ou_mais_args: args ',' um_ou_mais_args 	{ addSon($1, $3); $$ = $1; }  
+                                                                          
 			     | args 	                { $$ = $1; }
 			     ;
 
 args: expressao 				{
                                     $$ = $1; 
                                     addKeyInList($1->label, &key_list, $1->type, NULL); //so importa tipo!
-                                } ; // nao precisa setar type pq $$ eh literalmnente $1, SÓ SETA AO CRIAR NODO!!
-
+                                } ;
 
 
 /*11 - Comando de Retorno: Trata-se do token return seguido de uma expressão. */
@@ -395,9 +403,6 @@ return: TK_PR_RETURN expressao  	{ $$ = createNode("return"); addSon($$, $2); in
 fluxo. A condicional consiste no token if seguido de uma expressão entre parênteses e então por um bloco de comandos 
 obrigatório. O else, sendo opcional, é seguido de um bloco de comandos, obrigatório caso o else seja empregado. Temos apenas 
 uma construção de repetição que é o token while seguida de uma expressão entre parênteses e de um bloco de comandos.*/
-
-/* como faz tudo no final acho q tem q quebrar em 2 e herdar, if fica como undefined e inter baseado na expressao */
-/* expressao nao tem q ser bool? */
 
 if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  { 
                                                                             $$ = createNode("if"); addSon($$, $3); addSon($$, $6); addSon($$, $8);
@@ -489,7 +494,6 @@ literais: TK_LIT_FALSE 		{ $$ = createLexTypeNode($1);
 /*14 - Expressões tem operandos e operadores. Os operandos podem ser(a)identificadores,(b)literaise (c)chamada de função. As expressões podem ser formadas recursivamente 
 pelo emprego de operadores. Elas também permitem o uso de parênteses para forçar uma associatividade ou precedência diferente daquela tradicional.*/
 
-/* operandos: literais | TK_IDENTIFICADOR | fun_call ; */
 operandos: TK_IDENTIFICADOR 		{
                                         $$ = createLexTypeNode($1); 
                                         SymbolKey* key = mallocAndSetKeyName($1->value); 
