@@ -79,18 +79,20 @@ void addInTable(TableContent* content, Scope* table, int line) {
     HashItem* current = table->lexemes[index];
 
     // hash nao da a volta
-    while (current != NULL) {
-        if (strcmp(getKeyName(current->hash_content), getKeyName(content)) == 0) {
+    while (current != NULL) {//se são iguais e for ID ou Função, lança o erro
+        if ((strcmp(getKeyName(current->hash_content), getKeyName(content)) == 0) && (content->nature != LIT_SYMBOL)) {
             printf("Semantic Error in Line %d: Symbol \"%s\" was declared in line %d!\n", line, getKeyName(content), current->hash_content->line);
             exit(ERR_DECLARED);
-        }
+        } else if ((strcmp(getKeyName(current->hash_content), getKeyName(content)) == 0) && (content->nature == LIT_SYMBOL)) {//se são iguais, mas é literal, apenas retorna, não insere novamente e não lança erro
+			return;
+		}
         current = current->next;
     }
 
 
     // Create a new HashItem and add it to the linked list
-    HashItem* new_item = createHashItem(content);
-
+    HashItem* new_item = createHashItem(content);// se ainda não existir na tabela, adiciona, independente da natureza
+	printf("Inseri \"%s\" na tabela\n", getKeyName(content));
     new_item->next = table->lexemes[index];
     table->lexemes[index] = new_item;
     table->count++;

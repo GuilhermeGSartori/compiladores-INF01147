@@ -472,10 +472,32 @@ lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &key_list, TYPE_UNDEFINED,
 
 /*Uso Geral*/
 
-literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_INT); } ;
-literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1); setType($$, TYPE_FLOAT); } ;
-literais: TK_LIT_TRUE 		{ $$ = createLexTypeNode($1); setType($$, TYPE_BOOL); } ;
-literais: TK_LIT_FALSE 		{ $$ = createLexTypeNode($1); setType($$, TYPE_BOOL); } ;
+literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1);
+							  SymbolKey* key = mallocAndSetKeyName($1->value);
+							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_INT);
+							  addInTable(content, scope_stack_top, get_line_number());
+							  setType($$, TYPE_INT); } ;
+
+
+literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1);
+							  SymbolKey* key = mallocAndSetKeyName($1->value);
+							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_FLOAT);
+							  addInTable(content, scope_stack_top, get_line_number());
+							  setType($$, TYPE_FLOAT); } ;
+
+
+literais: TK_LIT_TRUE 		{ $$ = createLexTypeNode($1);
+							  SymbolKey* key = mallocAndSetKeyName($1->value);
+							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_BOOL);
+							  addInTable(content, scope_stack_top, get_line_number());
+							  setType($$, TYPE_BOOL); } ;
+
+
+literais: TK_LIT_FALSE 		{ $$ = createLexTypeNode($1);
+							  SymbolKey* key = mallocAndSetKeyName($1->value);
+							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_BOOL);
+							  addInTable(content, scope_stack_top, get_line_number());
+							  setType($$, TYPE_BOOL); } ;
 
 
 
