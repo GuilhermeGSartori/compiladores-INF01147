@@ -117,14 +117,14 @@ TableContent* findInTable(SymbolKey* key, Scope* table) {
 void assertContentIsID(int nature, int line) {
     if(nature != ID_SYMBOL && nature == FUN_SYMBOL) {
         printf("Used function symbol as a variable in line %d!\n", line);
-        exit(ERR_FUNCTION); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        exit(ERR_FUNCTION);
     }
 }
 
 void assertContentIsFUN(int nature, int line) {
     if(nature != FUN_SYMBOL && nature == ID_SYMBOL) {
         printf("Used variable symbol as a function in line %d!\n", line);
-        exit(ERR_VARIABLE); // CONFIRMAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        exit(ERR_VARIABLE);
     }
 }
 
@@ -139,7 +139,7 @@ TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature, int
     while(stack_run != NULL && content == NULL) {
         content = findInTable(key, stack_run);
         if(content != NULL) {
-            printf("Jumped %d scopes and found \"%s\"!\n", count, content->key->key_name);
+            //printf("Jumped %d scopes and found \"%s\"!\n", count, content->key->key_name);
             if(nature == ID_SYMBOL)
                 assertContentIsID(content->nature, line);
             else if(nature == FUN_SYMBOL)
