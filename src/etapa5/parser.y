@@ -606,6 +606,8 @@ expr4: expr4 operadoresPrecedencia3Sum expr5            {
                                                             // if $1 and $3 temp are not NULL
                                                             char ILOC[CMD_MAX_SIZE] = "add";
                                                             CmdILOC* cmd = createCmd(ILOC, "r1", "r2", "r3", MOST_LEFT);
+                                                            // registors should be the temps of the nodes
+                                                            // its necessary to concate this code with the previous code
                                                             printf("\n%s\n", cmd->cmd);
                                                             $$ = $2;
                                                         } ;

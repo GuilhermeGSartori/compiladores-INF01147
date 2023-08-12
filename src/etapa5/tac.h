@@ -1,4 +1,4 @@
-#define CMD_MAX_SIZE 32
+#define CMD_MAX_SIZE 2048
 
 enum cmd_type {
     MOST_LEFT,
