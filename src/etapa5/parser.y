@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "hash.h"
+#include "tac.h"
 
 int yylex(void);
 void yyerror (char const *s);
@@ -10,6 +11,8 @@ extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
 KeyList* key_list = NULL;
+int local_offset = 0;
+int global_offset = 0;
 %}
 
 %define parse.error verbose
@@ -60,7 +63,8 @@ KeyList* key_list = NULL;
 %type<node> operadoresUnariosNeg
 %type<node> operadoresUnariosNot
 %type<node> operadoresPrecedencia2
-%type<node> operadoresPrecedencia3
+%type<node> operadoresPrecedencia3Sum
+%type<node> operadoresPrecedencia3Sub
 %type<node> operadoresPrecedencia4
 %type<node> operadoresPrecedencia5
 %type<node> operadoresPrecedencia6
@@ -159,7 +163,7 @@ fun_name: TK_IDENTIFICADOR {
                                 $$ = createLexTypeNode($1); 
                                 SymbolKey* key = mallocAndSetKeyName($1->value);
                                 TableContent* content = newContent(key, $1->value, get_line_number(), FUN_SYMBOL, TYPE_UNDEFINED); 
-                                addInTable(content, scope_stack_top, get_line_number());
+                                addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                            } ;
 
 parametros: '(' lista_params ')' ;
@@ -178,21 +182,21 @@ um_ou_mais_param: um_ou_mais_param ',' param | param ;
 param: TK_PR_BOOL TK_IDENTIFICADOR   { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
-                                         addInTable(content, scope_stack_top, get_line_number());
+                                         addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                          addKeyInList(key->key_name, &key_list, TYPE_BOOL, NULL);
                                      } ;
 
 param: TK_PR_INT TK_IDENTIFICADOR    { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
-                                         addInTable(content, scope_stack_top, get_line_number());
+                                         addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                          addKeyInList(key->key_name, &key_list, TYPE_INT, NULL);
                                      } ;
 
 param: TK_PR_FLOAT TK_IDENTIFICADOR  { 
                                          SymbolKey* key = mallocAndSetKeyName($2->value);
                                          TableContent* content = newContent(key, $2->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
-                                         addInTable(content, scope_stack_top, get_line_number());
+                                         addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                          addKeyInList(key->key_name, &key_list, TYPE_FLOAT, NULL);
                                      } ;
 
@@ -267,7 +271,7 @@ var_local: TK_PR_BOOL lista_local_var	{
                                             while(key_list != NULL) {                             
                                                 SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                               
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_BOOL); 
-                                                addInTable(content, scope_stack_top, get_line_number());
+                                                addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                 key_list = key_list->next;
                                             }
                                             key_list = NULL;
@@ -290,7 +294,7 @@ var_local: TK_PR_INT lista_local_var	{
                                             while(key_list != NULL) {                             
                                                 SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                                
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
-                                                addInTable(content, scope_stack_top, get_line_number());
+                                                addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                 key_list = key_list->next;
                                             }
                                             key_list = NULL;
@@ -313,7 +317,7 @@ var_local: TK_PR_FLOAT lista_local_var	{
                                             while(key_list != NULL) {                             
                                                 SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                                
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
-                                                addInTable(content, scope_stack_top, get_line_number());
+                                                addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                 key_list = key_list->next;
                                             }
                                             key_list = NULL;
@@ -351,7 +355,14 @@ por uma expressão*/
 
 atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
-                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                          
+                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());  
+                                          if(content->type = TYPE_INT) {
+                                              // aqui montaria codigo
+                                              // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo
+                                              printf("\n\n\nATRIBUICAO:\n");
+                                              printf("Base: %d\n", content->base);
+                                              printf("Offset: %d\n", content->offset);
+                                          }                                        
                                           $$ = createNode("="); 
                                           Node* id = createLexTypeNode($1);
                                           setType(id, content->type);
@@ -424,7 +435,7 @@ declaracao_variavel_global: TK_PR_BOOL lista_var ';' {
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_BOOL); 
-                                                             addInTable(content, scope_stack_top, get_line_number());
+                                                             addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                              key_list = key_list->next;
                                                          }
                                                          key_list = NULL;
@@ -435,7 +446,7 @@ declaracao_variavel_global: TK_PR_INT lista_var ';' {
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_INT); 
-                                                             addInTable(content, scope_stack_top, get_line_number());
+                                                             addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                              key_list = key_list->next;
                                                          }
                                                          key_list = NULL;
@@ -446,7 +457,7 @@ declaracao_variavel_global: TK_PR_FLOAT lista_var ';' {
                                                          while(key_list != NULL) {                             
                                                              SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);
                                                              TableContent* content = newContent(key, "0", get_line_number(), ID_SYMBOL, TYPE_FLOAT); 
-                                                             addInTable(content, scope_stack_top, get_line_number());
+                                                             addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                              key_list = key_list->next;                                                              
                                                          }
                                                          key_list = NULL;
@@ -464,28 +475,28 @@ lista_var: TK_IDENTIFICADOR { addKeyInList($1->value, &key_list, TYPE_UNDEFINED,
 literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1);
 							  SymbolKey* key = mallocAndSetKeyName($1->value);
 							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_INT);
-							  addInTable(content, scope_stack_top, get_line_number());
+							  addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
 							  setType($$, TYPE_INT); } ;
 
 
 literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1);
 							  SymbolKey* key = mallocAndSetKeyName($1->value);
 							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_FLOAT);
-							  addInTable(content, scope_stack_top, get_line_number());
+							  addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
 							  setType($$, TYPE_FLOAT); } ;
 
 
 literais: TK_LIT_TRUE 		{ $$ = createLexTypeNode($1);
 							  SymbolKey* key = mallocAndSetKeyName($1->value);
 							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_BOOL);
-							  addInTable(content, scope_stack_top, get_line_number());
+							  addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
 							  setType($$, TYPE_BOOL); } ;
 
 
 literais: TK_LIT_FALSE 		{ $$ = createLexTypeNode($1);
 							  SymbolKey* key = mallocAndSetKeyName($1->value);
 							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_BOOL);
-							  addInTable(content, scope_stack_top, get_line_number());
+							  addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
 							  setType($$, TYPE_BOOL); } ;
 
 
@@ -498,6 +509,13 @@ operandos: TK_IDENTIFICADOR 		{
                                         $$ = createLexTypeNode($1); 
                                         SymbolKey* key = mallocAndSetKeyName($1->value); 
                                         TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
+                                        if(content->type = TYPE_INT) {
+                                            // aqui montaria codigo
+                                            // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo
+                                            printf("\n\n\nOPERANDO:\n");
+                                            printf("Base: %d\n", content->base);
+                                            printf("Offset: %d\n", content->offset);
+                                        }
                                         setType($$, content->type); 
                                     } ;
 
@@ -515,8 +533,8 @@ operadoresPrecedencia2: '/' 		{ $$ = createNode("/"); } ;
 operadoresPrecedencia2: '%' 		{ $$ = createNode("%"); } ;
 
 /* operadoresPrecedencia3: '+' | '-' ; */
-operadoresPrecedencia3: '+'  		{ $$ = createNode("+"); } ;
-operadoresPrecedencia3: '-'  		{ $$ = createNode("-"); } ;
+operadoresPrecedencia3Sum: '+'  		{ $$ = createNode("+"); } ;
+operadoresPrecedencia3Sub: '-'  		{ $$ = createNode("-"); } ;
 
 /*operadoresPrecedencia4: '<' | '>' | TK_OC_LE | TK_OC_GE ;*/
 operadoresPrecedencia4: '<'  		{ $$ = createNode("<"); } ;
@@ -579,7 +597,20 @@ expr3: expr3 operadoresPrecedencia4 expr4               {
 
 expr4: expr5                                            { $$ = $1; } ; 
 
-expr4: expr4 operadoresPrecedencia3 expr5               {
+expr4: expr4 operadoresPrecedencia3Sum expr5            {
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            setType($2, inferType(type1, type2));
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            // if $1 and $3 temp are not NULL
+                                                            char ILOC[CMD_MAX_SIZE] = "add";
+                                                            CmdILOC* cmd = createCmd(ILOC, "r1", "r2", "r3", MOST_LEFT);
+                                                            printf("\n%s\n", cmd->cmd);
+                                                            $$ = $2;
+                                                        } ;
+
+expr4: expr4 operadoresPrecedencia3Sub expr5            {
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
                                                             setType($2, inferType(type1, type2));

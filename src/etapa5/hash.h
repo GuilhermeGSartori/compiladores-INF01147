@@ -21,7 +21,7 @@ typedef struct Scope {
 
 
 HashItem* createHashItem(TableContent* content);
-void addInTable(TableContent* content, Scope* table, int line);
+void addInTable(TableContent* content, Scope* table, int line, int* local_offset, int* global_offset);
 void assertContentIsFUN(int nature, int line);
 void assertContentIsID(int nature, int line);
 TableContent* findInTableStack(SymbolKey* key, Scope* stack_top, int nature, int line);

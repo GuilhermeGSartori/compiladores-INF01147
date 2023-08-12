@@ -71,7 +71,7 @@ int hashFunction(SymbolKey* key) {
 }
 
 // Function to insert an element into the hash table
-void addInTable(TableContent* content, Scope* table, int line) {
+void addInTable(TableContent* content, Scope* table, int line, int* local_offset, int* global_offset) {
 
     int index = hashFunction(content->key);
 
@@ -90,6 +90,19 @@ void addInTable(TableContent* content, Scope* table, int line) {
 
 
     // Create a new HashItem and add it to the linked list
+    if(content->type == TYPE_INT) {
+        if(table->height != 0) {
+            content->base = BASE_RFP;
+            content->offset = (*local_offset);
+            (*local_offset) += INT_SIZE;
+        }
+        else {
+            content->base = BASE_RBSS;
+            content->offset = (*global_offset);
+            (*global_offset) += INT_SIZE;
+        }
+    }
+
     HashItem* new_item = createHashItem(content);// se ainda não existir na tabela, adiciona, independente da natureza
     new_item->next = table->lexemes[index];
     table->lexemes[index] = new_item;

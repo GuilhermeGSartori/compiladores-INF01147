@@ -5,11 +5,19 @@
 #define ERR_VARIABLE 20 //2.3
 #define ERR_FUNCTION 21 //2.3
 
+#define INT_SIZE 4 
+
 
 enum symbol_nature {
     LIT_SYMBOL,
     ID_SYMBOL,
     FUN_SYMBOL
+};
+
+enum data_base {
+    BASE_RFP,
+    BASE_RBSS,
+    BASE_UNDEFINED
 };
 
 
@@ -31,6 +39,9 @@ typedef struct TableContent {
     enum symbol_nature nature;
     enum semantic_type type;
     char value[LABEL_MAX_SIZE];
+
+    enum data_base base;
+    int offset;
 
     KeyList* parameters;
 } TableContent;

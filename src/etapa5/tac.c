@@ -15,3 +15,26 @@
 - calcular o endereço na declaração de variáveis globais com deslocamento a rbss
 
 */
+
+#include "tac.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+CmdILOC* createCmd(char* ILOC, char* register1, char* register2, char* register3, enum cmd_type type) {
+	
+	if(type == MOST_LEFT) {
+		strcat(ILOC, " ");
+		strcat(ILOC, register1);
+		strcat(ILOC, ", ");
+		strcat(ILOC, register2);
+		strcat(ILOC, " => ");
+		strcat(ILOC, register3);
+	}
+
+	CmdILOC* cmd = (CmdILOC*)malloc(sizeof(CmdILOC));
+	strcpy(cmd->cmd, ILOC);
+
+	return cmd;
+}
