@@ -3,7 +3,10 @@
 #include <string.h>
 #include "tree.h"
 
-
+int labelCount = 0;
+int tempCount = 0;
+char label[10];
+char temp[10];
 extern void exporta (void *arvore);
 
 Node* createLexTypeNode(LexType* lex_value) { 
@@ -154,4 +157,26 @@ int inferType(enum semantic_type type1, enum semantic_type type2){
 		return type1;
 	}
 	
+}
+
+char* labelGenerator(){
+	
+	char id[3] = "L";
+	labelCount++;
+	
+	snprintf(label, 10, "%s%d", id, labelCount);
+	printf("Label generator %s\n", label);
+	
+	return label;
+}
+
+char* tempGenerator(){
+	
+	char id[3] = "r";
+	tempCount++;
+	
+	snprintf(temp, 10, "%s%d", id, tempCount);
+	printf("Temp generator %s\n", temp);
+	
+	return temp;
 }

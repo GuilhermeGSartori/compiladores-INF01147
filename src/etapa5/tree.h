@@ -9,6 +9,7 @@ enum semantic_type {
 
 typedef struct astNode {
     char label[LABEL_MAX_SIZE];
+	char temp[10];
     LexType* lexical_value;
     enum semantic_type type;
     int n_sons;
@@ -28,3 +29,7 @@ int isAttr(Node* node);
 void printEdges(Node* father);
 void printNodes(Node* father);
 void printKids(Node* father, int height);
+
+char* labelGenerator();
+char* tempGenerator();
+
