@@ -22,8 +22,12 @@
 #include <stdio.h>
 
 
-CmdILOC* createCmd(char* ILOC, char* register1, char* register2, char* register3, enum cmd_type type) {
+CmdILOC* createCmd(char* command, char* register1, char* register2, char* register3, enum cmd_type type) {
 	
+	char ILOC[CMD_MAX_SIZE];
+
+	strcpy(ILOC, command);
+
 	if(type == MOST_LEFT) {
 		strcat(ILOC, " ");
 		strcat(ILOC, register1);
@@ -48,4 +52,12 @@ CmdILOC* createCmd(char* ILOC, char* register1, char* register2, char* register3
 	strcpy(cmd->cmd, ILOC);
 
 	return cmd;
+}
+
+CmdILOC* concatCode(CmdILOC * code1, CmdILOC* code2) {
+	CmdILOC* concatened = (CmdILOC*)malloc(sizeof(CmdILOC));
+	strcpy(concatened->cmd, code1->cmd);
+	strcat(concatened->cmd, "\n");
+	strcat(concatened->cmd, code2->cmd);
+	return concatened;
 }

@@ -8,6 +8,6 @@ enum cmd_type {
 
 typedef struct CmdILOC { char cmd[CMD_MAX_SIZE]; } CmdILOC;
 
-CmdILOC* createCmd(char* ILOC_CMD, char* register1, char* register2, char* register3, enum cmd_type type);
+CmdILOC* createCmd(char* command, char* register1, char* register2, char* register3, enum cmd_type type);
 
-void concatCode(char* code1, char* code2);
+CmdILOC* concatCode(CmdILOC * code1, CmdILOC* code2);
