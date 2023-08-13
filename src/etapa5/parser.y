@@ -359,27 +359,11 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                           TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                      
                                           $$ = createNode("="); 
                                           if(content->type = TYPE_INT) {
-                                              
-                                              // aqui montaria codigo
-                                              // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo
+                                              // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo/tem que ver se exp da direita eh int?
                                               //setTemp($$, tempGenerator()); isso aqui eh usado para algo? tipo if(a = 1) e tals... =  tem temp? avaliacao sla
-                                              // lazy eval?
-                                              //char ILOC[CMD_MAX_SIZE] = "storeAI"; // tem que ver se exp da direita eh int?
                                               CmdILOC* cmd = createCmd("storeAI", $3->temp, content->base, content->offset, MOST_RIGHT);
-                                              //printf("\n\n\nATRIBUICAO:\n");
-                                              //printf("Base: %s\n", content->base);
-                                              //printf("Offset: %s\n", content->offset);
-                                              // concat codigos
-                                              //setCode($$, cmd->cmd);
-                                              //char[CMD_MAX_SIZE] temporary = concatCode($1->code->cmd, $3->code->cmd);
-                                              //setCode($$, concatCode($3->code->cmd, cmd->cmd));
-                                              //CmdILOC* temporary = concatCode($3->code, cmd);
-                                              //strcpy(temporary, concatCode($1->code->cmd, $3->code->cmd));
-                                              //temporary = concatCode(temporary, cmd)
-                                              //setCode($$, temporary->cmd);
                                               setCode($$, concatCode($3->code, cmd)->cmd);
                                               printf("\n%s\n", $$->code->cmd); // setar como code
-                                              // antes disso, na real concatenar os codigos!
                                           }    
                                           Node* id = createLexTypeNode($1);
                                           setType(id, content->type);
@@ -632,10 +616,9 @@ expr4: expr4 operadoresPrecedencia3Sum expr5            {
                                                             addSon($2, $3); 
                                                             // if $1 and $3 temp are not NULL
                                                             setTemp($2, tempGenerator());
-                                                            //char ILOC[CMD_MAX_SIZE] = "add";
                                                             CmdILOC* cmd = createCmd("add", $1->temp, $3->temp, $2->temp, MOST_LEFT);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); // setar como code
+                                                            printf("\n%s\n", $2->code->cmd);
                                                             $$ = $2;
                                                         } ;
 
