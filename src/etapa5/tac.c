@@ -33,6 +33,17 @@ CmdILOC* createCmd(char* ILOC, char* register1, char* register2, char* register3
 		strcat(ILOC, register3);
 	}
 
+	if(type == MOST_RIGHT) {
+		strcat(ILOC, " ");
+		strcat(ILOC, register1);
+		strcat(ILOC, "  => ");
+		strcat(ILOC, register2);
+		if(register3 != NULL) {
+			strcat(ILOC, ", ");
+			strcat(ILOC, register3);
+		}
+	}
+
 	CmdILOC* cmd = (CmdILOC*)malloc(sizeof(CmdILOC));
 	strcpy(cmd->cmd, ILOC);
 

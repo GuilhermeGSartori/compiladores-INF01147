@@ -18,6 +18,10 @@ Node* createLexTypeNode(LexType* lex_value) {
     new_node->lexical_value = lex_value;
     new_node->n_sons = 0;
     new_node->sons = NULL;
+
+    new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
+    strcpy(new_node->code->cmd, "undefined");
+    strcpy(new_node->temp, "undefined");
     
     return new_node;
 }
@@ -31,6 +35,10 @@ Node* createNode(char* value) {
     new_node->lexical_value = NULL;
     new_node->n_sons = 0;
     new_node->sons = NULL;
+
+    new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
+    strcpy(new_node->code->cmd, "undefined");
+    strcpy(new_node->temp, "undefined");
 
     return new_node;
 }
@@ -179,4 +187,12 @@ char* tempGenerator(){
 	printf("Temp generator %s\n", temp);
 	
 	return temp;
+}
+
+void setTemp(Node* node, char* temp) {
+    strcpy(node->temp, temp);
+}
+
+void setCode(Node* node, char* code) {
+    strcpy(node->code->cmd, code);
 }

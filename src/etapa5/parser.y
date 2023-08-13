@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include "hash.h"
-#include "tac.h"
 
 int yylex(void);
 void yyerror (char const *s);
@@ -62,7 +61,9 @@ int global_offset = 0;
 %type<node> operandos
 %type<node> operadoresUnariosNeg
 %type<node> operadoresUnariosNot
-%type<node> operadoresPrecedencia2
+%type<node> operadoresPrecedencia2Mult
+%type<node> operadoresPrecedencia2Divi
+%type<node> operadoresPrecedencia2Rest
 %type<node> operadoresPrecedencia3Sum
 %type<node> operadoresPrecedencia3Sub
 %type<node> operadoresPrecedencia4
@@ -355,15 +356,24 @@ por uma expressão*/
 
 atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
-                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());  
+                                          TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                      
+                                          $$ = createNode("="); 
                                           if(content->type = TYPE_INT) {
+                                              
                                               // aqui montaria codigo
                                               // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo
-                                              printf("\n\n\nATRIBUICAO:\n");
-                                              printf("Base: %d\n", content->base);
-                                              printf("Offset: %d\n", content->offset);
-                                          }                                        
-                                          $$ = createNode("="); 
+                                              //setTemp($$, tempGenerator()); isso aqui eh usado para algo? tipo if(a = 1) e tals... =  tem temp? avaliacao sla
+                                              // lazy eval?
+                                              char ILOC[CMD_MAX_SIZE] = "storeAI"; // tem que ver se exp da direita eh int?
+                                              CmdILOC* cmd = createCmd(ILOC, $3->temp, content->base, content->offset, MOST_RIGHT);
+                                              //printf("\n\n\nATRIBUICAO:\n");
+                                              //printf("Base: %s\n", content->base);
+                                              //printf("Offset: %s\n", content->offset);
+                                              // concat codigos
+                                              setCode($$, cmd->cmd);
+                                              printf("\n%s\n", $$->code->cmd); // setar como code
+                                              // antes disso, na real concatenar os codigos!
+                                          }    
                                           Node* id = createLexTypeNode($1);
                                           setType(id, content->type);
                                           addSon($$, id); 
@@ -476,7 +486,12 @@ literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1);
 							  SymbolKey* key = mallocAndSetKeyName($1->value);
 							  TableContent* content = newContent(key, $1->value, get_line_number(), LIT_SYMBOL, TYPE_INT);
 							  addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
-							  setType($$, TYPE_INT); } ;
+							  setType($$, TYPE_INT); 
+                              setTemp($$, tempGenerator()); 
+                              char ILOC[CMD_MAX_SIZE] = "loadI";
+                              CmdILOC* cmd = createCmd(ILOC, content->value, $$->temp, NULL, MOST_RIGHT);
+                              setCode($$, cmd->cmd);
+                              printf("\n%s\n", $$->code->cmd); } ;
 
 
 literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1);
@@ -512,9 +527,14 @@ operandos: TK_IDENTIFICADOR 		{
                                         if(content->type = TYPE_INT) {
                                             // aqui montaria codigo
                                             // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo
-                                            printf("\n\n\nOPERANDO:\n");
-                                            printf("Base: %d\n", content->base);
-                                            printf("Offset: %d\n", content->offset);
+                                            setTemp($$, tempGenerator());
+                                            char ILOC[CMD_MAX_SIZE] = "loadAI";
+                                            CmdILOC* cmd = createCmd(ILOC, content->base, content->offset, $$->temp, MOST_LEFT);
+                                            setCode($$, cmd->cmd);
+                                            printf("\n%s\n", $$->code->cmd); // setar como code
+                                            //printf("\n\n\nOPERANDO:\n");
+                                            //printf("Base: %d\n", content->base);
+                                            //printf("Offset: %d\n", content->offset);
                                         }
                                         setType($$, content->type); 
                                     } ;
@@ -528,9 +548,9 @@ operadoresUnariosNeg: '-'    			{ $$ = createNode("-"); } ;
 operadoresUnariosNot: '!' 				{ $$ = createNode("!"); } ;
 
 /* operadoresPrecedencia2: '*' | '/' | '%' ; */
-operadoresPrecedencia2: '*' 		{ $$ = createNode("*"); } ;
-operadoresPrecedencia2: '/' 		{ $$ = createNode("/"); } ;
-operadoresPrecedencia2: '%' 		{ $$ = createNode("%"); } ;
+operadoresPrecedencia2Mult: '*' 		{ $$ = createNode("*"); } ;
+operadoresPrecedencia2Divi: '/' 		{ $$ = createNode("/"); } ;
+operadoresPrecedencia2Rest: '%' 		{ $$ = createNode("%"); } ;
 
 /* operadoresPrecedencia3: '+' | '-' ; */
 operadoresPrecedencia3Sum: '+'  		{ $$ = createNode("+"); } ;
@@ -604,11 +624,13 @@ expr4: expr4 operadoresPrecedencia3Sum expr5            {
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
                                                             // if $1 and $3 temp are not NULL
+                                                            setTemp($2, tempGenerator());
                                                             char ILOC[CMD_MAX_SIZE] = "add";
-                                                            CmdILOC* cmd = createCmd(ILOC, "r1", "r2", "r3", MOST_LEFT);
+                                                            CmdILOC* cmd = createCmd(ILOC, $1->temp, $3->temp, $2->temp, MOST_LEFT);
                                                             // registors should be the temps of the nodes
                                                             // its necessary to concate this code with the previous code
-                                                            printf("\n%s\n", cmd->cmd);
+                                                            setCode($2, cmd->cmd);
+                                                            printf("\n%s\n", $2->code->cmd); // setar como code
                                                             $$ = $2;
                                                         } ;
 
@@ -618,23 +640,61 @@ expr4: expr4 operadoresPrecedencia3Sub expr5            {
                                                             setType($2, inferType(type1, type2));
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
+                                                            setTemp($2, tempGenerator());
+                                                            char ILOC[CMD_MAX_SIZE] = "sub";
+                                                            CmdILOC* cmd = createCmd(ILOC, $1->temp, $3->temp, $2->temp, MOST_LEFT);
+                                                            setCode($2, cmd->cmd);
+                                                            printf("\n%s\n", $2->code->cmd); // setar como code
                                                             $$ = $2;
                                                         } ;
 
 expr5: expr6 	                                        { $$ = $1; } ;
 
-expr5: expr5 operadoresPrecedencia2 expr6               { 
+expr5: expr5 operadoresPrecedencia2Mult expr6           { 
                                                             int type1 = getType($1);
                                                             int type2 = getType($3);
                                                             setType($2, inferType(type1, type2)); 
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
+                                                            setTemp($2, tempGenerator());
+                                                            char ILOC[CMD_MAX_SIZE] = "mult";
+                                                            CmdILOC* cmd = createCmd(ILOC, $1->temp, $3->temp, $2->temp, MOST_LEFT);
+                                                            setCode($2, cmd->cmd);
+                                                            printf("\n%s\n", $2->code->cmd); // setar como code
+                                                            $$ = $2;
+                                                        } ;
+                                                
+expr5: expr5 operadoresPrecedencia2Divi expr6           { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            setType($2, inferType(type1, type2)); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            setTemp($2, tempGenerator());
+                                                            char ILOC[CMD_MAX_SIZE] = "divi";
+                                                            CmdILOC* cmd = createCmd(ILOC, $1->temp, $3->temp, $2->temp, MOST_LEFT);
+                                                            setCode($2, cmd->cmd);
+                                                            printf("\n%s\n", $2->code->cmd); // setar como code
+                                                            $$ = $2;
+                                                        } ;
+
+expr5: expr5 operadoresPrecedencia2Rest expr6           { 
+                                                            int type1 = getType($1);
+                                                            int type2 = getType($3);
+                                                            setType($2, inferType(type1, type2)); 
+                                                            addSon($2, $1); 
+                                                            addSon($2, $3); 
+                                                            setTemp($2, tempGenerator());
+                                                            char ILOC[CMD_MAX_SIZE] = "VER ISSO";// VER ISSOOOOOOOOOOOOOOOOOOOO
+                                                            CmdILOC* cmd = createCmd(ILOC, $1->temp, $3->temp, $2->temp, MOST_LEFT);
+                                                            setCode($2, cmd->cmd);
+                                                            printf("\n%s\n", $2->code->cmd); // setar como code
                                                             $$ = $2;
                                                         } ;
 
 expr6: expr7 	                                        { $$ = $1; } ;
 
-expr6: operadoresUnariosNeg expr7 		                { 
+expr6: operadoresUnariosNeg expr7 		                {  // nao precisa traduzir para ILOC
                                                             addSon($1, $2); 
                                                             $$ = $1;
                                                             setType($1, getType($2)); 

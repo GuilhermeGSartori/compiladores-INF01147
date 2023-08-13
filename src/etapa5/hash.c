@@ -91,14 +91,21 @@ void addInTable(TableContent* content, Scope* table, int line, int* local_offset
 
     // Create a new HashItem and add it to the linked list
     if(content->type == TYPE_INT) {
+        char offset[10];
         if(table->height != 0) {
-            content->base = BASE_RFP;
-            content->offset = (*local_offset);
+            //content->base = BASE_RFP;
+            strcpy(content->base, "rfp");
+            snprintf(offset, 10, "%d", (*local_offset));
+            strcpy(content->offset, offset);
+            //content->offset = (*local_offset);
             (*local_offset) += INT_SIZE;
         }
         else {
-            content->base = BASE_RBSS;
-            content->offset = (*global_offset);
+            //content->base = BASE_RBSS;
+            strcpy(content->base, "rbss");
+            snprintf(offset, 10, "%d", (*global_offset));
+            strcpy(content->offset, offset);
+            //content->offset = (*global_offset);
             (*global_offset) += INT_SIZE;
         }
     }

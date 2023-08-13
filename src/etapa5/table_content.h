@@ -14,11 +14,11 @@ enum symbol_nature {
     FUN_SYMBOL
 };
 
-enum data_base {
+/*enum data_base {
     BASE_RFP,
     BASE_RBSS,
     BASE_UNDEFINED
-};
+};*/
 
 
 typedef struct SymbolKey { char key_name[LABEL_MAX_SIZE]; } SymbolKey;
@@ -40,8 +40,9 @@ typedef struct TableContent {
     enum semantic_type type;
     char value[LABEL_MAX_SIZE];
 
-    enum data_base base;
-    int offset;
+    //enum data_base base;
+    char base[10];
+    char offset[10];
 
     KeyList* parameters;
 } TableContent;

@@ -36,8 +36,9 @@ TableContent* newContent(SymbolKey* key, char* lexeme_value, int line, enum symb
     table_line->nature = nat;
     table_line->type = type;
 
-    table_line->base = BASE_UNDEFINED;
-    table_line->offset = -1;
+    //table_line->base = BASE_UNDEFINED;
+    strcpy(table_line->base, "undefined");
+    strcpy(table_line->offset, "-1");
 
     table_line->parameters = NULL;
 

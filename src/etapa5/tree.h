@@ -1,4 +1,5 @@
 #include "lextype.h"
+#include "tac.h"
 
 enum semantic_type {
     TYPE_UNDEFINED,
@@ -10,6 +11,7 @@ enum semantic_type {
 typedef struct astNode {
     char label[LABEL_MAX_SIZE];
 	char temp[10];
+    CmdILOC* code;
     LexType* lexical_value;
     enum semantic_type type;
     int n_sons;
@@ -33,3 +35,5 @@ void printKids(Node* father, int height);
 char* labelGenerator();
 char* tempGenerator();
 
+void setTemp(Node* node, char* temp);
+void setCode(Node* node, char* code);
