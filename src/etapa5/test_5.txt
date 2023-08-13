@@ -4,7 +4,10 @@ int a;
 main() -> int {
     a = 1; // 1 entra tambem na tabela local!
     a = a + a; 
-    int j;
-    int a <= 1;
+    //int j;
+    int a;
+    //int a <= 1;
+    a = 1;
     a = a * a;
+    a = -a;
 }

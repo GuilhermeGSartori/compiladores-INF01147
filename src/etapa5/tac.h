@@ -3,7 +3,8 @@
 enum cmd_type {
     MOST_LEFT,
     MOST_RIGHT,
-    CONTROL
+    CONTROL,
+    CBR
 };
 
 typedef struct CmdILOC { char cmd[CMD_MAX_SIZE]; } CmdILOC;

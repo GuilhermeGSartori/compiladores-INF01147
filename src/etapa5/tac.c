@@ -37,7 +37,7 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 		strcat(ILOC, register3);
 	}
 
-	if(type == MOST_RIGHT) {
+	else if(type == MOST_RIGHT) {
 		strcat(ILOC, " ");
 		strcat(ILOC, register1);
 		strcat(ILOC, "  => ");
@@ -46,6 +46,29 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 			strcat(ILOC, ", ");
 			strcat(ILOC, register3);
 		}
+	}
+
+	else if(type == CONTROL) {
+		strcat(ILOC, " ");
+		if(register1 != NULL) {
+			strcat(ILOC, register1);
+			strcat(ILOC, ", ");
+		}
+		if(register2 != NULL) {
+			strcat(ILOC, register2);
+		}
+		strcat(ILOC, "  -> ");
+		strcat(ILOC, " ");
+		strcat(ILOC, register3);
+	}
+
+	else if(type == CBR) {
+		strcat(ILOC, " ");
+		strcat(ILOC, register1);
+		strcat(ILOC, "  -> ");
+		strcat(ILOC, register2);
+		strcat(ILOC, ", ");
+		strcat(ILOC, register3);
 	}
 
 	CmdILOC* cmd = (CmdILOC*)malloc(sizeof(CmdILOC));
