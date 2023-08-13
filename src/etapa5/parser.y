@@ -358,7 +358,7 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                           SymbolKey* key = mallocAndSetKeyName($1->value);
                                           TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                      
                                           $$ = createNode("="); 
-                                          if(content->type = TYPE_INT) {
+                                          if(content->type == TYPE_INT) {
                                               // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo/tem que ver se exp da direita eh int?
                                               //setTemp($$, tempGenerator()); isso aqui eh usado para algo? tipo if(a = 1) e tals... =  tem temp? avaliacao sla
                                               CmdILOC* cmd = createCmd("storeAI", $3->temp, content->base, content->offset, MOST_RIGHT);
