@@ -428,6 +428,10 @@ if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  {
                                                                             $$ = createNode("if"); addSon($$, $3); addSon($$, $6); addSon($$, $8);
                                                                             if($8 != NULL) { updateLabel($$); } 
                                                                             setType($$, getType($3));
+																			setTemp($3, tempGenerator());
+																			//fazer um load da expressao no R1?
+																			//gerar label? se gerar concatenar com :
+																			CmdILOC* cmd = createCmd("cbr", $3->temp, label_do_if_true, label_do_else, CBR);
                                                                         } ; 
  
 else: TK_PR_ELSE abre_escopo cmd_block fecha_escopo ';'                 { $$ = $3;}
