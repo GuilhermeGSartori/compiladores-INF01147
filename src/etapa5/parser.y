@@ -9,6 +9,7 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
+CmdILOC* command_list = NULL;
 KeyList* key_list = NULL;
 int local_offset = 0;
 int global_offset = 0;
@@ -103,8 +104,8 @@ inicio: abre_escopo programa fecha_escopo ;
 abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
 fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; 
 
-programa: lista   { arvore = $1; }
-	|         { arvore = NULL; }
+programa: lista   { $1->code = command_list, arvore = $1; }
+	|             { arvore = NULL; }
         ;
 
 lista: elemento lista  {
@@ -367,9 +368,10 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                               //setTemp($$, tempGenerator()); isso aqui eh usado para algo? tipo if(a = 1) e tals... =  tem temp? avaliacao sla
                                               CmdILOC* cmd = createCmd("storeAI", $3->temp, content->base, content->offset, MOST_RIGHT);
                                               setCode($$, concatCode($3->code, cmd)->cmd);
-                                              printf("\n%s\n", $$->code->cmd); // setar como code
+                                              //printf("\n%s\n", $$->code->cmd); // setar como code
 
                                               // como vamos subir o codigo ate a raiz?
+                                              cmdToList(&command_list, $$->code);
                                           }    
                                           Node* id = createLexTypeNode($1);
                                           setType(id, content->type);
@@ -488,7 +490,7 @@ literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1);
                               //char ILOC[CMD_MAX_SIZE] = "loadI";
                               CmdILOC* cmd = createCmd("loadI", content->value, $$->temp, NULL, MOST_RIGHT);
                               setCode($$, cmd->cmd);
-                              printf("\n%s\n", $$->code->cmd); } ;
+                              /*printf("\n%s\n", $$->code->cmd);*/ } ;
 
 
 literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1);
@@ -579,7 +581,7 @@ expressao: expressao operadoresPrecedencia7 expr1       {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("or", $1->temp, $3->temp, $2->temp, MOST_LEFT);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd);
+                                                            //printf("\n%s\n", $2->code->cmd);
                                                             $$ = $2;
                                                         } ;
 
@@ -594,7 +596,7 @@ expr1: expr1 operadoresPrecedencia6 expr2               {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("and", $1->temp, $3->temp, $2->temp, MOST_LEFT);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;
                                                         } ;
 
@@ -609,7 +611,7 @@ expr2: expr2 operadoresPrecedencia5EQ expr3             {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("cmp_EQ", $1->temp, $3->temp, $2->temp, CONTROL);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;                                                           
                                                         } ;
 
@@ -622,7 +624,7 @@ expr2: expr2 operadoresPrecedencia5NE expr3             {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("cmp_NE", $1->temp, $3->temp, $2->temp, CONTROL);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;                                                           
                                                         } ;
 
@@ -637,7 +639,7 @@ expr3: expr3 operadoresPrecedencia4LS expr4             {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("cmp_LT", $1->temp, $3->temp, $2->temp, CONTROL);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;
                                                         } ;
 
@@ -650,7 +652,7 @@ expr3: expr3 operadoresPrecedencia4GT expr4             {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("cmp_GT", $1->temp, $3->temp, $2->temp, CONTROL);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;
                                                         } ;
 
@@ -663,7 +665,7 @@ expr3: expr3 operadoresPrecedencia4LE expr4             {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("cmp_LE", $1->temp, $3->temp, $2->temp, CONTROL);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;
                                                         } ;                                                        
 
@@ -676,7 +678,7 @@ expr3: expr3 operadoresPrecedencia4GE expr4             {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("cmp_GE", $1->temp, $3->temp, $2->temp, CONTROL);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); 
+                                                            //printf("\n%s\n", $2->code->cmd); 
                                                             $$ = $2;
                                                         } ;
 
@@ -692,7 +694,7 @@ expr4: expr4 operadoresPrecedencia3Sum expr5            {
                                                             setTemp($2, tempGenerator());
                                                             CmdILOC* cmd = createCmd("add", $1->temp, $3->temp, $2->temp, MOST_LEFT);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd);
+                                                            //printf("\n%s\n", $2->code->cmd);
                                                             $$ = $2;
                                                         } ;
 
@@ -711,7 +713,7 @@ expr4: expr4 operadoresPrecedencia3Sub expr5            {
                                                             //temporary = concatCode(concatCode($1->code, $->code), cmd);
                                                             //setCode($2, temporary->cmd);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); // setar como code
+                                                            //printf("\n%s\n", $2->code->cmd); // setar como code
                                                             $$ = $2;
                                                         } ;
 
@@ -731,7 +733,7 @@ expr5: expr5 operadoresPrecedencia2Mult expr6           {
                                                             //temporary = concatCode(concatCode($1->code, $->code), cmd);
                                                             //setCode($2, temporary->cmd);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); // setar como code
+                                                            //printf("\n%s\n", $2->code->cmd); // setar como code
                                                             $$ = $2;
                                                         } ;
                                                 
@@ -749,7 +751,7 @@ expr5: expr5 operadoresPrecedencia2Divi expr6           {
                                                             //temporary = concatCode(concatCode($1->code, $->code), cmd);
                                                             //setCode($2, temporary->cmd);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
-                                                            printf("\n%s\n", $2->code->cmd); // setar como code
+                                                            //printf("\n%s\n", $2->code->cmd); // setar como code
                                                             $$ = $2;
                                                         } ;
 

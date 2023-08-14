@@ -30,6 +30,7 @@ int isAttr(Node* node);
 
 void printEdges(Node* father);
 void printNodes(Node* father);
+void printILOC(Node* father);
 void printKids(Node* father, int height);
 
 char* labelGenerator();

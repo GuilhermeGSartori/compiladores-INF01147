@@ -21,6 +21,7 @@ Node* createLexTypeNode(LexType* lex_value) {
 
     new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
     strcpy(new_node->code->cmd, "undefined");
+    new_node->code->next = NULL;
     strcpy(new_node->temp, "undefined");
     
     return new_node;
@@ -38,6 +39,7 @@ Node* createNode(char* value) {
 
     new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
     strcpy(new_node->code->cmd, "undefined");
+    new_node->code->next = NULL;
     strcpy(new_node->temp, "undefined");
 
     return new_node;
@@ -114,6 +116,15 @@ void printNodes(Node* father) {
     }
 }
 
+void printILOC(Node* father) {
+    CmdILOC* commands = father->code;
+
+    while(commands != NULL) {
+        printf("%s\n", commands->cmd);
+        commands = commands->next;
+    }
+}
+
 void exporta(void *arvore) {
     Node *father = (Node*) arvore;
     
@@ -121,6 +132,8 @@ void exporta(void *arvore) {
         printEdges(arvore);
         printf("\n\n");
         printNodes(arvore);
+        printf("\n\n");
+        printILOC(arvore);
     }
 
 }
@@ -184,7 +197,7 @@ char* tempGenerator(){
 	tempCount++;
 	
 	snprintf(temp, 10, "%s%d", id, tempCount);
-	printf("Temp generator %s\n", temp);
+	//printf("Temp generator %s\n", temp);
 	
 	return temp;
 }

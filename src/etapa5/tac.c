@@ -73,6 +73,7 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 
 	CmdILOC* cmd = (CmdILOC*)malloc(sizeof(CmdILOC));
 	strcpy(cmd->cmd, ILOC);
+	cmd->next = NULL;
 
 	return cmd;
 }
@@ -83,4 +84,38 @@ CmdILOC* concatCode(CmdILOC * code1, CmdILOC* code2) {
 	strcat(concatened->cmd, "\n");
 	strcat(concatened->cmd, code2->cmd);
 	return concatened;
+}
+
+/*CmdILOC* cmdToList(CmdILOC* list, CmdILOC* command) {
+
+	if(list == NULL) {
+		return command;
+	}
+	else {
+		while(list->next != NULL) {
+			list = list->next;
+		}
+		list->next = command;
+	}
+
+	return list;
+}*/
+
+void cmdToList(CmdILOC** list, CmdILOC* command) {
+
+    CmdILOC* new_item = (CmdILOC*)malloc(sizeof(CmdILOC));
+    strcpy(new_item->cmd, command->cmd);
+    new_item->next = NULL;
+
+    if(*list == NULL) {
+        *list = new_item;
+    }
+
+    else {
+        CmdILOC* current = *list;
+        while(current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_item;
+    }
 }
