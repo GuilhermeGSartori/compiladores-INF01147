@@ -10,8 +10,26 @@ main() -> int {
 	if(a>4) { b = 3; } else {};
 	if(a>5) {} else { b = 4; };
 	if(a>6) { b = 5; } else { b = 6; };
+
+	if(a > 7) {
+		a = 8;
+		if(a == 8) {
+			a = 9;
+			if(a == 9) {
+				a = 10;
+			}
+			else {
+				a = 11;
+			};
+		};
+	};
 	
-    /*while(a>0){
+	while(a>0) {
+
+	};
+
+    while(a>0){
 		a = a-1;
-	};*/
+	};
+
 }

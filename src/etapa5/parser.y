@@ -104,7 +104,7 @@ inicio: abre_escopo programa fecha_escopo ;
 abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
 fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; 
 
-programa: lista   { /*$1->code = command_list,*/ arvore = $1; }
+programa: lista   { arvore = $1; }
 	|             { arvore = NULL; }
         ;
 
@@ -239,8 +239,6 @@ cmd_simples: cmd_list cmd_simples  {
                                                    addSon($1, $2);
                                                } 
                                                $$ = $1; // point that started the secondary recursion must turn into $$, the head (previous cmd_list in the recursion)
-                                               //printf("aaa: %s\n\n", $2->code->cmd);
-                                               //if(hasCode($2->code) == 1)
                                                setCode($$, concatCode($$->code, $2->code)->cmd);
                                            } 
                                            else { 
@@ -304,27 +302,18 @@ var_local: TK_PR_INT lista_local_var	{
                                                 }
                                             }
                                             while(key_list != NULL) {                           
-                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);  
-                                                printf("%s\n", key->key_name);                                               
+                                                SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                           
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
                                                 addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                                                 
                                                 if(key_list->type != TYPE_UNDEFINED) {
-                                                    
                                                     char new_temp[10];
                                                     setTempString(new_temp, tempGenerator());
-                                                    //setTemp($$, tempGenerator()); 
-                                                    //char ILOC[CMD_MAX_SIZE] = "loadI";
                                                     TableContent* found_content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
-                                                    
                                                     CmdILOC* cmd = createCmd("loadI", key_list->value, new_temp, NULL, MOST_RIGHT);
-                                                    
                                                     CmdILOC* cmd2 = createCmd("storeAI", new_temp, found_content->base, found_content->offset, MOST_RIGHT);
-                                                    
                                                     cmd = concatCode(cmd, cmd2);
-                                                    printf("%s\n", $$->code->cmd);
                                                     setCode($$, concatCode($$->code, cmd)->cmd);
-                                                    
                                                 }
 
                                                 key_list = key_list->next;
@@ -356,19 +345,20 @@ var_local: TK_PR_FLOAT lista_local_var	{
                                         } ; 
 
 
-lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{ 
+lista_local_var: TK_IDENTIFICADOR ',' lista_local_var	{  // lista fica inversa, meio que vai empilhando e coloca o mais pra direita primeiro na lista
+                                                           // ao desfazer o nó da recursao.. Init resolve antes de prosseguir na recursão, dai entra primeiro
+                                                           // se fosse recursao a esquerda, evitaria isso
                                                             if($3 == NULL) { 
                                                                 $$ = NULL;
                                                             } else { 
                                                                 $$ = $3;
                                                             } 
-                                                            printf("aaa: %s\n", $1->value);
                                                             addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL);
                                                         }
 
 			   | init ',' lista_local_var               { addSon($1, $3); $$ = $1; } 
 			   
-               | TK_IDENTIFICADOR 	                    { $$ = NULL; addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL); printf("aaa: %s\n", $1->value); }
+               | TK_IDENTIFICADOR 	                    { $$ = NULL; addKeyInList($1->value, &key_list, TYPE_UNDEFINED, NULL); }
 			   
                | init 			                        { $$ = $1; }
 			   
@@ -378,7 +368,6 @@ init: TK_IDENTIFICADOR TK_OC_LE literais {
                                              $$ = createNode("<="); 
                                              addSon($$, createLexTypeNode($1)); 
                                              addSon($$, $3);
-                                             printf("aaa: %s\n", $1->value);
                                              addKeyInList($1->value, &key_list, $3->type, $3->lexical_value->value);
                                          } ; 
 
@@ -392,14 +381,8 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                           TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());                                      
                                           $$ = createNode("="); 
                                           if(content->type == TYPE_INT) {
-                                              // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo/tem que ver se exp da direita eh int?
-                                              //setTemp($$, tempGenerator()); isso aqui eh usado para algo? tipo if(a = 1) e tals... =  tem temp? avaliacao sla
                                               CmdILOC* cmd = createCmd("storeAI", $3->temp, content->base, content->offset, MOST_RIGHT);
                                               setCode($$, concatCode($3->code, cmd)->cmd);
-                                              //printf("\n%s\n", $$->code->cmd); // setar como code
-
-                                              // como vamos subir o codigo ate a raiz?
-                                              //cmdToList(&command_list, $$->code);
                                           }    
                                           Node* id = createLexTypeNode($1);
                                           setType(id, content->type);
@@ -485,8 +468,6 @@ if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  {
                                                                                 block2 = concatCodeToString(block2, ": nop");
 
                                                                                 block1 = concatCode(block1, block2);
-
-                                                                                //cmd = concatCode(cmd, block1);
 
                                                                                 setCode($$, block1->cmd);
 																			} else {
@@ -605,10 +586,8 @@ literais: TK_LIT_INT 		{ $$ = createLexTypeNode($1);
 							  addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
 							  setType($$, TYPE_INT); 
                               setTemp($$, tempGenerator()); 
-                              //char ILOC[CMD_MAX_SIZE] = "loadI";
                               CmdILOC* cmd = createCmd("loadI", content->value, $$->temp, NULL, MOST_RIGHT);
-                              setCode($$, cmd->cmd);
-                              /*printf("\n%s\n", $$->code->cmd);*/ } ;
+                              setCode($$, cmd->cmd); } ;
 
 
 literais: TK_LIT_FLOAT 		{ $$ = createLexTypeNode($1);
@@ -642,8 +621,6 @@ operandos: TK_IDENTIFICADOR 		{
                                         SymbolKey* key = mallocAndSetKeyName($1->value); 
                                         TableContent* content = findInTableStack(key, scope_stack_top, ID_SYMBOL, get_line_number());
                                         if(content->type == TYPE_INT) {
-                                            // aqui montaria codigo
-                                            // mais pra frente tem que ver se codigo eh NULL, se for, ignora e pega proximo
                                             setTemp($$, tempGenerator());
                                             CmdILOC* cmd = createCmd("loadAI", content->base, content->offset, $$->temp, MOST_LEFT);
                                             setCode($$, cmd->cmd);

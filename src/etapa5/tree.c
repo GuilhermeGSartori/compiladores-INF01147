@@ -130,10 +130,10 @@ void exporta(void *arvore) {
     Node *father = (Node*) arvore;
     
     if(arvore != NULL) {
-        printEdges(arvore);
-        printf("\n\n");
-        printNodes(arvore);
-        printf("\n\n");
+        //printEdges(arvore);
+        //printf("\n\n");
+        //printNodes(arvore);
+        //printf("\n\n");
         printILOC(arvore);
     }
 
@@ -220,7 +220,6 @@ void setLabel(char* label, char* labelGenerated){
 }
 
 int hasCode(CmdILOC* code) {
-    printf("bbb: %s\n", code->cmd);
     if(strcmp(code->cmd, "nop") == 0)
         return 0;
     else
