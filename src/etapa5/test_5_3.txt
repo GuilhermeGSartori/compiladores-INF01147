@@ -4,8 +4,12 @@ int b;
 main() -> int {
     a = 10;
 	
-	//if(a>1) { b = 2; }; seg fault
-	
+	if(a>1) {};
+	if(a>2) { b = 2; };
+	if(a>3) {} else {};
+	if(a>4) { b = 3; } else {};
+	if(a>5) {} else { b = 4; };
+	if(a>6) { b = 5; } else { b = 6; };
 	
     /*while(a>0){
 		a = a-1;

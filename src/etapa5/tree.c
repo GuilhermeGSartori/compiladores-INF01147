@@ -227,8 +227,10 @@ int hasCode(CmdILOC* code) {
         return 1;   
 }
 
-int emptyElse(Node* node) {
-    if(strcmp(node->label, "emptyElse") == 0)
+int emptyElseOrNull(Node* node) {
+    if(node == NULL)
+        return 1;
+    else if(strcmp(node->label, "emptyElse") == 0)
         return 1;
     else
 	    return 0;

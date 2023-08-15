@@ -454,11 +454,11 @@ uma construção de repetição que é o token while seguida de uma expressão e
 
 if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  { 
                                                                             $$ = createNode("if"); addSon($$, $3); addSon($$, $6); 
-                                                                            if(emptyElse($8) == 1 || $8 == NULL)
+                                                                            if(emptyElseOrNull($8) == 1)
                                                                                 addSon($$, NULL);
                                                                             else    
                                                                                 addSon($$, $8);
-                                                                            if($8 != NULL || emptyElse($8) == 1) { 
+                                                                            if($8 != NULL) { 
 																				updateLabel($$);
 																				char label1[10];
 																				setLabel(label1, labelGenerator());
@@ -482,7 +482,7 @@ if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  {
                                                                                 block2 = concatCode(block2, $8->code); // se else for empty, node vai ser nop
                                                                                 CmdILOC* cmd_label3 = mallocAndSetCmdILOC(label3);
                                                                                 block2 = concatCode(block2, cmd_label3);
-                                                                                block2 = concatCodeToString(block2, ": ");
+                                                                                block2 = concatCodeToString(block2, ": nop");
 
                                                                                 block1 = concatCode(block1, block2);
 
@@ -496,14 +496,15 @@ if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  {
 																				char labelIfFalse[10];
 																				setLabel(labelIfFalse, labelGenerator());
 																				CmdILOC* cmd = createCmd("cbr", $3->temp, labelIfTrue, labelIfFalse, CBR);
-																				
+
 																				cmd = concatCode($3->code, cmd);
                                                                                 CmdILOC* block = mallocAndSetCmdILOC(labelIfTrue);
                                                                                 block = concatCode(cmd, block);
                                                                                 block = concatCodeToString(block, ": ");
                                                                                 if($6 != NULL)
                                                                                     block = concatCode(block, $6->code);
-																				
+																		
+
 																				CmdILOC* cmd_labelIfFalse = mallocAndSetCmdILOC(labelIfFalse);
                                                                                 block = concatCode(block, cmd_labelIfFalse);
                                                                                 block = concatCodeToString(block, ": nop");

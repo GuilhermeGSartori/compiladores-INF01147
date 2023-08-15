@@ -41,4 +41,4 @@ void setTempString(char* temp, char* tempGenerated);
 void setCode(Node* node, char* code);
 void setLabel(char* label, char* labelGenerated);
 int hasCode(CmdILOC* code);
-int emptyElse(Node* node);
+int emptyElseOrNull(Node* node);
