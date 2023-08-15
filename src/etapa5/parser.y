@@ -1,5 +1,6 @@
 %{
 // Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+// Fizemos em uma passagem!!!
 
 #include <stdio.h>
 #include "hash.h"
@@ -9,7 +10,6 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
-//CmdILOC* command_list = NULL;
 KeyList* key_list = NULL;
 int local_offset = 0;
 int global_offset = 0;
