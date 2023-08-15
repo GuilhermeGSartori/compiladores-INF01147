@@ -491,11 +491,27 @@ if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  {
                                                                                 setCode($$, block1->cmd);
 																			} else {
 																				//if sem else
+																				char labelIfTrue[10];
+																				setLabel(labelIfTrue, labelGenerator());
+																				char labelIfFalse[10];
+																				setLabel(labelIfFalse, labelGenerator());
+																				CmdILOC* cmd = createCmd("cbr", $3->temp, labelIfTrue, labelIfFalse, CBR);
+																				
+																				cmd = concatCode($3->code, cmd);
+                                                                                CmdILOC* block = mallocAndSetCmdILOC(labelIfTrue);
+                                                                                block = concatCode(cmd, block);
+                                                                                block = concatCodeToString(block, ": ");
+                                                                                if($6 != NULL)
+                                                                                    block = concatCode(block, $6->code);
+																				
+																				CmdILOC* cmd_labelIfFalse = mallocAndSetCmdILOC(labelIfFalse);
+                                                                                block = concatCode(block, cmd_labelIfFalse);
+                                                                                block = concatCodeToString(block, ": nop");
+																				
+																				setCode($$, block->cmd);
 																			}
                                                                             setType($$, getType($3));
 																			
-																			//gerar label? se gerar concatenar com :
-																			//CmdILOC* cmd = createCmd("cbr", $3->temp, label_do_if_true, label_do_else, CBR);
                                                                         } ; 
  
 else: TK_PR_ELSE abre_escopo cmd_block fecha_escopo ';'                 { 
