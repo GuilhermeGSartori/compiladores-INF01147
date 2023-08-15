@@ -21,7 +21,7 @@ Node* createLexTypeNode(LexType* lex_value) {
 
     new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
     strcpy(new_node->code->cmd, "nop");
-    new_node->code->next = NULL;
+    //new_node->code->next = NULL;
     strcpy(new_node->temp, "undefined");
     
     return new_node;
@@ -39,7 +39,7 @@ Node* createNode(char* value) {
 
     new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
     strcpy(new_node->code->cmd, "nop");
-    new_node->code->next = NULL;
+    //new_node->code->next = NULL;
     strcpy(new_node->temp, "undefined");
 
     return new_node;
@@ -76,7 +76,7 @@ int isAttr(Node* node) {
     if(strcmp(node->label, "<=") == 0)
         return 1;
     else
-	return 0;
+	    return 0;
 }
 
 void printEdges(Node* father) {
@@ -207,6 +207,10 @@ void setTemp(Node* node, char* temp) {
     strcpy(node->temp, temp);
 }
 
+void setTempString(char* temp, char* tempGenerated) {
+	stpcpy(temp, tempGenerated);
+}
+
 void setCode(Node* node, char* code) {
     strcpy(node->code->cmd, code);
 }
@@ -221,4 +225,11 @@ int hasCode(CmdILOC* code) {
         return 0;
     else
         return 1;   
+}
+
+int emptyElse(Node* node) {
+    if(strcmp(node->label, "emptyElse") == 0)
+        return 1;
+    else
+	    return 0;
 }

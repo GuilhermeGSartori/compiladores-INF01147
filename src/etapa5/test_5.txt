@@ -3,16 +3,29 @@ int a;
 
 main() -> int {
     //if(a=1) {}; nao pode
-    //if(a>1) {} else {a = 1;};
+    a = 3;
+    if(a>1) {} else {};
     b = 100;
     c = 1;
     a = 1; // 1 entra tambem na tabela local!
     a = a + a; 
     //int j;
-    int a;
-    //int a <= 1;
-    int l <= 1;
+    //int a, m <= 1, n, k <=1;
+    int a, m <= 1, n, k <=2;
+    //int a; 
+    //a = 1;
+    int w, u <= 1, o;
+    w = 1;
+    int f <= 0, p;
+    /*int a <= 1;*/
+    int l <= 0;
     a = 1;
     a = a * a;
+    //foo();
     a = -a;
+    return 0;
 }
+
+/*foo() -> float {
+    return 1;
+}*/
