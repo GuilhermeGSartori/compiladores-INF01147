@@ -466,9 +466,7 @@ if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  {
 																				setLabel(label2, labelGenerator());
                                                                                 char label3[10];
 																				setLabel(label3, labelGenerator());
-                                                                                //printf("%s\n", label1);
 																				CmdILOC* cmd = createCmd("cbr", $3->temp, label1, label2, CBR);																				
-																				//printf("%s\n", label1);
 
                                                                                 cmd = concatCode($3->code, cmd);
                                                                                 CmdILOC* block1 = mallocAndSetCmdILOC(label1);
@@ -509,7 +507,34 @@ else: TK_PR_ELSE abre_escopo cmd_block fecha_escopo ';'                 {
                                                                         }
                                                   | ';'                 { $$ = NULL; } ;
 
-while: TK_PR_WHILE '(' expressao ')' abre_escopo cmd_block fecha_escopo { $$ = createNode("while"); addSon($$, $3); addSon($$, $6); setType($$, getType($3)); } ; 
+while: TK_PR_WHILE '(' expressao ')' abre_escopo cmd_block fecha_escopo { $$ = createNode("while"); addSon($$, $3); addSon($$, $6); 
+                                                                          setType($$, getType($3));
+                                                                          char labelInicio[10];
+                                                                          setLabel(labelInicio, labelGenerator());
+                                                                          char labelIntermediario[10];
+                                                                          setLabel(labelIntermediario, labelGenerator());
+                                                                          char labelFim[10];
+                                                                          setLabel(labelFim, labelGenerator());
+																		  CmdILOC* cmd_labelInicio = mallocAndSetCmdILOC(labelInicio);
+																		  cmd_labelInicio = concatCodeToString(cmd_labelInicio, ": ");
+																		  cmd_labelInicio = concatCode(cmd_labelInicio, $3->code);
+                                                                          CmdILOC* cmd = createCmd("cbr", $3->temp, labelIntermediario, labelFim, CBR);
+                                                                          cmd = concatCode(cmd_labelInicio, cmd);
+                                                                          CmdILOC* block = mallocAndSetCmdILOC(labelIntermediario);
+                                                                          block = concatCode(cmd, block);
+                                                                          block = concatCodeToString(block, ": ");
+
+                                                                          if($6 != NULL)
+                                                                            block = concatCode(block, $6->code);
+                                                                          CmdILOC* end = createCmd("jumpI", labelInicio, NULL, NULL, JUMP);
+                                                                          block = concatCode(block, end);
+
+                                                                          CmdILOC* cmd_labelFim = mallocAndSetCmdILOC(labelFim);
+                                                                          block = concatCode(block, cmd_labelFim);
+                                                                          block = concatCodeToString(block, ": nop");
+                                                                          setCode($$, block->cmd);																		  
+																		  
+																		} ; 
 
 
 
