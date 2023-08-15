@@ -20,7 +20,7 @@ Node* createLexTypeNode(LexType* lex_value) {
     new_node->sons = NULL;
 
     new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
-    strcpy(new_node->code->cmd, "undefined");
+    strcpy(new_node->code->cmd, "nop");
     new_node->code->next = NULL;
     strcpy(new_node->temp, "undefined");
     
@@ -38,7 +38,7 @@ Node* createNode(char* value) {
     new_node->sons = NULL;
 
     new_node->code = (CmdILOC*)malloc(sizeof(CmdILOC));
-    strcpy(new_node->code->cmd, "undefined");
+    strcpy(new_node->code->cmd, "nop");
     new_node->code->next = NULL;
     strcpy(new_node->temp, "undefined");
 
@@ -217,7 +217,7 @@ void setLabel(char* label, char* labelGenerated){
 
 int hasCode(CmdILOC* code) {
     printf("bbb: %s\n", code->cmd);
-    if(strcmp(code->cmd, "undefined") == 0)
+    if(strcmp(code->cmd, "nop") == 0)
         return 0;
     else
         return 1;   
