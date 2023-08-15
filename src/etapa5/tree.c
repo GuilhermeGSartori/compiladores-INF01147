@@ -209,3 +209,7 @@ void setTemp(Node* node, char* temp) {
 void setCode(Node* node, char* code) {
     strcpy(node->code->cmd, code);
 }
+
+void setLabel(char* label, char* labelGenerated){
+	stpcpy(label, labelGenerated);
+}

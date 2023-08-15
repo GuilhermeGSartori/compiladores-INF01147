@@ -426,10 +426,19 @@ uma construção de repetição que é o token while seguida de uma expressão e
 
 if: TK_PR_IF '(' expressao ')' abre_escopo cmd_block fecha_escopo else  { 
                                                                             $$ = createNode("if"); addSon($$, $3); addSon($$, $6); addSon($$, $8);
-                                                                            if($8 != NULL) { updateLabel($$); } 
+                                                                            if($8 != NULL) { 
+																				updateLabel($$);
+																				char label1[10];
+																				setLabel(label1, labelGenerator());
+																				char label2[10];
+																				setLabel(label2, labelGenerator());
+																				CmdILOC* cmd = createCmd("cbr", $3->temp, label1, label2, CBR);																				
+																				//printf("%s\n", label);
+																			} else {
+																				//if sem else
+																			}
                                                                             setType($$, getType($3));
-																			setTemp($3, tempGenerator());
-																			//fazer um load da expressao no R1?
+																			
 																			//gerar label? se gerar concatenar com :
 																			//CmdILOC* cmd = createCmd("cbr", $3->temp, label_do_if_true, label_do_else, CBR);
                                                                         } ; 

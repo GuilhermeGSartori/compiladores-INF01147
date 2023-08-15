@@ -38,3 +38,4 @@ char* tempGenerator();
 
 void setTemp(Node* node, char* temp);
 void setCode(Node* node, char* code);
+void setLabel(char* label, char* labelGenerated);
