@@ -812,7 +812,7 @@ expr5: expr5 operadoresPrecedencia2Divi expr6           {
                                                             addSon($2, $1); 
                                                             addSon($2, $3); 
                                                             setTemp($2, tempGenerator());
-                                                            CmdILOC* cmd = createCmd("divi", $1->temp, $3->temp, $2->temp, MOST_LEFT);
+                                                            CmdILOC* cmd = createCmd("div", $1->temp, $3->temp, $2->temp, MOST_LEFT);
                                                             setCode($2, concatCode(concatCode($1->code, $3->code), cmd)->cmd);
                                                             $$ = $2;
                                                         } ;
