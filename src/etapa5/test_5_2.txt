@@ -1,0 +1,11 @@
+int a;
+
+foo() -> int {
+    a = 1;
+    int a <= 3;
+    a = 2;
+}
+
+main() -> int {
+    a = 1;
+}

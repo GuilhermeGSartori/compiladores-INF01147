@@ -117,12 +117,13 @@ void printNodes(Node* father) {
 }
 
 void printILOC(Node* father) {
-    CmdILOC* commands = father->code;
+    printf("%s\n", father->code->cmd);
+    /*CmdILOC* commands = father->code;
 
     while(commands != NULL) {
         printf("%s\n", commands->cmd);
         commands = commands->next;
-    }
+    }*/
 }
 
 void exporta(void *arvore) {
@@ -186,7 +187,7 @@ char* labelGenerator(){
 	labelCount++;
 	
 	snprintf(label, 10, "%s%d", id, labelCount);
-	printf("Label generator %s\n", label);
+	//printf("Label generator %s\n", label);
 	
 	return label;
 }
@@ -212,4 +213,12 @@ void setCode(Node* node, char* code) {
 
 void setLabel(char* label, char* labelGenerated){
 	stpcpy(label, labelGenerated);
+}
+
+int hasCode(CmdILOC* code) {
+    printf("bbb: %s\n", code->cmd);
+    if(strcmp(code->cmd, "undefined") == 0)
+        return 0;
+    else
+        return 1;   
 }

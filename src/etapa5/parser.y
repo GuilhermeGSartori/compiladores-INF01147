@@ -9,7 +9,7 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 Scope* scope_stack_top = NULL;
-CmdILOC* command_list = NULL;
+//CmdILOC* command_list = NULL;
 KeyList* key_list = NULL;
 int local_offset = 0;
 int global_offset = 0;
@@ -104,7 +104,7 @@ inicio: abre_escopo programa fecha_escopo ;
 abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
 fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; 
 
-programa: lista   { $1->code = command_list, arvore = $1; }
+programa: lista   { /*$1->code = command_list,*/ arvore = $1; }
 	|             { arvore = NULL; }
         ;
 
@@ -138,6 +138,7 @@ funcao: cabecalho TK_OC_MAP TK_PR_FLOAT corpo fecha_escopo {
                                                                 SymbolKey* key = mallocAndSetKeyName($1->label);
                                                                 TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_FLOAT); 
+                                                                setCode($$, $4->code->cmd);
                                                            } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_INT corpo fecha_escopo   { 
@@ -145,6 +146,7 @@ funcao: cabecalho TK_OC_MAP TK_PR_INT corpo fecha_escopo   {
                                                                 SymbolKey* key = mallocAndSetKeyName($1->label);
                                                                 TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_INT); 
+                                                                setCode($$, $4->code->cmd);
                                                            } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  { 
@@ -152,6 +154,7 @@ funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  {
                                                                 SymbolKey* key = mallocAndSetKeyName($1->label);
                                                                 TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_BOOL); 
+                                                                setCode($$, $4->code->cmd);
                                                            } ;
 
                                                            
@@ -236,6 +239,9 @@ cmd_simples: cmd_list cmd_simples  {
                                                    addSon($1, $2);
                                                } 
                                                $$ = $1; // point that started the secondary recursion must turn into $$, the head (previous cmd_list in the recursion)
+                                               //printf("aaa: %s\n\n", $2->code->cmd);
+                                               //if(hasCode($2->code) == 1)
+                                                   setCode($$, concatCode($$->code, $2->code)->cmd);
                                            } 
                                            else { 
                                                $$ = $1; 
@@ -371,7 +377,7 @@ atrib: TK_IDENTIFICADOR '=' expressao {
                                               //printf("\n%s\n", $$->code->cmd); // setar como code
 
                                               // como vamos subir o codigo ate a raiz?
-                                              cmdToList(&command_list, $$->code);
+                                              //cmdToList(&command_list, $$->code);
                                           }    
                                           Node* id = createLexTypeNode($1);
                                           setType(id, content->type);
