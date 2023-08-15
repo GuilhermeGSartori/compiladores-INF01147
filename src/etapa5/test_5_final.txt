@@ -28,4 +28,9 @@ main() -> int {
         a = a - 1;
         b = b + 1;
     };
+
+    // the position of the following variables will not be "right" in the memory because of the grammatic
+    int m, n, j <= 1;
+    m = 2;
+    n = 3;
 }

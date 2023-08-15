@@ -48,3 +48,10 @@ add r23, r24 => r25
 storeAI r25  => rfp, 16
 jumpI -> L7
 L9: nop
+nop
+loadI 1  => r27
+storeAI r27  => rfp, 48
+loadI 2  => r28
+storeAI r28  => rfp, 56
+loadI 3  => r29
+storeAI r29  => rfp, 52
