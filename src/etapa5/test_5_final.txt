@@ -24,7 +24,7 @@ main() -> int {
             b = 0;
         };
     };
-    while(a>0) { // while(7) -> repete 7 vezes!
+    while(a>=0) { // while(a+1) -> repete 5 vezes! Pois o que ta na memoria de "a" muda (0 é false), ja while (7) dura pra sempre
         a = a - 1; // a+a will run 4 times because of this... 4+4; 3+3; 2+2; 1+1; 0+0...
         b = b + 1;
     };
