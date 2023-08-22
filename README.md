@@ -16,8 +16,6 @@ bash output2dot.sh < output.txt > img.dot
 
 **Phase 4)** In this phase, we are required to verify if the code semantics are correct, since the lexical verification was done and the syntax is correct, its necessary to finish with the verification of the semantics. If this is ok, then code can be generated since the code comply with the expected rules of the "C-like" language. The semantic validation is done by using a linked list (a "stack") of Hash Tables, every hash table then stores content associated to identifiers, functions and literals in its respective scope (the hash table), and with this, we can validate the semantics.
 
+**Phase 5)** Now that the 3 main validations are done (lexic, syntax and semantic) and we are sure that the code was written in accordance with the defined language, we can start translating the lines of this code to the actual "machine language commands" that the high level commands of our language are supposed to easily represent/express to operate in machine level (arithmetics over registors and memory). The first step to do this and finish the "Front-End" of the compiler is to translate the code to ILOC commands. ILOC is an intermediary language that is "close enought" (an abstraction) to machine language, with a complete universal ILOC code, then we can start working in the "Back-End" to translate the universal ILOC code to specific CPU architectures and their machine languages (assembly).
 
-
-**TO DO:** 
-
-Fix the bugs of phase 3 (fun call in expressions and comments)
+**Phase 6)** With the code fully translated to the ILOC language, now its possible to translate this universal code into the assembly language of the x86_64 architecture and generate a binary code with GCC after the translation. In this phase ee achieved a fully operational compiler that is able to compile code from our laguange to functional x86_64 assembly that can run in any computer with a CPU of this architecture!
