@@ -50,16 +50,18 @@ void generateAsm() {
         exit(1);             
     }
 
-    fprintf(file, "%s", ".file \"input\"\n.text\n");
+    fprintf(file, "%s", "\t.file\t\"input\"\n\t.text\n");
 
     for(int i = 0; i < TABLE_SIZE; i++) {
         HashItem* itens = global_scope->lexemes[i];
         while(itens != NULL) {
             if(itens->hash_content->nature == ID_SYMBOL)
-                fprintf(file, ".comm\t%s,4,4\n", itens->hash_content->key->key_name);
+                fprintf(file, "\t.comm\t%s,4,4\n", itens->hash_content->key->key_name);
             itens = itens->next;
         }
     }
+
+    fprintf(file, "%s", "\t.globl\tmain\n\t.type\tmain, @function");
 
     fclose(file);
 }
