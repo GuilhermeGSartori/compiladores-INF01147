@@ -8,6 +8,8 @@ int tempCount = 0;
 char label[10];
 char temp[10];
 extern void exporta (void *arvore);
+
+extern char ILOCCode[CMD_MAX_SIZE];
 extern void generateAsm ();
 
 Node* createLexTypeNode(LexType* lex_value) { 
@@ -118,13 +120,15 @@ void printNodes(Node* father) {
 }
 
 void printILOC(Node* father) {
-    printf("%s\n", father->code->cmd);
+    //printf("%s\n", father->code->cmd);
     /*CmdILOC* commands = father->code;
 
     while(commands != NULL) {
         printf("%s\n", commands->cmd);
         commands = commands->next;
     }*/
+
+    strcpy(ILOCCode, father->code->cmd);
 }
 
 void exporta(void *arvore) {

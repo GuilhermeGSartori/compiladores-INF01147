@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 Scope *global_scope = NULL;
+char ILOCCode[CMD_MAX_SIZE];
 
 // como tudo vai ser usando int (32 bits), usar as operacoes de 32 bits! tipo movl e os regs de 32 bits
 char* x64_32op_regs[REGS_N][10] =   {
@@ -42,7 +43,7 @@ void generateAsm() {
     FILE *file;
     file = fopen("output.s", "w");
 
-    printf("height: %d\n", global_scope->height);
+    //printf("height: %d\n", global_scope->height);
 
     if(file == NULL)
     {
@@ -61,7 +62,9 @@ void generateAsm() {
         }
     }
 
-    fprintf(file, "%s", "\t.globl\tmain\n\t.type\tmain, @function");
+    fprintf(file, "%s", "\t.globl\tmain\n\t.type\tmain, @function\n");
+
+    fprintf(file, "\n%s\n", ILOCCode);
 
     fclose(file);
 }

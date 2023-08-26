@@ -31,4 +31,4 @@ table_content.o: table_content.h tree.h table_content.c
 hash.o: table_content.h hash.h hash.c
 	gcc -c hash.c
 clean:
-	rm *.o lex.yy.c parser.tab.c etapa6
+	rm *.o lex.yy.c parser.tab.c parser.tab.h etapa6
