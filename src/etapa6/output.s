@@ -7,3 +7,6 @@
 
 loadI 0  => r1
 //return r1
+
+
+%ebx

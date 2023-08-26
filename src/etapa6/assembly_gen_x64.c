@@ -6,7 +6,7 @@ Scope *global_scope = NULL;
 char ILOCCode[CMD_MAX_SIZE];
 
 // como tudo vai ser usando int (32 bits), usar as operacoes de 32 bits! tipo movl e os regs de 32 bits
-char* x64_32op_regs[REGS_N][10] =   {
+char x64_32op_regs[REGS_N][10] =   {
                                         {"\%ebx"}, 
                                         {"\%ecx"},
                                         {"\%edx"},
@@ -21,7 +21,7 @@ char* x64_32op_regs[REGS_N][10] =   {
                                         {"\%r12d"},
                                         {"\%r13d"},
                                         {"\%r14d"},
-                                        {"\%r15d"},
+                                        {"\%r15d"}
                                     };
 char x64_ret_reg[10] = "\%eax";
 
@@ -64,7 +64,10 @@ void generateAsm() {
 
     fprintf(file, "%s", "\t.globl\tmain\n\t.type\tmain, @function\n");
 
+    //quebrar esse ILOCCode em um array de strings e dai fazer a traducao
     fprintf(file, "\n%s\n", ILOCCode);
+
+    fprintf(file, "\n\n%s\n", x64_32op_regs[0]);
 
     fclose(file);
 }
