@@ -26,4 +26,4 @@ SIM=<path_to>/compiladores/compiladores-INF01147/src/etapa5/ilocsim.py
 
 $SIM -x -t -s --data 500 --stack 1024 output.iloc
 
-**Phase 6)** With the code fully translated to the ILOC language, now its possible to translate this universal code into the assembly language of the x86_64 architecture and generate a binary code with GCC after the translation. In this phase ee achieved a fully operational compiler that is able to compile code from our laguange to functional x86_64 assembly that can run in any computer with a CPU of this architecture!
+**Phase 6)** With the code fully translated to the ILOC language, now its possible to translate this universal code AND the global table from phase 4 into the assembly language of the x86_64 architecture and generate a binary code (data and code segments) with GCC after the translation. In this phase we achieved a fully operational compiler that is able to compile code from our laguange to functional x86_64 assembly that can run in any computer with a CPU of this architecture!
