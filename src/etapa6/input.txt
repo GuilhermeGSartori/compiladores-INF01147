@@ -1,0 +1,6 @@
+int a;
+int b;
+
+main() -> int {
+    return 0;
+}

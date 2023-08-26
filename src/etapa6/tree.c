@@ -8,6 +8,7 @@ int tempCount = 0;
 char label[10];
 char temp[10];
 extern void exporta (void *arvore);
+extern void generateAsm ();
 
 Node* createLexTypeNode(LexType* lex_value) { 
    
@@ -135,6 +136,7 @@ void exporta(void *arvore) {
         //printNodes(arvore);
         //printf("\n\n");
         printILOC(arvore);
+        generateAsm();
     }
 
 }

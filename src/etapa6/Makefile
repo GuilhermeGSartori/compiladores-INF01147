@@ -2,17 +2,19 @@
 #Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
 ###
 
-etapa5: lextype.o tree.o table_content.o hash.o parser.tab.o lex.yy.o main.o tac.o
-	gcc -o etapa5 parser.tab.o lex.yy.o lextype.o tree.o table_content.o hash.o tac.o main.o
+etapa6: lextype.o tree.o table_content.o hash.o parser.tab.o lex.yy.o main.o tac.o assembly_gen_x64.o
+	gcc -o etapa6 parser.tab.o lex.yy.o lextype.o tree.o table_content.o hash.o tac.o assembly_gen_x64.o main.o
 
 test_ds: lextype.o tree.o table_content.o hash.o test_ds.o
 	gcc -o test_ds lextype.o tree.o table_content.o hash.o test_ds.o
 
 main.o: main.c
 	gcc -c main.c
+assembly_gen_x64.o: assembly_gen_x64.h hash.h assembly_gen_x64.c
+	gcc -c assembly_gen_x64.c
 parser.tab.o: parser.tab.c
 	gcc -c parser.tab.c
-parser.tab.c: parser.y hash.h
+parser.tab.c: parser.y assembly_gen_x64.h
 	bison -d parser.y
 lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
@@ -29,4 +31,4 @@ table_content.o: table_content.h tree.h table_content.c
 hash.o: table_content.h hash.h hash.c
 	gcc -c hash.c
 clean:
-	rm *.o lex.yy.c parser.tab.c etapa5
+	rm *.o lex.yy.c parser.tab.c etapa6

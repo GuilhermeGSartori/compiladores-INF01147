@@ -8,5 +8,8 @@
 
 #define REGS_N 15
 
+#include "hash.h"
+
+
 
 void generateAsm();

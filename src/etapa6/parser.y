@@ -3,12 +3,13 @@
 // Fizemos em uma passagem!!!
 
 #include <stdio.h>
-#include "hash.h"
+#include "assembly_gen_x64.h"
 
 int yylex(void);
 void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
+extern Scope *global_scope;
 Scope* scope_stack_top = NULL;
 KeyList* key_list = NULL;
 int local_offset = 0;
@@ -99,10 +100,11 @@ int global_offset = 0;
 /*1 - Um programa na linguagem é composto por dois elementos, todos opcionais: um conjunto de declarações de variáveis globais e um 
 conjunto de funções. Esses elementos podem estar intercalados e em qualquer ordem.*/
 
-inicio: abre_escopo programa fecha_escopo ;
+inicio: abre_escopo programa salva_global;
 
 abre_escopo: { scope_stack_top = createTable(scope_stack_top); } ;
 fecha_escopo: { scope_stack_top = popTable(scope_stack_top); }; 
+salva_global: { global_scope = scope_stack_top; }
 
 programa: lista   { arvore = $1; }
 	|             { arvore = NULL; }

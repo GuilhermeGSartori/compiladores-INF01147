@@ -1,4 +1,8 @@
 #include "assembly_gen_x64.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+Scope *global_scope = NULL;
 
 // como tudo vai ser usando int (32 bits), usar as operacoes de 32 bits! tipo movl e os regs de 32 bits
 char* x64_32op_regs[REGS_N][10] =   {
@@ -34,4 +38,28 @@ void generateAsm() {
     // vai escrevendo segmento de codigo
     // escreve final do .s
     // gg
+
+    FILE *file;
+    file = fopen("output.s", "w");
+
+    printf("height: %d\n", global_scope->height);
+
+    if(file == NULL)
+    {
+        printf("Error!\n");   
+        exit(1);             
+    }
+
+    fprintf(file, "%s", ".file \"input\"\n.text\n");
+
+    for(int i = 0; i < TABLE_SIZE; i++) {
+        HashItem* itens = global_scope->lexemes[i];
+        while(itens != NULL) {
+            if(itens->hash_content->nature == ID_SYMBOL)
+                fprintf(file, ".comm\t%s,4,4\n", itens->hash_content->key->key_name);
+            itens = itens->next;
+        }
+    }
+
+    fclose(file);
 }
