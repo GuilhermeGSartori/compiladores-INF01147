@@ -6,4 +6,7 @@
 // adaptar tabelas local da main para assembly (ou nao? eh run time isso? heap e pilha e tals)
 // mapear comandos ILOC para assembly em segmento de dados
 
+#define REGS_N 15
+
+
 void generateAsm();

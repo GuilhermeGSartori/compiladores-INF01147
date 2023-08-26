@@ -40,7 +40,32 @@ main:
  *          loadI 1  => r1
  *          //return r1
  *      - Ou seja, só traduzimos o seguimento de código, mas o assembly precisa do de dados, que se encontra nas tabelas
- * 
+ * 6) LFB0 é uma label
+ * 7) Comandos que começam com .cfi NÃO SÃO necessários para o nosso contexto, então, no fim, o código que importa é:
+
+ 		main:
+		.LFB0:
+			pushq	%rbp
+			movq	%rsp, %rbp
+			movl	$1, %eax
+			popq	%rbp
+			ret
+.		LFE0:
+			.size	main, .-main
+			.ident	"GCC: (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0"
+			.section	.note.GNU-stack,"",@progbits
+					
+ * 8)   pushq   %rbp        ; Save address of previous stack frame    
+	    movq    %rsp, %rbp  ; Address of current stack frame
+        -> Isso é relevante para programas com funções distintas pois lida com stack de PC e etc... Não nos importa
+
+ * 9) movl	$1, %eax coloca no registrador o literal 1
+ * 10) popq	%rbp -> Pra mono-função não importa, só colocar antes do return
+ * 11) ret retorna o valor em %eax
+ * --> usar um registrador pra cada operação e tals, sempre que gerar um R novo, associa a um registrador
+ * --> na hora de fazer return, o registrador em "loadI 1  => r1" vai ser sempre o eax
+
  * x) %eax é um registrador de 4 bytes (32 bits), que bate com nossa definição de inteiro!
  * x) Parece que a Intel nos fornece 32 registradores de uso geral para 32 bits, a moral é casar cada rX (r1, r2, r3..) com um desses registradores
+ * x) parece que o registrador eax eh sempre o retornado
 ****************/

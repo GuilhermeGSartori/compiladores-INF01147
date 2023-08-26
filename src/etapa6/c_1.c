@@ -40,5 +40,6 @@ main:
 /*** ANÁLISE ***
  * 1) Temos um header com o nome do arquvio -> .file<tab><"file">
  * 2) .text -> ?
- * 3) Ao definir uma global (seg. de dados) é definido com o seguinte comando: 
+ * 3) TODA ESTRTURA DE CÓDIGO É IGUAL AO EXEMPLO DO c_0.c, a única diferença é o segmento de dados!
+ * 4) Ao definir uma global (seg. de dados) é definido com o seguinte comando: 
 ****************/
