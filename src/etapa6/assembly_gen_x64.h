@@ -13,3 +13,4 @@
 
 
 void generateAsm();
+void translateCode(char* line);

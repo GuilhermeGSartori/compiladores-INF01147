@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+FILE *file;
 Scope *global_scope = NULL;
 char ILOCCode[CMD_MAX_SIZE];
 
@@ -41,7 +42,6 @@ void generateAsm() {
     // escreve final do .s
     // gg
 
-    FILE *file;
     file = fopen("output.s", "w");
 
     //printf("height: %d\n", global_scope->height);
@@ -85,6 +85,7 @@ void generateAsm() {
     while(strcmp(code_lines[i], "!end!") != 0) {
         //printf("%d: %s\n", i, code_lines[i]);
         fprintf(file, "\t%s\n", code_lines[i]);
+		translateCode(code_lines[i]);
         i++;
         // AQUI FAZER TODA ANALISE DE TRADUCAO DE LINHA POR LINHA
     }
@@ -93,4 +94,29 @@ void generateAsm() {
     //fprintf(file, "\n\n%s\n", x64_32op_regs[0]);
 
     fclose(file);
+}
+
+void translateCode(char* line){
+	char line_separated[10][10];
+	char* pch = NULL;
+	char origin[10];
+    pch = strtok(line, " ");
+    int i = 0;
+
+    while (pch != NULL)
+    {
+        strcpy(line_separated[i], pch);
+        pch = strtok(NULL, " ");
+        i++;
+    }
+	
+	strcpy(line_separated[3], "r10");
+	memmove(contents, contents+1, strlen(contents));
+	strcpy(origin, line_separated[3][1]);
+	printf("Origin: %s\n", origin);
+	
+	if(strcmp(line_separated[0], "loadI") == 0){
+		fprintf(file, "movl\t$%s, \n", line_separated[1]);
+	}
+	
 }
