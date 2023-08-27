@@ -7,5 +7,9 @@
 	.type	main, @function
 main:
 .LFB0:
-	loadI 0  => r1
-	//return r1
+	loadI 1  => r1
+	loadI 1  => r2
+	add r1, r2 => r3
+	storeAI r3  => rfp, 0
+	loadAI rfp, 0 => r4
+	//return r4
