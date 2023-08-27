@@ -1,6 +1,7 @@
 #include "assembly_gen_x64.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Scope *global_scope = NULL;
 char ILOCCode[CMD_MAX_SIZE];
@@ -64,10 +65,32 @@ void generateAsm() {
 
     fprintf(file, "%s", "\t.globl\tmain\n\t.type\tmain, @function\n");
 
-    //quebrar esse ILOCCode em um array de strings e dai fazer a traducao
-    fprintf(file, "\n%s\n", ILOCCode);
+    fprintf(file, "%s", "main:\n");
+    fprintf(file, "%s", ".LFB0:\n");
 
-    fprintf(file, "\n\n%s\n", x64_32op_regs[0]);
+    //quebrar esse ILOCCode em um array de strings e dai fazer a traducao
+    char code_lines[CMD_MAX_SIZE][CMD_MAX_SIZE]; // too big?
+    char* pch = NULL;
+    pch = strtok(ILOCCode, "\n");
+    int i = 0;
+    while (pch != NULL)
+    {
+        strcpy(code_lines[i], pch);
+        pch = strtok(NULL, "\n");
+        i++;
+    }
+    strcpy(code_lines[i], "!end!");
+
+    i = 0;
+    while(strcmp(code_lines[i], "!end!") != 0) {
+        //printf("%d: %s\n", i, code_lines[i]);
+        fprintf(file, "\t%s\n", code_lines[i]);
+        i++;
+        // AQUI FAZER TODA ANALISE DE TRADUCAO DE LINHA POR LINHA
+    }
+
+    //fprintf(file, "\n%s\n", ILOCCode);
+    //fprintf(file, "\n\n%s\n", x64_32op_regs[0]);
 
     fclose(file);
 }
