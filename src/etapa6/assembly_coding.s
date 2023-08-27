@@ -15,13 +15,14 @@ main:
 	.cfi_def_cfa_register 6
 	movl	$2, a(%rip)
 	movl	$20, j(%rip)
-	movl	$3, -12(%rbp)
+	movl	$3, %r8d
+	movl    %r8d, -12(%rbp)
 	movl	$4, -8(%rbp)
 	movl	-12(%rbp), %edx
 	movl	-8(%rbp), %eax
 	addl	%edx, %eax
 	movl	%eax, -4(%rbp)
-	movl  	a(%rip), %eax
+	movl  	-12(%rbp), %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret

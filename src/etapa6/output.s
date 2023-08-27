@@ -8,7 +8,9 @@
 main:
 .LFB0:
 	loadI 1  => r1
+movl	$1, 
 	loadI 1  => r2
+movl	$1, 
 	add r1, r2 => r3
 	storeAI r3  => rfp, 0
 	loadAI rfp, 0 => r4

@@ -110,10 +110,12 @@ void translateCode(char* line){
         i++;
     }
 	
-	strcpy(line_separated[3], "r10");
-	memmove(contents, contents+1, strlen(contents));
-	strcpy(origin, line_separated[3][1]);
-	printf("Origin: %s\n", origin);
+	//strcpy(line_separated[3], "r10");
+	memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
+	//strcpy(origin, line_separated[3][1]);
+	//printf("Origin: %s\n", line_separated[3]);
+
+    // transformar line_separed3 em inteiro e acessar o indice certo
 	
 	if(strcmp(line_separated[0], "loadI") == 0){
 		fprintf(file, "movl\t$%s, \n", line_separated[1]);
