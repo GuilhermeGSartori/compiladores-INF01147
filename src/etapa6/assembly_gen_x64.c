@@ -115,7 +115,7 @@ void translateCode(char* line){
 		//printf("separated: %s\n", line_separated[3]);
 		int register_number = atoi(line_separated[3]);
 		//printf("register number: %d\n", register_number);
-		fprintf(file, "movl\t$%s, (%s)\n", line_separated[1], x64_32op_regs[register_number-1]);
+		fprintf(file, "\tmovl\t$%s, (%s)\n", line_separated[1], x64_32op_regs[register_number-1]);
 	}
 	
 }
