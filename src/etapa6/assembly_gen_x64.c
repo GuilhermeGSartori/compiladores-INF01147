@@ -116,6 +116,24 @@ void translateCode(char* line){
 		int register_number = atoi(line_separated[3]);
 		//printf("register number: %d\n", register_number);
 		fprintf(file, "\tmovl\t$%s, (%s)\n", line_separated[1], x64_32op_regs[register_number-1]);
+	} else if(strcmp(line_separated[0], "loadAI") == 0){
+		//todo
+	} else if(strcmp(line_separated[0], "storeAI") == 0){
+		//todo
+	} else if(strcmp(line_separated[0], "add") == 0){
+		//todo
+	} else if(strcmp(line_separated[0], "sub") == 0){
+		//todo
+	} else if(strcmp(line_separated[0], "mult") == 0){
+		//todo
+	} else if(strcmp(line_separated[0], "div") == 0){
+		//todo
 	}
+	
+	
+	
+	
+	
+	
 	
 }
