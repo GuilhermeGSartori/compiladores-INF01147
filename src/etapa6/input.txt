@@ -9,13 +9,31 @@ main() -> int {
 
 int a, b, c;
 
-main() -> int {
+/*main() -> int {
     a = 3;
     b = a;
-    c = a + b;
+    //c = a + b;
+    //c = a - b;
+    c = a * b;
+    return c;
+}*/
+
+int d;
+
+main() -> int {
+    a = 4;
+    d = 1;
+    b = d;
+    c = a - b; // se comenta isso nao da seg fault... whataheeeeel
     return c;
 }
 
+/*main() -> int {
+    a = 4;
+    b = 1;
+    c = a - b;
+    return c;
+}
 
 /*main() -> int {
     return 0;

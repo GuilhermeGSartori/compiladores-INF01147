@@ -6,8 +6,9 @@ int main() {
     b = 3;
     c = 4;
     int d;
-    d = b + c;
-    return a;
+    //d = b + c;
+    d = b - c;
+	return a;
 }
 
 /*

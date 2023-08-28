@@ -17,11 +17,10 @@ main:
 	movl	$20, j(%rip)
 	movl	$3, -12(%rbp)
 	movl	$4, -8(%rbp)
-	movl	-12(%rbp), %edx
-	movl	-8(%rbp), %eax
-	addl	%edx, %eax
+	movl	-12(%rbp), %eax
+	subl	-8(%rbp), %eax
 	movl	%eax, -4(%rbp)
-	movl	a(%rip), %rax
+	movl	a(%rip), %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
