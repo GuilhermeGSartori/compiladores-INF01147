@@ -32,7 +32,7 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 	if(type == MOST_LEFT) {
 		strcat(ILOC, " ");
 		strcat(ILOC, register1);
-		strcat(ILOC, ", ");
+		strcat(ILOC, " , ");
 		strcat(ILOC, register2);
 		strcat(ILOC, " => ");
 		strcat(ILOC, register3);
@@ -44,7 +44,7 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 		strcat(ILOC, "  => ");
 		strcat(ILOC, register2);
 		if(register3 != NULL) {
-			strcat(ILOC, ", ");
+			strcat(ILOC, " , ");
 			strcat(ILOC, register3);
 		}
 	}
@@ -53,7 +53,7 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 		strcat(ILOC, " ");
 		if(register1 != NULL) {
 			strcat(ILOC, register1);
-			strcat(ILOC, ", ");
+			strcat(ILOC, " , ");
 		}
 		if(register2 != NULL) {
 			strcat(ILOC, register2);
