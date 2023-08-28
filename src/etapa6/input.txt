@@ -7,8 +7,16 @@ main() -> int {
     return a;
 }*/
 
-int a;
+int a, b, c;
 
 main() -> int {
-    a = 1;
+    a = 3;
+    b = a;
+    c = a + b;
+    return c;
 }
+
+
+/*main() -> int {
+    return 0;
+}*/

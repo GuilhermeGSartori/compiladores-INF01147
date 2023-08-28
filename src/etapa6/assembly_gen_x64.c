@@ -84,7 +84,7 @@ void generateAsm() {
     i = 0;
     while(strcmp(code_lines[i], "!end!") != 0) {
         //printf("%d: %s\n", i, code_lines[i]);
-        fprintf(file, "\t%s\n", code_lines[i]);
+        //fprintf(file, "\t%s\n", code_lines[i]);
 		translateCode(code_lines[i]);
         i++;
         // AQUI FAZER TODA ANALISE DE TRADUCAO DE LINHA POR LINHA
@@ -135,13 +135,29 @@ void translateCode(char* line){
             fprintf(file, "rip), %s\n", x64_32op_regs[register_number-1]);
         }
 	} else if(strcmp(line_separated[0], "add") == 0){
-		//todo
+        memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
+        memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
+        memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
+		int register_number1 = atoi(line_separated[1]);
+        int register_number2 = atoi(line_separated[3]);
+        int register_number3 = atoi(line_separated[5]);
+
+        fprintf(file, "\taddl\t%s, %s\n", x64_32op_regs[register_number1-1], x64_32op_regs[register_number2-1]);
+        //addl edx, esi
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2-1], x64_32op_regs[register_number3-1]);
+        //movl esi, edi
+
 	} else if(strcmp(line_separated[0], "sub") == 0){
 		//todo
 	} else if(strcmp(line_separated[0], "mult") == 0){
 		//todo
 	} else if(strcmp(line_separated[0], "div") == 0){
 		//todo
+	} else if(strcmp(line_separated[0], "//return") == 0){
+		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
+        int register_number = atoi(line_separated[1]);
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number-1], x64_ret_reg);
+        fprintf(file, "\tret\n");
 	}
 		
 }
