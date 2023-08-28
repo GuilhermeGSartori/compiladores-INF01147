@@ -1,8 +1,14 @@
-int a, b;
+/*int a, b;
 int c;
 
 main() -> int {
     int a;
     a = 1+1;
     return a;
+}*/
+
+int a;
+
+main() -> int {
+    a = 1;
 }

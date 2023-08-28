@@ -14,3 +14,4 @@
 
 void generateAsm();
 void translateCode(char* line);
+char* searchOffset(int offset);

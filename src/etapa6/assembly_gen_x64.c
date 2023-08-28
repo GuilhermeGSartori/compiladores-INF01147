@@ -115,10 +115,17 @@ void translateCode(char* line){
 		//printf("separated: %s\n", line_separated[3]);
 		int register_number = atoi(line_separated[3]);
 		//printf("register number: %d\n", register_number);
-		fprintf(file, "\tmovl\t$%s, (%s)\n", line_separated[1], x64_32op_regs[register_number-1]);
-	} else if(strcmp(line_separated[0], "loadAI") == 0){
-		//todo
+		fprintf(file, "\tmovl\t$%s, %s\n", line_separated[1], x64_32op_regs[register_number-1]);
 	} else if(strcmp(line_separated[0], "storeAI") == 0){
+        memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
+        int register_number = atoi(line_separated[1]);
+        fprintf(file, "\tmovl\t%s, ", x64_32op_regs[register_number-1]);
+        if(strcmp(line_separated[3], "rbss") == 0) {
+            char RAIVA[5] = {"\%"};
+            fprintf(file, "%s(%s", searchOffset(atoi(line_separated[5])), RAIVA);
+            fprintf(file, "rip)\n");
+        }
+	} else if(strcmp(line_separated[0], "loadAI") == 0){
 		//todo
 	} else if(strcmp(line_separated[0], "add") == 0){
 		//todo
@@ -129,11 +136,17 @@ void translateCode(char* line){
 	} else if(strcmp(line_separated[0], "div") == 0){
 		//todo
 	}
-	
-	
-	
-	
-	
-	
-	
+		
+}
+
+char* searchOffset(int offset) {
+
+    for(int i = 0; i < TABLE_SIZE; i++) {
+        HashItem* itens = global_scope->lexemes[i];
+        while(itens != NULL) {
+            if(itens->hash_content->nature == ID_SYMBOL && atoi(itens->hash_content->offset) == offset)
+                return itens->hash_content->key->key_name;
+            itens = itens->next;
+        }
+    }
 }
