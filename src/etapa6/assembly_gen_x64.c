@@ -126,7 +126,14 @@ void translateCode(char* line){
             fprintf(file, "rip)\n");
         }
 	} else if(strcmp(line_separated[0], "loadAI") == 0){
-		//todo
+		memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
+		int register_number = atoi(line_separated[5]);
+		fprintf(file, "\tmovl\t");
+		if(strcmp(line_separated[1], "rbss") == 0) {
+            char RAIVA[5] = {"\%"};
+            fprintf(file, "%s(%s", searchOffset(atoi(line_separated[3])), RAIVA);
+            fprintf(file, "rip), %s\n", x64_32op_regs[register_number-1]);
+        }
 	} else if(strcmp(line_separated[0], "add") == 0){
 		//todo
 	} else if(strcmp(line_separated[0], "sub") == 0){
