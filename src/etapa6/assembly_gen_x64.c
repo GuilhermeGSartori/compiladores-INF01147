@@ -148,9 +148,29 @@ void translateCode(char* line){
         //movl esi, edi
 
 	} else if(strcmp(line_separated[0], "sub") == 0){
-		//todo
+		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
+        memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
+        memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
+		int register_number1 = atoi(line_separated[1]);
+        int register_number2 = atoi(line_separated[3]);
+        int register_number3 = atoi(line_separated[5]);
+
+        fprintf(file, "\tsubl\t%s, %s\n", x64_32op_regs[register_number1-1], x64_32op_regs[register_number2-1]);
+        //subl edx, esi
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2-1], x64_32op_regs[register_number3-1]);
+        //movl esi, edi
 	} else if(strcmp(line_separated[0], "mult") == 0){
-		//todo
+		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
+        memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
+        memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
+		int register_number1 = atoi(line_separated[1]);
+        int register_number2 = atoi(line_separated[3]);
+        int register_number3 = atoi(line_separated[5]);
+
+        fprintf(file, "\timull\t%s, %s\n", x64_32op_regs[register_number1-1], x64_32op_regs[register_number2-1]);
+        //imull edx, esi
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2-1], x64_32op_regs[register_number3-1]);
+        //movl esi, edi
 	} else if(strcmp(line_separated[0], "div") == 0){
 		//todo
 	} else if(strcmp(line_separated[0], "//return") == 0){
