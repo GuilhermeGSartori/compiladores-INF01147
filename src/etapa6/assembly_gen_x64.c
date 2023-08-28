@@ -110,15 +110,12 @@ void translateCode(char* line){
         i++;
     }
 	
-	//strcpy(line_separated[3], "r10");
-	memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
-	//strcpy(origin, line_separated[3][1]);
-	//printf("Origin: %s\n", line_separated[3]);
-
-    // transformar line_separed3 em inteiro e acessar o indice certo
-	
 	if(strcmp(line_separated[0], "loadI") == 0){
-		fprintf(file, "movl\t$%s, \n", line_separated[1]);
+		memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
+		//printf("separated: %s\n", line_separated[3]);
+		int register_number = atoi(line_separated[3]);
+		//printf("register number: %d\n", register_number);
+		fprintf(file, "movl\t$%s, (%s)\n", line_separated[1], x64_32op_regs[register_number-1]);
 	}
 	
 }
