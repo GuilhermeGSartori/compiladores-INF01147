@@ -89,7 +89,12 @@ void translateCode(char* line){
         i++;
     }
 	
-	if(strcmp(line_separated[0], "loadI") == 0){
+	if(strcmp(line_separated[0], "L") == 0){
+		memmove(line_separated[0], line_separated[0]+1, strlen(line_separated[0]));
+		int label_number = atoi(line_separated[0]);
+		fprintf(file, ".L%d:\n", label_number);
+		
+	} else if(strcmp(line_separated[0], "loadI") == 0){
 		memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
 		int register_number = (atoi(line_separated[3])-1)%REGS_N;
 
