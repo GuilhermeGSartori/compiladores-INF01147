@@ -1,4 +1,17 @@
-int a, b;
+ main() -> int {
+    int a;
+    int b;
+    int c;
+    a = 2;
+    b = 2;
+
+    if(a | b | c) {
+        a = 2;
+        a = 3;
+    };
+ }
+
+/*int a, b;
 main() -> int {
     a = 3;
     b = 0;
@@ -8,7 +21,7 @@ main() -> int {
     };
 
     return b;
-}
+}*/
 
 /*main() -> int {
     int a;

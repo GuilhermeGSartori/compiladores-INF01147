@@ -1,9 +1,10 @@
 int main() {
-    int a = 0;
+    int a = 20;
+    int b = 30;
 
-    if(a == 1) {
-        a = 2;
-        a = 3;
+    if(a && b) {
+        a = 22;
+        a = 33;
     }
 
     if(a != 4) {
