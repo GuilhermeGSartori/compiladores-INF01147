@@ -178,7 +178,17 @@ void translateCode(char* line){
         current_command = CMD_ARITH;
 
 	} else if(strcmp(line_separated[0], "div") == 0){
-		//todo
+		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
+        memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
+        memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
+		int register_number1 = (atoi(line_separated[1])-1)%REGS_N;
+        int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
+        int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
+		
+		fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number1], x64_ret_reg);
+		fprintf(file, "\tcltd\n");
+		fprintf(file, "\tidivl\t%s\n", x64_32op_regs[register_number2]);
+		fprintf(file, "\tmovl\t%s, %s\n", x64_ret_reg, x64_32op_regs[register_number3]);
 
         current_command = CMD_ARITH;
 
