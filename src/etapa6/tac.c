@@ -28,7 +28,6 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 
 	strcpy(ILOC, command);
 
-	// to much if and elses? yand dev like?
 	if(type == MOST_LEFT) {
 		strcat(ILOC, " ");
 		strcat(ILOC, register1);
