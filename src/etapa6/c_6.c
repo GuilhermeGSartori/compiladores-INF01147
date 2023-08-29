@@ -1,6 +1,8 @@
 int main() {
     int a = 20;
-    int b = 30;
+    int b = 300;
+    int c;
+    c = 300 + b;
 
     if(a && b) {
         a = 22;
@@ -40,4 +42,6 @@ int main() {
         a = 22;
         a = 23;
     }
+
+    return c;
 }
