@@ -9,7 +9,6 @@ char ILOCCode[CMD_MAX_SIZE];
 int num_of_main_vars = 0;
  enum exp_cmd_type current_command = CMD_UNDEFINED;
 
-// como tudo vai ser usando int (32 bits), usar as operacoes de 32 bits! tipo movl e os regs de 32 bits
 char x64_32op_regs[REGS_N][10] =   {
                                         {"\%ebx"}, 
                                         {"\%ecx"},
@@ -193,7 +192,6 @@ void translateCode(char* line){
         current_command = CMD_ARITH;
 
 	} else if(strcmp(line_separated[0], "cmp_EQ") == 0) {
-        //cmp_GE r17, r18  ->  r19
 		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
         memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
         memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
@@ -204,15 +202,6 @@ void translateCode(char* line){
         fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_EQ;
-
-        // ao achar cmp_EQ faz a comparacao e guardei q fiz um equal
-        // achei o cbr
-        // sei q fiz um eq, sigo reto se foi, jumpei se nao foi
-        // jne
-        // jne	.L2
-        //cmp_EQ r5, r6  ->  r7
-        //cbr r7  -> L4, L5
-        //L4: 
 
     } else if(strcmp(line_separated[0], "cmp_NE") == 0) {
         
@@ -304,14 +293,12 @@ void translateCode(char* line){
         }
         else if(current_command == CMD_ARITH) {
             fprintf(file, "\tcmpl\t$%d, %s\n", 0, x64_32op_regs[register_number]);
-            fprintf(file, "\tje\t%s\n", label); // se expressao deu zero, entao eh "false", pula pro else dai
-            // sera q com o while vai ser assim tambem?
+            fprintf(file, "\tje\t%s\n", label); 
         }
         
         current_command = CMD_UNDEFINED;
     
     } else if(strcmp(line_separated[0], "jumpI") == 0) {
-        //jumpI -> L3
         char label[10] = {"."};
         strcat(label, line_separated[2]);
         fprintf(file, "\tjmp\t%s\n", label);

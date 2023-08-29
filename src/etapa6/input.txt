@@ -11,7 +11,7 @@
     };
  }*/
 
-int a, b, c;
+/*int a, b, c;
 main() -> int {
     /*a = 3;
     b = 0;
@@ -24,11 +24,11 @@ main() -> int {
 
     return c;*/
 
-    a = 300 + 300;
+    /*a = 300 + 300;
     return a;
-}
+}*/
 
-/*main() -> int {
+main() -> int {
     int a;
     int b;
     a = 1;
@@ -41,7 +41,7 @@ main() -> int {
     };
 
     return b;
-}*/
+}
 
 
 
