@@ -6,16 +6,14 @@
 FILE *file;
 Scope *global_scope = NULL;
 char ILOCCode[CMD_MAX_SIZE];
+int num_of_main_vars = 0;
 
 // como tudo vai ser usando int (32 bits), usar as operacoes de 32 bits! tipo movl e os regs de 32 bits
 char x64_32op_regs[REGS_N][10] =   {
+                                        {"\%eax"}, 
                                         {"\%ebx"}, 
                                         {"\%ecx"},
                                         {"\%edx"},
-                                        {"\%esi"},
-                                        {"\%edi"},
-                                        {"\%ebp"},
-                                        {"\%esp"},
                                         {"\%r8d"},
                                         {"\%r9d"},
                                         {"\%r10d"},
@@ -28,6 +26,9 @@ char x64_32op_regs[REGS_N][10] =   {
 char x64_ret_reg[10] = "\%eax";
 
 void generateAsm() {
+
+    printf("aaaaaaaa: %d\n", num_of_main_vars);
+    
     // if x64?
     // pegar a global onde tá o código ILOC já em vetor de strings
     // ou seja, antes dessa função, já criar o vetor de strings (global) e preencher com o código ILOC
@@ -67,6 +68,9 @@ void generateAsm() {
 
     fprintf(file, "%s", "main:\n");
     fprintf(file, "%s", ".LFB0:\n");
+
+    fprintf(file, "\tpushq\t%srbp\n", "\%");
+    fprintf(file, "\tmovq\t%srsp, %srbp\n", "\%", "\%");
 
     //quebrar esse ILOCCode em um array de strings e dai fazer a traducao
     char code_lines[CMD_MAX_SIZE][CMD_MAX_SIZE]; // too big?
@@ -113,70 +117,78 @@ void translateCode(char* line){
 	if(strcmp(line_separated[0], "loadI") == 0){
 		memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
 		//printf("separated: %s\n", line_separated[3]);
-		int register_number = atoi(line_separated[3]);
+		int register_number = (atoi(line_separated[3])-1)%REGS_N;
 		//printf("register number: %d\n", register_number);
-		fprintf(file, "\tmovl\t$%s, %s\n", line_separated[1], x64_32op_regs[register_number-1]);
+		fprintf(file, "\tmovl\t$%s, %s\n", line_separated[1], x64_32op_regs[register_number]);
+
 	} else if(strcmp(line_separated[0], "storeAI") == 0){
         memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
-        int register_number = atoi(line_separated[1]);
-        fprintf(file, "\tmovl\t%s, ", x64_32op_regs[register_number-1]);
+        int register_number = (atoi(line_separated[1])-1)%REGS_N;
+        fprintf(file, "\tmovl\t%s, ", x64_32op_regs[register_number]);
         if(strcmp(line_separated[3], "rbss") == 0) {
             char RAIVA[5] = {"\%"};
             fprintf(file, "%s(%s", searchOffset(atoi(line_separated[5])), RAIVA);
             fprintf(file, "rip)\n");
         }
+
 	} else if(strcmp(line_separated[0], "loadAI") == 0){
 		memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
-		int register_number = atoi(line_separated[5]);
+		int register_number = (atoi(line_separated[5])-1)%REGS_N;
 		fprintf(file, "\tmovl\t");
 		if(strcmp(line_separated[1], "rbss") == 0) {
             char RAIVA[5] = {"\%"};
             fprintf(file, "%s(%s", searchOffset(atoi(line_separated[3])), RAIVA);
-            fprintf(file, "rip), %s\n", x64_32op_regs[register_number-1]);
+            fprintf(file, "rip), %s\n", x64_32op_regs[register_number]);
         }
+
 	} else if(strcmp(line_separated[0], "add") == 0){
         memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
         memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
         memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
-		int register_number1 = atoi(line_separated[1]);
-        int register_number2 = atoi(line_separated[3]);
-        int register_number3 = atoi(line_separated[5]);
+		int register_number1 = (atoi(line_separated[1])-1)%REGS_N;
+        int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
+        int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\taddl\t%s, %s\n", x64_32op_regs[register_number1-1], x64_32op_regs[register_number2-1]);
+        fprintf(file, "\taddl\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number2]);
         //addl edx, esi
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2-1], x64_32op_regs[register_number3-1]);
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number3]);
         //movl esi, edi
 
 	} else if(strcmp(line_separated[0], "sub") == 0){
 		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
         memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
         memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
-		int register_number1 = atoi(line_separated[1]);
-        int register_number2 = atoi(line_separated[3]);
-        int register_number3 = atoi(line_separated[5]);
+		int register_number1 = (atoi(line_separated[1])-1)%REGS_N;;
+        int register_number2 = (atoi(line_separated[3])-1)%REGS_N;;
+        int register_number3 = (atoi(line_separated[5])-1)%REGS_N;;
 
-        fprintf(file, "\tsubl\t%s, %s\n", x64_32op_regs[register_number1-1], x64_32op_regs[register_number2-1]);
+        fprintf(file, "\tsubl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
         //subl edx, esi
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2-1], x64_32op_regs[register_number3-1]);
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number3]);
         //movl esi, edi
+
 	} else if(strcmp(line_separated[0], "mult") == 0){
 		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
         memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
         memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
-		int register_number1 = atoi(line_separated[1]);
-        int register_number2 = atoi(line_separated[3]);
-        int register_number3 = atoi(line_separated[5]);
+		int register_number1 = (atoi(line_separated[1])-1)%REGS_N;
+        int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
+        int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\timull\t%s, %s\n", x64_32op_regs[register_number1-1], x64_32op_regs[register_number2-1]);
+        fprintf(file, "\timull\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number2]);
         //imull edx, esi
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2-1], x64_32op_regs[register_number3-1]);
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number3]);
         //movl esi, edi
+
 	} else if(strcmp(line_separated[0], "div") == 0){
 		//todo
+
 	} else if(strcmp(line_separated[0], "//return") == 0){
 		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
-        int register_number = atoi(line_separated[1]);
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number-1], x64_ret_reg);
+        int register_number = (atoi(line_separated[1])-1)%REGS_N;
+        char RAIVA[5] = {"\%"};
+        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number], x64_ret_reg);
+        fprintf(file, "\tpopq	%srbp\n", RAIVA);
         fprintf(file, "\tret\n");
 	}
 		

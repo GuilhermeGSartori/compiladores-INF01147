@@ -10,10 +10,12 @@ void yyerror (char const *s);
 extern int get_line_number();
 extern void *arvore;
 extern Scope *global_scope;
+extern int num_of_main_vars;
 Scope* scope_stack_top = NULL;
 KeyList* key_list = NULL;
 int local_offset = 0;
 int global_offset = 0;
+int inMainFlag = 0;
 %}
 
 %define parse.error verbose
@@ -141,6 +143,8 @@ funcao: cabecalho TK_OC_MAP TK_PR_FLOAT corpo fecha_escopo {
                                                                 TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_FLOAT); 
                                                                 setCode($$, $4->code->cmd);
+                                                                if(inMainFlag == 1)
+                                                                    inMainFlag = 0;
                                                            } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_INT corpo fecha_escopo   { 
@@ -149,6 +153,8 @@ funcao: cabecalho TK_OC_MAP TK_PR_INT corpo fecha_escopo   {
                                                                 TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_INT); 
                                                                 setCode($$, $4->code->cmd);
+                                                                if(inMainFlag == 1)
+                                                                    inMainFlag = 0;
                                                            } ;
 
 funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  { 
@@ -157,6 +163,8 @@ funcao: cabecalho TK_OC_MAP TK_PR_BOOL corpo fecha_escopo  {
                                                                 TableContent* content = findInTableStack(key, scope_stack_top, FUN_SYMBOL, get_line_number());
                                                                 updateContentType(content, TYPE_BOOL); 
                                                                 setCode($$, $4->code->cmd);
+                                                                if(inMainFlag == 1)
+                                                                    inMainFlag = 0;
                                                            } ;
 
                                                            
@@ -173,6 +181,9 @@ cabecalho: fun_name abre_escopo parametros {
 fun_name: TK_IDENTIFICADOR {
                                 $$ = createLexTypeNode($1); 
                                 SymbolKey* key = mallocAndSetKeyName($1->value);
+                                if(isMain($1->value) == 1) {
+                                    inMainFlag = 1;
+                                }
                                 TableContent* content = newContent(key, $1->value, get_line_number(), FUN_SYMBOL, TYPE_UNDEFINED); 
                                 addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
                            } ;
@@ -307,6 +318,9 @@ var_local: TK_PR_INT lista_local_var	{
                                                 SymbolKey* key = mallocAndSetKeyName(key_list->key.key_name);                                           
                                                 TableContent* content = newContent(key, key_list->value, get_line_number(), ID_SYMBOL, TYPE_INT); 
                                                 addInTable(content, scope_stack_top, get_line_number(), &local_offset, &global_offset);
+                                                if(inMainFlag == 1) {
+                                                    num_of_main_vars++;
+                                                }
                                                 
                                                 if(key_list->type != TYPE_UNDEFINED) {
                                                     char new_temp[10];

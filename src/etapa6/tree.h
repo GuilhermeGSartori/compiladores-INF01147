@@ -42,3 +42,4 @@ void setCode(Node* node, char* code);
 void setLabel(char* label, char* labelGenerated);
 int hasCode(CmdILOC* code);
 int emptyElseOrNull(Node* node);
+int isMain(char* fun_name);

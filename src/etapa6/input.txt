@@ -21,10 +21,13 @@ int a, b, c;
 int d;
 
 main() -> int {
+    int j, l, m, n;
     a = 4;
-    d = 1;
+    d = 2;
     b = d;
-    c = a - b; // se comenta isso nao da seg fault... whataheeeeel
+    //c = a - b; // pelo visto a subtração da overflow... Ou seja, valores negativos tá dando ruim...
+    //c = a + b;
+    c = a * b;
     return c;
 }
 

@@ -240,3 +240,10 @@ int emptyElseOrNull(Node* node) {
     else
 	    return 0;
 }
+
+int isMain(char* fun_name) {
+    if(strcmp(fun_name, "main") == 0)
+        return 1;
+    else   
+        return 0;
+}

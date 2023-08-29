@@ -1,0 +1,34 @@
+	.file	"c_3.c"
+	.text
+	.comm	a,4,4
+	.comm	b,4,4
+	.comm	c,4,4
+	.comm	d,4,4
+	.globl	main
+	.type	main, @function
+main:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	$4, a(%rip)
+	movl	$1, d(%rip)
+	movl	d(%rip), %eax
+	movl	%eax, b(%rip)
+	movl	a(%rip), %edx
+	movl	b(%rip), %eax
+	subl	%eax, %edx
+	movl	%edx, %eax
+	movl	%eax, c(%rip)
+	movl	c(%rip), %eax
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0"
+	.section	.note.GNU-stack,"",@progbits
