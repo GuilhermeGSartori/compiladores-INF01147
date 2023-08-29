@@ -120,7 +120,7 @@ void printNodes(Node* father) {
 }
 
 void printILOC(Node* father) {
-    //printf("%s\n", father->code->cmd);
+    printf("%s\n", father->code->cmd);
     /*CmdILOC* commands = father->code;
 
     while(commands != NULL) {

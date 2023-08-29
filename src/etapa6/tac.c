@@ -67,7 +67,7 @@ CmdILOC* createCmd(char* command, char* register1, char* register2, char* regist
 		strcat(ILOC, register1);
 		strcat(ILOC, "  -> ");
 		strcat(ILOC, register2);
-		strcat(ILOC, ", ");
+		strcat(ILOC, " , ");
 		strcat(ILOC, register3);
 	}
 

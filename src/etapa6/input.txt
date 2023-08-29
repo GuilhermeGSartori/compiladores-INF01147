@@ -1,3 +1,20 @@
+main() -> int {
+    int a;
+    int b;
+    a = 1;
+    //if(1+0) {
+    if(a < 2) {
+        b = 2;
+    }
+    else {
+        b = 3;
+    };
+
+    return b;
+}
+
+
+
 /*int a, b;
 int c;
 
@@ -7,7 +24,7 @@ main() -> int {
     return a;
 }*/
 
-int a, b, c;
+//int a, b, c;
 
 /*main() -> int {
     a = 3;
@@ -18,9 +35,9 @@ int a, b, c;
     return c;
 }*/
 
-int d;
+//int d;
 
-main() -> int {
+/*main() -> int {
     int j, l, m, n;
 	j = 10;
 	l = j;
@@ -31,7 +48,7 @@ main() -> int {
     //c = a + b;
     c = j * l;
     return c;
-}
+}*/
 
 /*main() -> int {
     a = 4;
