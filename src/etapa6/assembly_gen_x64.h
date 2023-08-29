@@ -1,7 +1,7 @@
 #include "hash.h"
 
 
-#define REGS_N 12
+#define REGS_N 11
 
 
 enum exp_cmd_type {

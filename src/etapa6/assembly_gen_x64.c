@@ -11,7 +11,6 @@ int num_of_main_vars = 0;
 
 // como tudo vai ser usando int (32 bits), usar as operacoes de 32 bits! tipo movl e os regs de 32 bits
 char x64_32op_regs[REGS_N][10] =   {
-                                        {"\%eax"}, 
                                         {"\%ebx"}, 
                                         {"\%ecx"},
                                         {"\%edx"},

@@ -4,12 +4,8 @@
 	.type	main, @function
 main:
 .LFB0:
-	.cfi_startproc
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
 	movl	$20, -8(%rbp)
 	movl	$30, -4(%rbp)
 	cmpl	$0, -8(%rbp)
