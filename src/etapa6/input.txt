@@ -1,4 +1,16 @@
+int a, b;
 main() -> int {
+    a = 3;
+    b = 0;
+    while(a > 1) {
+        a = a - 1;
+        b = b + 1;
+    };
+
+    return b;
+}
+
+/*main() -> int {
     int a;
     int b;
     a = 1;
@@ -11,7 +23,7 @@ main() -> int {
     };
 
     return b;
-}
+}*/
 
 
 
