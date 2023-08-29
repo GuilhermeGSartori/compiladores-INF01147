@@ -22,12 +22,14 @@ int d;
 
 main() -> int {
     int j, l, m, n;
+	j = 10;
+	l = j;
     a = 4;
     d = 2;
     b = d;
     //c = a - b; // pelo visto a subtração da overflow... Ou seja, valores negativos tá dando ruim...
     //c = a + b;
-    c = a * b;
+    c = j * l;
     return c;
 }
 

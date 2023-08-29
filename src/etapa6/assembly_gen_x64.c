@@ -103,7 +103,13 @@ void translateCode(char* line){
             char RAIVA[5] = {"\%"};
             fprintf(file, "%s(%s", searchOffset(atoi(line_separated[5])), RAIVA);
             fprintf(file, "rip)\n");
-        }
+        } else if (strcmp(line_separated[3], "rfp") == 0) {
+			int desvio_maximo = num_of_main_vars * 4;
+			int offset = atoi(line_separated[5]) - desvio_maximo;
+			char RAIVA[5] = {"\%"};
+            fprintf(file, "%d(%s", offset, RAIVA);
+            fprintf(file, "rbp)\n");
+		}
 
 	} else if(strcmp(line_separated[0], "loadAI") == 0){
 		memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
@@ -113,7 +119,13 @@ void translateCode(char* line){
             char RAIVA[5] = {"\%"};
             fprintf(file, "%s(%s", searchOffset(atoi(line_separated[3])), RAIVA);
             fprintf(file, "rip), %s\n", x64_32op_regs[register_number]);
-        }
+        } else if (strcmp(line_separated[1], "rfp") == 0) {
+			int desvio_maximo = num_of_main_vars * 4;
+			int offset = atoi(line_separated[3]) - desvio_maximo;
+			char RAIVA[5] = {"\%"};
+			fprintf(file, "%d(%s", offset, RAIVA);
+            fprintf(file, "rbp), %s\n", x64_32op_regs[register_number]);
+		}
 
 	} else if(strcmp(line_separated[0], "add") == 0){
         memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
