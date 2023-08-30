@@ -34,24 +34,24 @@ void generateAsm() {
         exit(1);             
     }
 
-    fprintf(file, "%s", "\t.file\t\"input\"\n\t.text\n");
+    printf("%s", "\t.file\t\"input\"\n\t.text\n");
 
     for(int i = 0; i < TABLE_SIZE; i++) {
         HashItem* itens = global_scope->lexemes[i];
         while(itens != NULL) {
             if(itens->hash_content->nature == ID_SYMBOL)
-                fprintf(file, "\t.comm\t%s,4,4\n", itens->hash_content->key->key_name);
+                printf("\t.comm\t%s,4,4\n", itens->hash_content->key->key_name);
             itens = itens->next;
         }
     }
 
-    fprintf(file, "%s", "\t.globl\tmain\n\t.type\tmain, @function\n");
+    printf("%s", "\t.globl\tmain\n\t.type\tmain, @function\n");
 
-    fprintf(file, "%s", "main:\n");
-    fprintf(file, "%s", ".LFB0:\n");
+    printf("%s", "main:\n");
+    printf("%s", ".LFB0:\n");
 
-    fprintf(file, "\tpushq\t%srbp\n", "\%");
-    fprintf(file, "\tmovq\t%srsp, %srbp\n", "\%", "\%");
+    printf("\tpushq\t%srbp\n", "\%");
+    printf("\tmovq\t%srsp, %srbp\n", "\%", "\%");
 
     char code_lines[CMD_MAX_SIZE][CMD_MAX_SIZE]; // too big?
     char* pch = NULL;
@@ -91,44 +91,44 @@ void translateCode(char* line){
 	if(line_separated[0][0] == 'L'){
 		memmove(line_separated[0], line_separated[0]+1, strlen(line_separated[0]));
 		int label_number = atoi(line_separated[0]);
-		fprintf(file, ".L%d:\n", label_number);
+		printf(".L%d:\n", label_number);
 		
 	} else if(strcmp(line_separated[0], "loadI") == 0){
 		memmove(line_separated[3], line_separated[3]+1, strlen(line_separated[3]));
 		int register_number = (atoi(line_separated[3])-1)%REGS_N;
 
-		fprintf(file, "\tmovl\t$%s, %s\n", line_separated[1], x64_32op_regs[register_number]);
+		printf("\tmovl\t$%s, %s\n", line_separated[1], x64_32op_regs[register_number]);
 
 	} else if(strcmp(line_separated[0], "storeAI") == 0){
         memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
         int register_number = (atoi(line_separated[1])-1)%REGS_N;
-        fprintf(file, "\tmovl\t%s, ", x64_32op_regs[register_number]);
+        printf("\tmovl\t%s, ", x64_32op_regs[register_number]);
         if(strcmp(line_separated[3], "rbss") == 0) {
             char RAIVA[5] = {"\%"};
-            fprintf(file, "%s(%s", searchOffset(atoi(line_separated[5])), RAIVA);
-            fprintf(file, "rip)\n");
+            printf("%s(%s", searchOffset(atoi(line_separated[5])), RAIVA);
+            printf("rip)\n");
         } else if (strcmp(line_separated[3], "rfp") == 0) {
 			int desvio_maximo = num_of_main_vars * 4;
 			int offset = atoi(line_separated[5]) - desvio_maximo;
 			char RAIVA[5] = {"\%"};
-            fprintf(file, "%d(%s", offset, RAIVA);
-            fprintf(file, "rbp)\n");
+            printf("%d(%s", offset, RAIVA);
+            printf("rbp)\n");
 		}
 
 	} else if(strcmp(line_separated[0], "loadAI") == 0){
 		memmove(line_separated[5], line_separated[5]+1, strlen(line_separated[5]));
 		int register_number = (atoi(line_separated[5])-1)%REGS_N;
-		fprintf(file, "\tmovl\t");
+		printf("\tmovl\t");
 		if(strcmp(line_separated[1], "rbss") == 0) {
             char RAIVA[5] = {"\%"};
-            fprintf(file, "%s(%s", searchOffset(atoi(line_separated[3])), RAIVA);
-            fprintf(file, "rip), %s\n", x64_32op_regs[register_number]);
+            printf("%s(%s", searchOffset(atoi(line_separated[3])), RAIVA);
+            printf("rip), %s\n", x64_32op_regs[register_number]);
         } else if (strcmp(line_separated[1], "rfp") == 0) {
 			int desvio_maximo = num_of_main_vars * 4;
 			int offset = atoi(line_separated[3]) - desvio_maximo;
 			char RAIVA[5] = {"\%"};
-			fprintf(file, "%d(%s", offset, RAIVA);
-            fprintf(file, "rbp), %s\n", x64_32op_regs[register_number]);
+			printf("%d(%s", offset, RAIVA);
+            printf("rbp), %s\n", x64_32op_regs[register_number]);
 		}
 
 	} else if(strcmp(line_separated[0], "add") == 0){
@@ -139,9 +139,9 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\taddl\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number2]);
+        printf("\taddl\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number2]);
         //addl edx, esi
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number3]);
+        printf("\tmovl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number3]);
         //movl esi, edi
 
         current_command = CMD_ARITH;
@@ -154,9 +154,9 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;;
 
-        fprintf(file, "\tsubl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tsubl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
         //subl edx, esi
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number3]);
+        printf("\tmovl\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number3]);
         //movl esi, edi
 
         current_command = CMD_ARITH;
@@ -169,9 +169,9 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\timull\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number2]);
+        printf("\timull\t%s, %s\n", x64_32op_regs[register_number1], x64_32op_regs[register_number2]);
         //imull edx, esi
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number3]);
+        printf("\tmovl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number3]);
         //movl esi, edi
 
         current_command = CMD_ARITH;
@@ -184,10 +184,10 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 		
-		fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number1], x64_ret_reg);
-		fprintf(file, "\tcltd\n");
-		fprintf(file, "\tidivl\t%s\n", x64_32op_regs[register_number2]);
-		fprintf(file, "\tmovl\t%s, %s\n", x64_ret_reg, x64_32op_regs[register_number3]);
+		printf("\tmovl\t%s, %s\n", x64_32op_regs[register_number1], x64_ret_reg);
+		printf("\tcltd\n");
+		printf("\tidivl\t%s\n", x64_32op_regs[register_number2]);
+		printf("\tmovl\t%s, %s\n", x64_ret_reg, x64_32op_regs[register_number3]);
 
         current_command = CMD_ARITH;
 
@@ -199,7 +199,7 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_EQ;
 
@@ -212,7 +212,7 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_NE;
 
@@ -225,7 +225,7 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_LE;
     } else if(strcmp(line_separated[0], "cmp_GE") == 0) {
@@ -237,7 +237,7 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_GE;
         
@@ -250,7 +250,7 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_LT;
 
@@ -263,7 +263,7 @@ void translateCode(char* line){
         int register_number2 = (atoi(line_separated[3])-1)%REGS_N;
         int register_number3 = (atoi(line_separated[5])-1)%REGS_N;
 
-        fprintf(file, "\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
+        printf("\tcmpl\t%s, %s\n", x64_32op_regs[register_number2], x64_32op_regs[register_number1]);
 
         current_command = CMD_GT;
 
@@ -274,26 +274,26 @@ void translateCode(char* line){
         char label[10] = {"."};
         strcat(label, line_separated[5]);
         if(current_command == CMD_EQ) {
-            fprintf(file, "\tjne\t%s\n", label);
+            printf("\tjne\t%s\n", label);
         }
         else if(current_command == CMD_NE) {
-            fprintf(file, "\tje\t%s\n", label);
+            printf("\tje\t%s\n", label);
         }
         else if(current_command == CMD_LE) {
-            fprintf(file, "\tjg\t%s\n", label);
+            printf("\tjg\t%s\n", label);
         }
         else if(current_command == CMD_GE) {
-            fprintf(file, "\tjl\t%s\n", label);
+            printf("\tjl\t%s\n", label);
         }
         else if(current_command == CMD_LT) {
-            fprintf(file, "\tjge\t%s\n", label);
+            printf("\tjge\t%s\n", label);
         }
         else if(current_command == CMD_GT) {
-            fprintf(file, "\tjle\t%s\n", label);
+            printf("\tjle\t%s\n", label);
         }
         else if(current_command == CMD_ARITH) {
-            fprintf(file, "\tcmpl\t$%d, %s\n", 0, x64_32op_regs[register_number]);
-            fprintf(file, "\tje\t%s\n", label); 
+            printf("\tcmpl\t$%d, %s\n", 0, x64_32op_regs[register_number]);
+            printf("\tje\t%s\n", label); 
         }
         
         current_command = CMD_UNDEFINED;
@@ -301,16 +301,16 @@ void translateCode(char* line){
     } else if(strcmp(line_separated[0], "jumpI") == 0) {
         char label[10] = {"."};
         strcat(label, line_separated[2]);
-        fprintf(file, "\tjmp\t%s\n", label);
+        printf("\tjmp\t%s\n", label);
     }
     
      else if(strcmp(line_separated[0], "//return") == 0){
 		memmove(line_separated[1], line_separated[1]+1, strlen(line_separated[1]));
         int register_number = (atoi(line_separated[1])-1)%REGS_N;
         char RAIVA[5] = {"\%"};
-        fprintf(file, "\tmovl\t%s, %s\n", x64_32op_regs[register_number], x64_ret_reg);
-        fprintf(file, "\tpopq	%srbp\n", RAIVA);
-        fprintf(file, "\tret\n");
+        printf("\tmovl\t%s, %s\n", x64_32op_regs[register_number], x64_ret_reg);
+        printf("\tpopq	%srbp\n", RAIVA);
+        printf("\tret\n");
 	}
 		
 }
