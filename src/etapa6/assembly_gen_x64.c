@@ -1,3 +1,5 @@
+// Guilherme Girotto Sartori - 00274713 Marlize Ramos Batista - 00274703
+
 #include "assembly_gen_x64.h"
 #include <stdio.h>
 #include <stdlib.h>
